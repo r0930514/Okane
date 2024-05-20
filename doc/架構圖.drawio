@@ -1,9 +1,39 @@
-<mxfile host="app.diagrams.net" modified="2024-05-06T07:26:53.440Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="II_tsyunqE-vgCoybLKj" version="22.1.17" type="github">
+<mxfile host="app.diagrams.net" modified="2024-05-20T13:40:11.212Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15" etag="gNgw_omFuf86o2lIkqCb" version="24.4.4" type="github">
   <diagram name="第1頁" id="7_8QNeBAMIdOn81Ms1cM">
-    <mxGraphModel dx="954" dy="502" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1446" dy="1494" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-4" value="銀行同步服務" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=default;" vertex="1" parent="1">
+          <mxGeometry x="-450" y="-1075" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="Zssg3eLQRXmlfniPrngJ-10" target="Zssg3eLQRXmlfniPrngJ-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-15" value="TCP" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Zssg3eLQRXmlfniPrngJ-14">
+          <mxGeometry x="-0.1881" y="-2" relative="1" as="geometry">
+            <mxPoint x="3" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-10" value="總服務 nestjs" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" vertex="1" parent="1">
+          <mxGeometry x="-760" y="-1120" width="200" height="120" as="geometry">
+            <mxRectangle x="-730" y="-900" width="80" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-11" value="Web 服務" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=default;" vertex="1" parent="Zssg3eLQRXmlfniPrngJ-10">
+          <mxGeometry x="45" y="30" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-12" value="身分驗證服務" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=default;" vertex="1" parent="Zssg3eLQRXmlfniPrngJ-10">
+          <mxGeometry x="45" y="70" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;startArrow=classic;startFill=1;" edge="1" parent="1" source="Zssg3eLQRXmlfniPrngJ-16" target="Zssg3eLQRXmlfniPrngJ-10">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-600" y="-1000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Zssg3eLQRXmlfniPrngJ-16" value="&amp;nbsp;資料庫" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="-760" y="-960" width="60" height="80" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
