@@ -1,12 +1,16 @@
 import { Body, Controller, Get, Post, UseGuards, Req } from '@nestjs/common';
 import { UserCreateDto } from '../users/dto/user.create.dto';
 import { UsersService } from '../users/users.service';
-import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import { LocalStrategy } from './stratgies/local.stratgy';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private authService: AuthService,
+  ) {}
   @Get('/test')
   test() {
     return 'test';
@@ -17,9 +21,9 @@ export class AuthController {
     return this.usersService.create(body);
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalStrategy)
   @Post('/signin')
   signin(@Req() request: Request) {
-    return request.user;
+    return this.authService.login(request.body);
   }
 }
