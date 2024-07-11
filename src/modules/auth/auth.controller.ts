@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards, Req } from '@nestjs/common';
 import { UserCreateDto } from '../users/dto/user.create.dto';
 import { UsersService } from '../users/users.service';
 import { Request } from 'express';
-import { LocalStrategy } from './stratgies/local.stratgy';
+import { LocalStrategy } from './stratgies/local.strategy';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
