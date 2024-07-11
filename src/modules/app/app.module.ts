@@ -5,13 +5,15 @@ import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import MongoConfigFactory from 'src/config/mongo.config';
+import JwtConfigFactory from 'src/config/jwt.config';
 import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [MongoConfigFactory],
+      load: [MongoConfigFactory, JwtConfigFactory],
+      isGlobal: true,
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
