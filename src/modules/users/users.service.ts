@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/models/user.model';
 import { CommonUtility } from 'src/utils/common.utility';
 import { UserCreateDto } from './dto/user.create.dto';
@@ -19,7 +19,7 @@ export class UsersService {
       password,
     });
   }
-  findByEmail(filter: FilterQuery<UserDocument>) {
-    return this.userModel.findOne(filter).exec();
+  findByEmail(email: string) {
+    return this.userModel.findOne({ email: email }).exec();
   }
 }

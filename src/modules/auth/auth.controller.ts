@@ -44,9 +44,7 @@ export class AuthController {
 
   @Get('/verifyEmail')
   async verifyEmail(@Req() request) {
-    const result = await this.usersService.findByEmail({
-      username: request.body.email,
-    });
+    const result = await this.usersService.findByEmail(request.body.email);
     if (!result) {
       throw new NotFoundException();
     }
