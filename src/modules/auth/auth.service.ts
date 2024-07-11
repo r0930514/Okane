@@ -17,7 +17,7 @@ export class AuthService {
     const { hash } = CommonUtility.encryptBySalt(password, user.password.salt);
     return hash === user.password.hash ? user : null;
   }
-  async login(user: any) {
+  async generateAccessToken(user: any) {
     const payload = { username: user.username, sub: user._id };
     return {
       access_token: this.jwtService.sign(payload),
