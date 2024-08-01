@@ -7,6 +7,7 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -42,12 +43,11 @@ export class AuthController {
     return request.user;
   }
 
-  @Get('/verifyEmail')
-  async verifyEmail(@Req() request) {
-    const result = await this.usersService.findByEmail(request.body.email);
+  @Get('/verifyEmail/:email')
+  async verifyEmail(@Param('email') email: string) {
+    const result = await this.usersService.findByEmail(email);
     if (!result) {
       throw new NotFoundException();
     }
-    return result;
   }
 }
