@@ -31,8 +31,8 @@ class AuthService {
     static async verifyEmail(email, setIsLoading, nav) {
         setIsLoading(true);
         try {
-            const res = await this.authInstance.get(`verifyEmail/${email}`);
-            if (res.status === 200) {
+            const res = await this.authInstance.post('verify-email', { email });
+            if (res.data.exists) {
                 nav('password');
             }
             return { success: true };
@@ -55,7 +55,7 @@ class AuthService {
                 password: password
             });
       
-            if (res.status === 201) {
+            if (res.status === 200) {
                 localStorage.setItem('token', res.data.access_token);
                 nav('/dashboard');
                 return { success: true };

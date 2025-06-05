@@ -6,13 +6,24 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
   const config = new DocumentBuilder()
-    .setTitle('Users example')
-    .setDescription('The users API description')
+    .setTitle('Okane API')
+    .setDescription('理財紀錄系統的 RESTful API 文檔')
     .setVersion('1.0')
-    .addTag('auth')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      },
+      'access-token',
+    )
+    .addTag('auth', '認證相關')
+    .addTag('users', '使用者相關')
+    .addTag('wallet', '錢包相關')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('doc', app, document);
+  SwaggerModule.setup('docs', app, document);
   await app.listen(3000);
 }
 bootstrap();
