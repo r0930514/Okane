@@ -7,7 +7,7 @@ async function bootstrap() {
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Okane API')
-    .setDescription('理財紀錄系統的 RESTful API 文檔')
+    .setDescription('RESTful API Docs')
     .setVersion('1.0')
     .addBearerAuth(
       {
