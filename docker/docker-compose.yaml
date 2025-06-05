@@ -13,10 +13,7 @@ services:
       - VITE_API_URL=http://localhost:3000
     depends_on:
       - backend
-    volumes:
-      - ../frontend:/app
-      - frontend_node_modules:/app/node_modules
-    command: npm run dev -- --host
+    restart: unless-stopped
 
   backend:
     build:
@@ -26,28 +23,28 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGO_USERNAME=moneybooks
-      - MONGO_PASSWORD=moneybooks
-      - MONGO_RESOURCE=mongodb:27017
-      - JWT_SECRET=your_jwt_secret
+      - POSTGRES_HOST=postgres  # 改用 PostgreSQL
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}  
+      - JWT_SECRET=${JWT_SECRET}
+      - NODE_ENV=production
     depends_on:
-      - mongodb
-    volumes:
-      - ../backend:/app
-      - backend_node_modules:/app/node_modules
+      - postgres
+    restart: unless-stopped
 
-  mongodb:
-    image: mongo:latest
+  postgres:  # 建議改用 PostgreSQL
+    image: postgres:15-alpine
     ports:
-      - "27017:27017"
+      - "5432:5432"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=moneybooks
-      - MONGO_INITDB_ROOT_PASSWORD=moneybooks
-      - MONGO_INITDB_DATABASE=moneybooks
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-      - mongodb_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
-  mongodb_data:
-  frontend_node_modules:
-  backend_node_modules:
+  postgres_data:
