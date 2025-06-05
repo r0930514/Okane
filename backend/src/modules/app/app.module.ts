@@ -2,24 +2,28 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from '../users/users.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import MongoConfigFactory from 'src/config/mongo.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import DatabaseConfigFactory from 'src/config/database.config';
 import JwtConfigFactory from 'src/config/jwt.config';
 import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from '../auth/auth.module';
+import { User } from '../../entities/user.entity';
+import { Wallet } from '../../entities/wallet.entity';
+import { Transaction } from '../../entities/transaction.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [MongoConfigFactory, JwtConfigFactory],
+      load: [DatabaseConfigFactory, JwtConfigFactory],
       isGlobal: true,
     }),
-    MongooseModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get('mongo.uri'),
+        ...configService.get('database'),
+        entities: [User, Wallet, Transaction],
       }),
     }),
     UsersModule,
