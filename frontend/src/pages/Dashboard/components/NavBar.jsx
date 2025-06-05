@@ -10,7 +10,7 @@ export default function NavBar(nav, username) {
                 </label>
             </div>
             <div className="flex-1 ">
-                <a className="btn btn-ghost text-xl hidden">MoneyBooks</a>
+                <a className="btn btn-ghost text-xl hidden">Okane</a>
             </div>
             <div className="flex-none pr-2 gap-2">
                 <button className="btn btn-ghost">
