@@ -30,12 +30,6 @@ export class AuthController {
     private readonly usersService: UsersService,
     private authService: AuthService,
   ) {}
-  @ApiOperation({ summary: '測試 API 是否正常運作' })
-  @ApiResponse({ status: 200, description: '返回測試字串' })
-  @Get('/test')
-  test() {
-    return 'test';
-  }
 
   @ApiOperation({ summary: '註冊新用戶' })
   @ApiBody({ type: UserCreateDto })
