@@ -1,9 +1,11 @@
 import { jwtDecode } from "jwt-decode";
 
 class UserService{
-  static getUser(){
-    return jwtDecode(localStorage.getItem('token'));
-  }
+    static getUser(){
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+        return jwtDecode(token);
+    }
   
 }
 
