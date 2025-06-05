@@ -12,7 +12,7 @@ export default function AuthPage() {
             <div className="card bg-base-100 shadow-md h-fit w-10/12 md:w-1/3 transition-all">
                 <figure className='flex-col px-10 pt-10 justify-center'>
                     <MyIcon />
-                    <h2 className="card-title justify-center text-2xl">MoneyBooks</h2>
+                    <h2 className="card-title justify-center text-2xl">Okane</h2>
                 </figure>
                 <Routes>
                     <Route index element={<LoginPage inPage setEmail={setEmail} email={email}></LoginPage>}></Route>

@@ -4,6 +4,6 @@ export default registerAs('mongo', () => {
   const username = process.env.MONGO_USERNAME;
   const password = process.env.MONGO_PASSWORD;
   const resource = process.env.MONGO_RESOURCE;
-  const uri = `mongodb://${resource}`;
+  const uri = `mongodb://${username}:${password}@${resource}`;
   return { username, password, resource, uri };
 });

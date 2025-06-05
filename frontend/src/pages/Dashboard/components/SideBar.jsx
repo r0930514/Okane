@@ -6,7 +6,7 @@ export default function SideBar() {
             <div className='navbar justify-start p-4'>
                 <li className='flex gap-4 pl-1'>
                     <Wallet className="text-black" size={32} />
-                    <a className="text-2xl font-semibold text-black" style={{ fontFamily: 'Roboto Condensed' }}>MoneyBooks</a>
+                    <a className="text-2xl font-semibold text-black" style={{ fontFamily: 'Roboto Condensed' }}>Okane</a>
                 </li>
             </div>
             {/* Sidebar content here */}

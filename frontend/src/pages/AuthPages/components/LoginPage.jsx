@@ -11,35 +11,53 @@ export default function LoginPage({ email, setEmail }) {
         setEmail: PropTypes.func.isRequired
     };
     const nav = useNavigate();
-    useEffect(()=>{
-      const checkToken = async () => {
-        try {
-          await AuthService.checkToken();
-          nav('/dashboard');
-        } catch (error) {
-          console.log(error.response);
-        }
-      }
-      checkToken();
-    }, [nav])
     const [isLoading, setIsLoading] = useState(false);
-    return <div className="card-body w-full pt-4 space-y-4 ">
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const checkToken = async () => {
+            const result = await AuthService.checkToken();
+            if (result.success) {
+                nav('/dashboard');
+            }
+        }
+        checkToken();
+    }, [nav])
+
+    return <div className="card-body w-full pt-4 space-y-4">
+        {error && (
+            <div className="alert alert-error">
+                <span>{error}</span>
+            </div>
+        )}
         <div className='flex items-center gap-3 justify-center'>
             <div className="flex flex-col gap-6 w-screen xl:w-10/12">
                 {/* Username Input Field */}
                 <label className="input input-bordered flex items-center gap-2">
                     <EmailIcon />
-                    <input type="text" className="grow w-full" placeholder="Email" value={email} onChange={
-                        (e) => setEmail(e.target.value)
-                    } />
+                    <input 
+                        type="text" 
+                        className="grow w-full" 
+                        placeholder="Email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </label>
             </div>
         </div>
 
         <div className="card-actions justify-center gap-4">
-            <button className="btn" onClick={async() => {
-              await AuthService.verifyEmail(email, setIsLoading, nav);
-            }}>
+            <button 
+                className="btn" 
+                onClick={async () => {
+                    const result = await AuthService.verifyEmail(email, setIsLoading, nav);
+                    if (result.error) {
+                        setError(result.error);
+                    } else {
+                        setError('');
+                    }
+                }}
+            >
                 {isLoading ? <span className="loading loading-spinner"></span> : '繼續'}
             </button>
             {/* Passkey Btn */}
@@ -57,4 +75,3 @@ export default function LoginPage({ email, setEmail }) {
         </svg>;
     }
 }
-
