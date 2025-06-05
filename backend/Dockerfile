@@ -1,5 +1,5 @@
 # 使用官方的 Node.js 鏡像作為基礎
-FROM node:22
+FROM node:22-slim
 
 # 設定工作目錄
 WORKDIR /app
