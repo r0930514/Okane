@@ -1,3 +1,3 @@
 export default class ConfigService{
-  static baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000/';
+    static baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000/';
 }

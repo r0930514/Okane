@@ -15,9 +15,9 @@ export default function PasswordPage({ email }) {
 
     // If email is empty, redirect to login page
     useEffect(()=>{
-      if (email === '') {
-        nav('/login');
-      }
+        if (email === '') {
+            nav('/login');
+        }
     }, [email, nav])
 
     return <div className="card-body w-full pt-4 space-y-4 ">
@@ -68,7 +68,7 @@ export default function PasswordPage({ email }) {
             <button className="btn" onClick={() => {
                 AuthService.signin(email, password, setIsLoading, nav)
             }}>
-              {isLoading ? <span className="loading loading-spinner"></span> : '登入'}
+                {isLoading ? <span className="loading loading-spinner"></span> : '登入'}
             </button>
             {/* Passkey Btn */}
             <div className="tooltip" data-tip="❌使用通行密鑰登入">
