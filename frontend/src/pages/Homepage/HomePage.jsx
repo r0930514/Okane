@@ -10,6 +10,7 @@ import {
     PencilSimple,
     ClipboardText,
     Lock,
+    List,
 } from "@phosphor-icons/react";
 import FeatureCard from "./components/FeatureCard";
 import demoImage from "../../assets/homepage-introdution-1.png";
@@ -93,6 +94,7 @@ function HomePage() {
             <nav className={`navbar sticky top-0 z-50 px-4 transition-all duration-300 
                 ${isScrolled? 'bg-white shadow-lg backdrop-blur-sm' : 'base-200 backdrop-blur-sm ' }`}>
                 <div className="container mx-auto flex items-center justify-between">
+
                     {/* Logo */}
                     <div className="flex-none">
                         <Link to="/" className={`btn btn-ghost text-lg font-bold normal-case gap-0 transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0'
@@ -100,27 +102,38 @@ function HomePage() {
                             <span className="text-blue-600">O</span>kane
                         </Link>
                     </div>
+
                     {/* Navigation Links */}
                     <div className="flex items-center gap-2">
                         {/* Desktop Navigation */}
                         <ul className={
                             `menu menu-horizontal px-1 hidden lg:flex items-center transition-opacity duration-300 
                             ${isScrolled ? 'opacity-100' : 'opacity-90' }`}>
-                            <li><button className="hover:text-blue-600 transition-colors duration-200 px-3 py-2">使用手冊</button></li>
+                            <li>
+                                <button 
+                                    className="hover:text-blue-600 transition-colors duration-200 px-3 py-2">
+                                    使用手冊
+                                </button>
+                            </li>
+                            <li>
+                                <button 
+                                    className="hover:text-blue-600 transition-colors duration-200 px-3 py-2">
+                                    關於我們
+                                </button>
+                            </li>
                         </ul>
-                        <ul className={
-                            `menu menu-horizontal px-1 hidden lg:flex items-center transition-opacity duration-300 
-                            ${isScrolled ? 'opacity-100' : 'opacity-90' }`}>
-                            <li><button className="hover:text-blue-600 transition-colors duration-200 px-3 py-2">關於我們</button></li>
-                        </ul>
+
                         {/* Mobile Dropdown Menu */}
-                        <div className={`dropdown dropdown-end lg:hidden transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-90'
-                        }`}>
+                        <div 
+                            className=
+                                {`dropdown dropdown-end lg:hidden transition-opacity duration-300 
+                                    ${isScrolled ? 'opacity-100' : 'opacity-90'}`
+                                }>
+                            {/* Dropdown Toggle Button */}
                             <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                                </svg>
+                                <List className="w-5 h-5" size={24}/>
                             </div>
+                            {/* Dropdown Menu */}
                             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                                 <li>
                                     <button>使用手冊</button></li>
@@ -128,8 +141,11 @@ function HomePage() {
                             </ul>
                         </div>
                         <Link to={'/login'}>
-                            <button className={`btn btn-sm transition-all duration-300 ${isScrolled ? 'opacity-100 scale-100 btn-primary' : 'opacity-90 scale-95 btn-ghost'
-                            }`}>
+                            <button 
+                                className=
+                                    {`btn btn-sm transition-all duration-300 
+                                        ${isScrolled ? 'opacity-100 scale-100 btn-primary' : 'opacity-90 scale-95 btn-ghost'}`
+                                    }>
                                 開始使用
                             </button>
                         </Link>
