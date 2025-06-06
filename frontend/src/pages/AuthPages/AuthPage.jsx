@@ -8,7 +8,7 @@ export default function AuthPage() {
     const [email, setEmail] = useState('');
     
     return (
-        <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 animate-fade-in-scale">
+        <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4">
             {/* 背景裝飾元素 */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full opacity-10"></div>
@@ -17,14 +17,11 @@ export default function AuthPage() {
             </div>
             
             {/* 主要卡片容器 */}
-            <div className="relative w-full max-w-md animate-slide-in-bottom">
+            <div className="relative w-full max-w-md">
                 <div className="card bg-base-100 glass-effect shadow-md transition-all">
                     {/* Logo 和標題區域 */}
-                    <figure className='flex flex-col items-center px-8 pt-8 pb-4 animate-slide-in-top'>
-                        {/* <div className="transform transition-all duration-500 hover:scale-110 hover:rotate-3 animate-float">
-                            <MyIcon />
-                        </div> */}
-                        <h1 className="text-3xl font-bold gradient-text mt-3 animate-slide-in-top" style={{animationDelay: '0.2s'}}>
+                    <figure className='flex flex-col items-center px-8 pt-8 pb-4'>
+                        <h1 className="text-3xl font-bold gradient-text mt-3">
                             <span className="text-blue-600">O</span>kane
                         </h1>
                     </figure>
@@ -40,8 +37,8 @@ export default function AuthPage() {
                 </div>
                 
                 {/* 底部附加資訊 */}
-                <div className="text-center mt-6 text-gray-500 text-sm animate-slide-in-bottom" style={{animationDelay: '0.6s'}}>
-                    <p className="hover:text-gray-700 transition-colors duration-200">
+                <div className="text-center mt-6 text-gray-500 text-sm">
+                    <p className="hover:text-gray-700">
                         © 2025 Okane.
                     </p>
                 </div>
