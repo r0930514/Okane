@@ -12,6 +12,7 @@ import {
   GithubLogo
 } from "@phosphor-icons/react";
 import FeatureCard from "./components/FeatureCard";
+import demoImage from "../../assets/homepage-introdution-1.png";
 
 function HomePage() {
   const features = [
@@ -22,26 +23,8 @@ function HomePage() {
       iconColor: "text-blue-600"
     },
     {
-      icon: Users,
-      title: "朋友分帳",
-      description: "與朋友輕鬆分帳，智能記錄應收付帳款，理財更社交",
-      iconColor: "text-green-600"
-    },
-    {
-      icon: CurrencyCircleDollar,
-      title: "自訂匯率轉換",
-      description: "選擇不同供應商的匯率，獲得最精準的資產價值計算",
-      iconColor: "text-purple-600"
-    },
-    {
-      icon: Plug,
-      title: "模組化錢包",
-      description: "連接外部服務，打造專屬的錢包管理模組",
-      iconColor: "text-orange-600"
-    },
-    {
       icon: ChartPie,
-      title: "智能分類",
+      title: "智慧分類",
       description: "自動分類管理，讓您的資產組織更有條理",
       iconColor: "text-indigo-600"
     },
@@ -50,6 +33,24 @@ function HomePage() {
       title: "資產總值計算",
       description: "即時計算資產總值，掌握財務狀況",
       iconColor: "text-emerald-600"
+    },
+    {
+      icon: Plug,
+      title: "智慧錢包",
+      description: "自動更新資產資訊，並且有多個不同模組可供選擇",
+      iconColor: "text-orange-600"
+    },
+    {
+      icon: Users,
+      title: "朋友分帳",
+      description: "與朋友輕鬆分帳，再也不擔心出去玩算錢的麻煩",
+      iconColor: "text-green-600"
+    },
+    {
+      icon: CurrencyCircleDollar,
+      title: "自訂匯率轉換",
+      description: "選擇不同供應商的匯率，獲得最精準的資產價值計算",
+      iconColor: "text-purple-600"
     },
     {
       icon: PencilSimple,
@@ -87,6 +88,17 @@ function HomePage() {
               立即開始
             </button>
           </Link>
+        </div>
+
+        {/* Demo Image Section */}
+        <div className="mb-16 text-center">
+          <div className="max-w-4xl mx-auto">
+            <img
+              src={demoImage}
+              alt="Okane 資產管理系統演示介面"
+              className="w-full h-auto rounded-xl shadow-2xl border border-gray-200"
+            />
+          </div>
         </div>
 
         {/* Features Section */}
