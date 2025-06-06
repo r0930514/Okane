@@ -53,7 +53,7 @@ export default function PasswordPage({ email }) {
     };
 
     return (
-        <div className="card-body px-6 pt-2 pb-6 space-y-6">
+        <div className="card-body px-6 pt-2 pb-6 space-y-4">
             {/* 頁面標題 */}
             <div className="text-center">
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">歡迎回來！</h2>
@@ -160,7 +160,7 @@ export default function PasswordPage({ email }) {
             </div>
 
             {/* 底部操作 */}
-            <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                 <Link to="/login" className="btn btn-ghost btn-sm gap-2">
                     <CaretLeft weight="bold" className="h-4 w-4" />
                     使用其他帳號
@@ -170,5 +170,3 @@ export default function PasswordPage({ email }) {
         </div>
     );
 }
-
-

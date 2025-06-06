@@ -64,7 +64,7 @@ export default function LoginPage({ email, setEmail }) {
     const handleKeyPress = createKeyPressHandler(handleContinue);
 
     return (
-        <div className="card-body px-6 pt-2 pb-6 space-y-6">
+        <div className="card-body px-6 pt-2 pb-6 space-y-4">
             {/* 頁面標題 */}
             <div className="text-center">
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">開始使用 Okane</h2>
@@ -153,5 +153,3 @@ export default function LoginPage({ email, setEmail }) {
         </div>
     );
 }
-
-
