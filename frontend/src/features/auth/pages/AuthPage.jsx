@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import LoginPage from "../AuthPages/components/LoginPage";
-import RegisterPage from "../AuthPages/components/RegisterPage";
-import PasswordPage from "../AuthPages/components/PasswordPage";
+import LoginPage from "../components/LoginPage";
+import RegisterPage from "../components/RegisterPage";
+import PasswordPage from "../components/PasswordPage";
 import { useState } from "react";
 
 export default function AuthPage() {

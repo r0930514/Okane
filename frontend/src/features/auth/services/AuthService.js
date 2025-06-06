@@ -1,5 +1,5 @@
 import axios from 'axios';
-import ConfigService from './ConfigService';
+import ConfigService from '../../../shared/services/ConfigService';
 
 class AuthService {
     static authInstance = axios.create({

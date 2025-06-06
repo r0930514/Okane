@@ -1,11 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
+import '../index.css'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import ErrorPage from './pages/ErrorPage.jsx'
-import AuthPage from './pages/AuthPages/AuthPage.jsx'
-import HomePage from './pages/Homepage/HomePage.jsx'
-import Dashboard from './pages/Dashboard/Dashborad.jsx'
+import { ErrorPage } from '../shared'
+import { AuthPage } from '../features/auth'
+import { HomePage } from '../features/homepage'
+import { Dashboard } from '../features/dashboard'
 
 const router = createBrowserRouter(
     [

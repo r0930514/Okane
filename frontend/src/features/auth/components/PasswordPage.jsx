@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { CaretRight, XCircle, Eye, EyeClosed, CaretLeft } from "@phosphor-icons/react";
 import EmailIcon from "../../../assets/svgs/EmailIcon";
-import { useAuth } from "../../../hooks/useAuth";
-import { useAuthForm } from "../../../hooks/useAuthForm";
+import { useAuth } from "../hooks/useAuth";
+import { useAuthForm } from "../hooks/useAuthForm";
 import PasskeyIcon from "../../../assets/svgs/PasskeyIcon";
 import PasswordIcon from "../../../assets/svgs/PasswordIcon";
 

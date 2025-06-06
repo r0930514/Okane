@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { XCircle, Eye, EyeClosed } from "@phosphor-icons/react";
 import EmailIcon from "../../../assets/svgs/EmailIcon";
 import PasswordIcon from "../../../assets/svgs/PasswordIcon";
-import { useAuth } from "../../../hooks/useAuth";
-import { useAuthForm } from "../../../hooks/useAuthForm";
+import { useAuth } from "../hooks/useAuth";
+import { useAuthForm } from "../hooks/useAuthForm";
 
 export default function RegisterPage({ email }) {
     RegisterPage.propTypes = {
