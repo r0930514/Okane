@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import EmailIcon from "../../../assets/svgs/email";
+import EmailIcon from "../../../assets/svgs/EmailIcon";
 import AuthService from "../../../services/AuthService";
 
 export default function PasswordPage({ email }) {

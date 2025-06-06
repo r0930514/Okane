@@ -1,5 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import MyIcon from "../../assets/svgs/MyIcon";
 import LoginPage from "../AuthPages/components/LoginPage";
 import RegisterPage from "../AuthPages/components/RegisterPage";
 import PasswordPage from "../AuthPages/components/PasswordPage";
@@ -43,7 +42,7 @@ export default function AuthPage() {
                 {/* 底部附加資訊 */}
                 <div className="text-center mt-6 text-gray-500 text-sm animate-slide-in-bottom" style={{animationDelay: '0.6s'}}>
                     <p className="hover:text-gray-700 transition-colors duration-200">
-                        © 2024 Okane. 讓理財變得更簡單
+                        © 2025 Okane.
                     </p>
                 </div>
             </div>

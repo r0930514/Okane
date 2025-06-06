@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import EmailIcon from "../../../assets/svgs/email";
+import EmailIcon from "../../../assets/svgs/EmailIcon";
 import PropTypes from "prop-types";
 import AuthService from "../../../services/AuthService";
 import { useState, useEffect } from "react";
