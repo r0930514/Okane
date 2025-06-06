@@ -8,28 +8,28 @@ import HomePage from './pages/Homepage/HomePage.jsx'
 import Dashboard from './pages/Dashboard/Dashborad.jsx'
 
 const router = createBrowserRouter(
-  [
-    {
-      path: "/",
-      element: <HomePage />,
-      errorElement: <ErrorPage />
-    },
-    {
-      path: "/login/*",
-      element: <AuthPage />,
-      errorElement: <ErrorPage />
-    },
-    {
-      path: "/dashboard",
-      element: <Dashboard />,
-      errorElement: <ErrorPage />
-    },
+    [
+        {
+            path: "/",
+            element: <HomePage />,
+            errorElement: <ErrorPage />
+        },
+        {
+            path: "/login/*",
+            element: <AuthPage />,
+            errorElement: <ErrorPage />
+        },
+        {
+            path: "/dashboard",
+            element: <Dashboard />,
+            errorElement: <ErrorPage />
+        },
 
-  ]
+    ]
 )
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>,
+    <React.StrictMode>
+        <RouterProvider router={router} />
+    </React.StrictMode>,
 )
