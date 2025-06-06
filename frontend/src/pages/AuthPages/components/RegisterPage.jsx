@@ -1,103 +1,343 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EmailIcon from "../../../assets/svgs/email";
 import PropTypes from "prop-types";
 import AuthService from "../../../services/AuthService";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function RegisterPage({ email }) {
     RegisterPage.propTypes = {
         email: PropTypes.string.isRequired
     }
+    
     const nav = useNavigate();
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [username, setUsername] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [passwordFocused, setPasswordFocused] = useState(false);
+    const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
+    const [usernameFocused, setUsernameFocused] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    return <div className="card-body pt-4 space-y-4 ">
-        <div className='flex items-center gap-3 justify-center'>
+    // If email is empty, redirect to login page
+    useEffect(() => {
+        if (email === '') {
+            nav('/login');
+        }
+    }, [email, nav])
 
-            <div className="flex flex-col gap-6 w-screen xl:w-10/12">
-                {/* Email Input Field */}
-                <label className="input input-bordered flex items-center gap-2">
-                    <EmailIcon />
-                    <input type="text" className="grow" placeholder="Email" value={email} />
-                </label>
-                {/* Username Input Field */}
-                <label className="input input-bordered flex items-center gap-2">
-                    <input type="text" className="grow" placeholder="使用者名稱" value={username} onChange={
-                        (e) => setUsername(e.target.value)
-                    } />
-                </label>
-                {/* Password Input Field */}
-                <label className="input input-bordered flex items-center gap-2">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        className="h-4 w-4 opacity-70">
-                        <path
-                            fillRule="evenodd"
-                            d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                            clipRule="evenodd" />
-                    </svg>
-                    <input type="password" className="grow" placeholder="密碼" value={password} onChange={
-                        (e) => setPassword(e.target.value)
-                    } />
-                </label>
-                {/* Check Password Input Field */}
-                <label className="input input-bordered flex items-center gap-2">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        className="h-4 w-4 opacity-70">
-                        <path
-                            fillRule="evenodd"
-                            d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                            clipRule="evenodd" />
-                    </svg>
-                    <input type="password" className="grow" placeholder="確認密碼" value={confirmPassword} onChange={
-                        (e) => setConfirmPassword(e.target.value)
-                    }/>
-                </label>
+    const validatePassword = (password) => {
+        if (password.length < 6) {
+            return '密碼長度至少需要 6 個字元';
+        }
+        return null;
+    };
+
+    const validateUsername = (username) => {
+        if (username.length < 2) {
+            return '使用者名稱至少需要 2 個字元';
+        }
+        if (username.length > 20) {
+            return '使用者名稱不能超過 20 個字元';
+        }
+        return null;
+    };
+
+    const handleRegister = async () => {
+        setError('');
+        
+        // 驗證輸入
+        if (!username.trim()) {
+            setError('請輸入使用者名稱');
+            return;
+        }
+
+        const usernameError = validateUsername(username);
+        if (usernameError) {
+            setError(usernameError);
+            return;
+        }
+
+        if (!password.trim()) {
+            setError('請輸入密碼');
+            return;
+        }
+
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+            setError(passwordError);
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('密碼確認不一致');
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const result = await AuthService.signup(email, password, username, setIsLoading, nav);
+            if (result && result.error) {
+                setError(result.error);
+            }
+        } catch (error) {
+            setError('註冊失敗，請稍後再試');
+            console.error('Registration error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleRegister();
+        }
+    };
+
+    return (
+        <div className="card-body px-6 pt-2 pb-6 space-y-6">
+            {/* 頁面標題 */}
+            <div className="text-center">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">建立您的帳號</h2>
+                <p className="text-gray-600 text-sm">請填寫以下資訊來註冊您的 Okane 帳號</p>
             </div>
-        </div>
 
-        <div className="card-actions justify-center space-x-4">
-            <Link to="/login">
-                <button className="btn btn-circle">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M6 18L18 6M6 6l12 12" />
+            {/* 成功提示 */}
+            <div className="alert alert-info shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="text-sm">此電子郵件尚未註冊，請完成註冊程序</span>
+            </div>
+
+            {/* 錯誤訊息 */}
+            {error && (
+                <div className="alert alert-error shadow-lg animate-in slide-in-from-top duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
+                    <span className="text-sm">{error}</span>
+                </div>
+            )}
+
+            {/* 表單區域 */}
+            <div className="space-y-4">
+                {/* Email 顯示 (唯讀) */}
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-gray-700 font-medium">電子郵件</span>
+                    </label>
+                    <div className="input input-bordered flex items-center gap-3 bg-gray-50">
+                        <EmailIcon className="text-gray-400" />
+                        <input 
+                            type="email" 
+                            className="grow text-gray-600 bg-transparent" 
+                            value={email} 
+                            disabled 
+                        />
+                        <div className="badge badge-info badge-sm">新用戶</div>
+                    </div>
+                </div>
+
+                {/* 使用者名稱輸入框 */}
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-gray-700 font-medium">使用者名稱</span>
+                    </label>
+                    <div className={`input input-bordered flex items-center gap-3 transition-all duration-200 ${
+                        usernameFocused ? 'ring-2 ring-blue-500 border-blue-500' : ''
+                    } ${error && !usernameFocused ? 'border-red-500' : ''}`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 transition-colors duration-200 ${
+                            usernameFocused ? 'text-blue-500' : 'text-gray-400'
+                        }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <input 
+                            type="text" 
+                            className="grow text-gray-800 placeholder-gray-400" 
+                            placeholder="請輸入使用者名稱"
+                            value={username} 
+                            onChange={(e) => setUsername(e.target.value)}
+                            onFocus={() => setUsernameFocused(true)}
+                            onBlur={() => setUsernameFocused(false)}
+                            onKeyPress={handleKeyPress}
+                            disabled={isLoading}
+                        />
+                    </div>
+                    <label className="label">
+                        <span className="label-text-alt text-gray-500">
+                            2-20 個字元，將顯示為您的帳號名稱
+                        </span>
+                    </label>
+                </div>
+
+                {/* 密碼輸入框 */}
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-gray-700 font-medium">密碼</span>
+                    </label>
+                    <div className={`input input-bordered flex items-center gap-3 transition-all duration-200 ${
+                        passwordFocused ? 'ring-2 ring-blue-500 border-blue-500' : ''
+                    } ${error && !passwordFocused ? 'border-red-500' : ''}`}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="currentColor"
+                            className={`h-4 w-4 transition-colors duration-200 ${
+                                passwordFocused ? 'text-blue-500' : 'text-gray-400'
+                            }`}>
+                            <path
+                                fillRule="evenodd"
+                                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                                clipRule="evenodd" />
+                        </svg>
+                        <input 
+                            type={showPassword ? "text" : "password"} 
+                            className="grow text-gray-800 placeholder-gray-400" 
+                            placeholder="請輸入密碼"
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)}
+                            onFocus={() => setPasswordFocused(true)}
+                            onBlur={() => setPasswordFocused(false)}
+                            onKeyPress={handleKeyPress}
+                            disabled={isLoading}
+                        />
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm p-1"
+                            onClick={() => setShowPassword(!showPassword)}
+                            disabled={isLoading}
+                        >
+                            {showPassword ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                </svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            )}
+                        </button>
+                    </div>
+                    <label className="label">
+                        <span className="label-text-alt text-gray-500">
+                            至少 6 個字元
+                        </span>
+                    </label>
+                </div>
+
+                {/* 確認密碼輸入框 */}
+                <div className="form-control">
+                    <label className="label">
+                        <span className="label-text text-gray-700 font-medium">確認密碼</span>
+                    </label>
+                    <div className={`input input-bordered flex items-center gap-3 transition-all duration-200 ${
+                        confirmPasswordFocused ? 'ring-2 ring-blue-500 border-blue-500' : ''
+                    } ${error && !confirmPasswordFocused ? 'border-red-500' : ''} ${
+                        password && confirmPassword && password === confirmPassword ? 'border-green-500' : ''
+                    }`}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="currentColor"
+                            className={`h-4 w-4 transition-colors duration-200 ${
+                                confirmPasswordFocused ? 'text-blue-500' : 'text-gray-400'
+                            }`}>
+                            <path
+                                fillRule="evenodd"
+                                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                                clipRule="evenodd" />
+                        </svg>
+                        <input 
+                            type={showConfirmPassword ? "text" : "password"} 
+                            className="grow text-gray-800 placeholder-gray-400" 
+                            placeholder="請再次輸入密碼"
+                            value={confirmPassword} 
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            onFocus={() => setConfirmPasswordFocused(true)}
+                            onBlur={() => setConfirmPasswordFocused(false)}
+                            onKeyPress={handleKeyPress}
+                            disabled={isLoading}
+                        />
+                        <button
+                            type="button"
+                            className="btn btn-ghost btn-sm p-1"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            disabled={isLoading}
+                        >
+                            {showConfirmPassword ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                                </svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            )}
+                        </button>
+                        {password && confirmPassword && password === confirmPassword && (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* 按鈕區域 */}
+            <div className="space-y-4">
+                <button 
+                    className={`btn btn-primary w-full text-white font-medium transition-all duration-200 ${
+                        isLoading ? 'loading' : 'hover:shadow-lg transform hover:-translate-y-0.5'
+                    }`}
+                    onClick={handleRegister}
+                    disabled={isLoading || !username.trim() || !password.trim() || !confirmPassword.trim()}
+                >
+                    {isLoading ? (
+                        <>
+                            <span className="loading loading-spinner loading-sm"></span>
+                            註冊中...
+                        </>
+                    ) : (
+                        <>
+                            建立帳號
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                        </>
+                    )}
                 </button>
-            </Link>
-            <button className="btn btn-primary" onClick={() => {
-                if( password !== confirmPassword ) {
-                    alert("密碼不一致！");
-                    return;
-                }
-                AuthService.signup(email, password, username, setIsLoading, nav);
-            }}>
-                {isLoading ? <span className="loading loading-spinner"></span> : '註冊'}
-            </button>
-        </div>
-        <div className="toast">
+            </div>
 
-            <div className="alert alert-warning">
-                <span>您尚未註冊！請在此處註冊你的帳號 😃</span>
+            {/* 底部操作 */}
+            <div className="flex justify-between items-center pt-4 border-t border-gray-200">
+                <Link to="/login" className="btn btn-ghost btn-sm gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    使用其他帳號
+                </Link>
+                
+                <div className="text-sm text-gray-600">
+                    已有帳號？
+                    <Link to="/login/password" className="link link-primary font-medium ml-1">
+                        登入
+                    </Link>
+                </div>
+            </div>
+
+            {/* 條款說明 */}
+            <div className="text-center pt-2">
+                <p className="text-gray-600 text-xs leading-relaxed">
+                    註冊即表示您同意我們的
+                    <span className="link link-primary">服務條款</span> 和 
+                    <span className="link link-primary">隱私政策</span>
+                </p>
             </div>
         </div>
-
-    </div>;
+    );
 }
