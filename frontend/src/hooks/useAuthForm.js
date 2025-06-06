@@ -7,8 +7,6 @@ import { useState } from 'react';
 export const useAuthForm = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [emailFocused, setEmailFocused] = useState(false);
-    const [passwordFocused, setPasswordFocused] = useState(false);
 
     // 電子郵件格式驗證
     const validateEmail = (email) => {
@@ -16,18 +14,21 @@ export const useAuthForm = () => {
         return emailRegex.test(email);
     };
 
-    // 密碼強度驗證（至少8個字符）
+    // 密碼強度驗證（註冊用：至少6個字符）
     const validatePassword = (password) => {
-        return password && password.length >= 8;
+        return password && password.length >= 6;
     };
 
-    // 處理電子郵件輸入框焦點事件
-    const handleEmailFocus = () => setEmailFocused(true);
-    const handleEmailBlur = () => setEmailFocused(false);
-
-    // 處理密碼輸入框焦點事件
-    const handlePasswordFocus = () => setPasswordFocused(true);
-    const handlePasswordBlur = () => setPasswordFocused(false);
+    // 使用者名稱驗證
+    const validateUsername = (username) => {
+        if (username.length < 2) {
+            return '使用者名稱至少需要 2 個字元';
+        }
+        if (username.length > 20) {
+            return '使用者名稱不能超過 20 個字元';
+        }
+        return null;
+    };
 
     // 處理鍵盤事件
     const createKeyPressHandler = (callback) => {
@@ -70,7 +71,7 @@ export const useAuthForm = () => {
         }
         
         if (!validatePassword(password)) {
-            setError('密碼至少需要8個字符');
+            setError('密碼至少需要6個字符');
             return false;
         }
         
@@ -81,23 +82,16 @@ export const useAuthForm = () => {
         // 狀態
         isLoading,
         error,
-        emailFocused,
-        passwordFocused,
         
         // 狀態設置函數
         setIsLoading,
         setError,
         clearError,
         
-        // 焦點處理函數
-        handleEmailFocus,
-        handleEmailBlur,
-        handlePasswordFocus,
-        handlePasswordBlur,
-        
         // 驗證函數
         validateEmail,
         validatePassword,
+        validateUsername,
         validateEmailWithError,
         validatePasswordWithError,
         
