@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { CaretRight, XCircle, Eye, EyeClosed, CaretLeft } from "@phosphor-icons/react";
 import EmailIcon from "../../../assets/svgs/EmailIcon";
-import AuthService from "../../../services/AuthService";
+import { useAuth } from "../../../hooks/useAuth";
 import { useAuthForm } from "../../../hooks/useAuthForm";
 import PasskeyIcon from "../../../assets/svgs/PasskeyIcon";
 import PasswordIcon from "../../../assets/svgs/PasswordIcon";
@@ -20,9 +20,12 @@ export default function PasswordPage({ email }) {
     const {
         isLoading,
         error,
-        setIsLoading,
-        createKeyPressHandler,
-        handleError
+        handleError,
+        signinAndNavigate
+    } = useAuth();
+
+    const {
+        createKeyPressHandler
     } = useAuthForm();
 
     // If email is empty, redirect to login page
@@ -38,18 +41,8 @@ export default function PasswordPage({ email }) {
             return;
         }
 
-        setIsLoading(true);
-        try {
-            const result = await AuthService.signin(email, password, setIsLoading, nav);
-            if (result && result.error) {
-                handleError(result.error);
-            }
-        } catch (error) {
-            handleError('登入失敗，請檢查您的密碼');
-            console.error('Login error:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        // 使用新的 useAuth hook 進行登入
+        await signinAndNavigate(email, password);
     };
 
     return (

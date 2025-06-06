@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { XCircle, Eye, EyeClosed } from "@phosphor-icons/react";
 import EmailIcon from "../../../assets/svgs/EmailIcon";
 import PasswordIcon from "../../../assets/svgs/PasswordIcon";
-import AuthService from "../../../services/AuthService";
+import { useAuth } from "../../../hooks/useAuth";
 import { useAuthForm } from "../../../hooks/useAuthForm";
 
 export default function RegisterPage({ email }) {
@@ -22,10 +22,13 @@ export default function RegisterPage({ email }) {
     const {
         isLoading,
         error,
-        setIsLoading,
+        handleError,
+        signupAndNavigate
+    } = useAuth();
+
+    const {
         validateUsername,
-        createKeyPressHandler,
-        handleError
+        createKeyPressHandler
     } = useAuthForm();
 
     // If email is empty, redirect to login page
@@ -63,18 +66,8 @@ export default function RegisterPage({ email }) {
             return;
         }
 
-        setIsLoading(true);
-        try {
-            const result = await AuthService.signup(email, password, username, setIsLoading, nav);
-            if (result && result.error) {
-                handleError(result.error);
-            }
-        } catch (error) {
-            handleError('註冊失敗，請稍後再試');
-            console.error('Registration error:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        // 使用新的 useAuth hook 進行註冊
+        await signupAndNavigate(email, password, username);
     };
 
     return (

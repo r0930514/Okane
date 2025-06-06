@@ -1,8 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import { XCircle, CaretRight } from "@phosphor-icons/react";
 import PropTypes from 'prop-types';
 import { useEffect } from "react";
-import AuthService from "../../../services/AuthService";
+import { useAuth } from "../../../hooks/useAuth";
 import { useAuthForm } from "../../../hooks/useAuthForm";
 import EmailIcon from "../../../assets/svgs/EmailIcon";
 import PasskeyIcon from "../../../assets/svgs/PasskeyIcon";
@@ -13,27 +12,22 @@ export default function LoginPage({ email, setEmail }) {
         setEmail: PropTypes.func.isRequired
     };
     
-    const nav = useNavigate();
     const {
         isLoading,
         error,
-        setIsLoading,
-        setError,
         clearError,
+        verifyEmailAndNavigate,
+        checkTokenAndNavigate
+    } = useAuth();
+
+    const {
         validateEmailWithError,
-        createKeyPressHandler,
-        handleError
+        createKeyPressHandler
     } = useAuthForm();
 
     useEffect(() => {
-        const checkToken = async () => {
-            const result = await AuthService.checkToken();
-            if (result.success) {
-                nav('/dashboard');
-            }
-        }
-        checkToken();
-    }, [nav])
+        checkTokenAndNavigate();
+    }, [checkTokenAndNavigate])
 
     // 處理點擊繼續的事件
     const handleContinue = async () => {
@@ -45,19 +39,8 @@ export default function LoginPage({ email, setEmail }) {
             return;
         }
 
-        setIsLoading(true);
-        try {
-            // 呼叫 AuthService 來驗證 email 並判斷用戶是否已註冊
-            const result = await AuthService.verifyEmail(email, setIsLoading, nav);
-            if (result && result.error) {
-                setError(result.error);
-            }
-        } catch (error) {
-            handleError('驗證過程中發生錯誤，請稍後再試');
-            console.error('Email verification error:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        // 驗證 email 並導航到對應頁面
+        await verifyEmailAndNavigate(email);
     };
 
     // 處理鍵盤按鍵事件，當按下 Enter 鍵時觸發繼續操作
