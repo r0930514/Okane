@@ -1,5 +1,5 @@
 // Dashboard feature barrel exports
-export { default as Dashboard } from './pages/Dashborad.jsx';
+export { default as Dashboard } from './pages/Dashboard.jsx';
 
 export { default as NavBar } from './components/NavBar.jsx';
 export { default as SideBar } from './components/SideBar.jsx';

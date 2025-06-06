@@ -1,7 +1,7 @@
 import { UserService } from "../../../shared";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { NavBar, SideBar, WalletSummary, WalletList } from "../";
+import { NavBar, SideBar, WalletSummary, WalletList } from "..";
 import "@fontsource/roboto-condensed/400.css";
 
 export default function Dashboard() {
