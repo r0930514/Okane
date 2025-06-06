@@ -1,8 +1,8 @@
 import { XCircle, CaretRight } from "@phosphor-icons/react";
 import PropTypes from 'prop-types';
 import { useEffect } from "react";
-import { useAuth } from "../../../hooks/useAuth";
-import { useAuthForm } from "../../../hooks/useAuthForm";
+import { useAuth } from "../hooks/useAuth";
+import { useAuthForm } from "../hooks/useAuthForm";
 import EmailIcon from "../../../assets/svgs/EmailIcon";
 import PasskeyIcon from "../../../assets/svgs/PasskeyIcon";
 

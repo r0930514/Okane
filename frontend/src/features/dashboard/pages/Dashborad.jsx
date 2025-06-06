@@ -1,11 +1,8 @@
-import UserService from "../../services/UserService";
+import { UserService } from "../../../shared";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NavBar from './components/NavBar.jsx';
-import SideBar from './components/SideBar.jsx';
-import WalletSummary from './components/WalletSummary.jsx';
+import { NavBar, SideBar, WalletSummary, WalletList } from "../";
 import "@fontsource/roboto-condensed/400.css";
-import WalletList from "./components/WalletList.jsx";
 
 export default function Dashboard() {
     const [username] = useState(UserService.getUser().username);

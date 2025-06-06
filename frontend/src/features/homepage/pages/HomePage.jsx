@@ -12,12 +12,12 @@ import {
     Lock,
     List,
 } from "@phosphor-icons/react";
-import FeatureCard from "./components/FeatureCard";
-import demoImage from "../../assets/homepage-introdution-1.png";
-import FAQSection from "./components/FAQSection";
-import TestimonialsSection from "./components/TestimonialsSection";
-import FooterSection from "./components/FooterSection";
-import StatisticsSection from "./components/StatisticsSection";
+import FeatureCard from "../components/FeatureCard";
+import demoImage from "../../../assets/homepage-introdution-1.png";
+import FAQSection from "../components/FAQSection";
+import TestimonialsSection from "../components/TestimonialsSection";
+import FooterSection from "../components/FooterSection";
+import StatisticsSection from "../components/StatisticsSection";
 
 function HomePage() {
     const [isScrolled, setIsScrolled] = useState(false);
