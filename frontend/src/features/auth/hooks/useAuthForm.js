@@ -49,14 +49,16 @@ export const useAuthForm = () => {
     };
 
     // 驗證電子郵件並設置錯誤訊息
-    const validateEmailWithError = (email) => {
+    const validateEmailWithError = (email, externalErrorHandler = null) => {
+        const errorHandler = externalErrorHandler || setError;
+        
         if (!email.trim()) {
-            setError('請輸入電子郵件地址');
+            errorHandler('請輸入電子郵件地址');
             return false;
         }
         
         if (!validateEmail(email)) {
-            setError('請輸入有效的電子郵件地址');
+            errorHandler('請輸入有效的電子郵件地址');
             return false;
         }
         
