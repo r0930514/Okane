@@ -16,6 +16,7 @@ export default function LoginPage({ email, setEmail }) {
         isLoading,
         error,
         clearError,
+        handleError,
         verifyEmailAndNavigate,
         checkTokenAndNavigate
     } = useAuth();
@@ -35,7 +36,7 @@ export default function LoginPage({ email, setEmail }) {
         clearError();
         
         // 驗證 email 格式
-        if (!validateEmailWithError(email)) {
+        if (!validateEmailWithError(email, handleError)) {
             return;
         }
 
