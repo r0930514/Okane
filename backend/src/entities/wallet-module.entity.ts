@@ -10,7 +10,7 @@ export class WalletModule {
   moduleName: string;
 
   @Column('jsonb', {
-    comment: '存放該模組設定檔格式，如銀行帳號密碼或交易所Token的格式等'
+    comment: '存放該模組設定檔格式，如銀行帳號密碼或交易所Token的格式等',
   })
   moduleConfigFormat: object;
 
@@ -20,7 +20,11 @@ export class WalletModule {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
   @OneToMany(() => WalletConfig, (config) => config.walletModule)

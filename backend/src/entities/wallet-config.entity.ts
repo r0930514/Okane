@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { WalletModule } from './wallet-module.entity';
 import { User } from './user.entity';
 
@@ -14,14 +20,19 @@ export class WalletConfig {
   userId: number;
 
   @Column('jsonb', {
-    comment: '以關聯之錢包模組Format所存放之設定檔，如銀行帳號密碼或交易所Token等'
+    comment:
+      '以關聯之錢包模組Format所存放之設定檔，如銀行帳號密碼或交易所Token等',
   })
   moduleConfigData: object;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
 
   @ManyToOne(() => WalletModule, (module) => module.walletConfigs)
