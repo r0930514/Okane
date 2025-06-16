@@ -34,8 +34,17 @@ export class Wallet {
   @Column({ nullable: true })
   walletColor: string;
 
+  @Column('decimal', { precision: 15, scale: 2, default: 0 })
+  initialBalance: number;
+
   @Column({ type: 'timestamp', nullable: true })
   lastSynced: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.wallets)
   user: User;
