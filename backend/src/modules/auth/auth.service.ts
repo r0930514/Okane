@@ -18,7 +18,7 @@ export class AuthService {
     return hash === user.password.hash ? user : null;
   }
   async generateAccessToken(user: any) {
-    const payload = { username: user.username, sub: user._id };
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
