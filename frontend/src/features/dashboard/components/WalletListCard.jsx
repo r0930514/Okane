@@ -1,15 +1,35 @@
 import PropTypes from "prop-types"
 
-export default function WalletListCard({ name, balance, color = "green" }) {
+export default function WalletListCard({ name, balance, color = "#10b981", onClick }) {
+    // 支持自訂顏色，可以是 hex、rgb、hsl 或任何有效的 CSS 顏色值
+    const cardStyle = {
+        backgroundColor: `${color}20`, // 添加透明度
+        borderColor: `${color}40`,
+    }
+
+    const hoverStyle = {
+        backgroundColor: `${color}30`,
+    }
+
     return (
-        <div className={`px-8 py-4 bg-${color}-500/20 rounded-2xl border border-b-gray-200  inline-flex flex-col justify-center items-start gap-4`}>
+        <div 
+            className="px-6 py-4 rounded-2xl border transition-all duration-200 cursor-pointer inline-flex flex-col justify-center items-start gap-3 min-w-[180px] hover:shadow-md"
+            style={cardStyle}
+            onClick={onClick}
+            onMouseEnter={(e) => {
+                e.target.style.backgroundColor = hoverStyle.backgroundColor
+            }}
+            onMouseLeave={(e) => {
+                e.target.style.backgroundColor = cardStyle.backgroundColor
+            }}
+        >
             <div className="inline-flex justify-start items-center gap-4">
                 <div className="inline-flex flex-col justify-start items-start gap-1">
-                    <div className="opacity-80 justify-start text-neutral text-base font-normal font-['Roboto'] leading-normal">
+                    <div className="text-gray-700 text-base font-medium">
                         {name}
                     </div>
-                    <div className="justify-start text-3xl font-semibold leading-10">
-            ${balance}
+                    <div className="text-gray-900 text-2xl font-bold">
+                        ${balance.toLocaleString()}
                     </div>
                 </div>
             </div>
@@ -18,7 +38,8 @@ export default function WalletListCard({ name, balance, color = "green" }) {
 }
 
 WalletListCard.propTypes = {
-    color: PropTypes.string,
-    name: PropTypes.string,
-    balance: PropTypes.number,
+    color: PropTypes.string, // 支持任何 CSS 顏色值：hex, rgb, hsl, 顏色名稱等
+    name: PropTypes.string.isRequired,
+    balance: PropTypes.number.isRequired,
+    onClick: PropTypes.func,
 }
