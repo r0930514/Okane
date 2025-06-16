@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsOptional, IsNumber, IsEnum, IsDateString, MaxLength, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TransactionType } from '../../../entities/transaction.entity';
+import { TransactionType, TransactionSource } from '../../../entities/transaction.entity';
 
 export class CreateTransactionDto {
   @ApiProperty({
@@ -55,4 +55,21 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsNumber()
   transactionId?: number;
+
+  @ApiPropertyOptional({
+    description: '交易來源',
+    enum: TransactionSource,
+    example: TransactionSource.Manual,
+  })
+  @IsOptional()
+  @IsEnum(TransactionSource)
+  source?: TransactionSource;
+
+  @ApiPropertyOptional({
+    description: '外部系統交易ID（用於同步對帳）',
+    example: 'EXT-12345',
+  })
+  @IsOptional()
+  @IsString()
+  externalTransactionId?: string;
 }

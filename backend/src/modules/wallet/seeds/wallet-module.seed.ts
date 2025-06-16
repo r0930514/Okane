@@ -1,5 +1,15 @@
 export const walletModuleSeeds = [
   {
+    moduleName: '手動記帳錢包',
+    moduleConfigFormat: {
+      walletName: 'string',
+      walletColor: 'string',
+      initialBalance: 'number',
+      description: 'string',
+    },
+    moduleCallURL: null,
+  },
+  {
     moduleName: '台新銀行',
     moduleConfigFormat: {
       accountNumber: 'string',

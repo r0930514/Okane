@@ -5,6 +5,7 @@ import { Wallet } from '../../../entities/wallet.entity';
 import { Transaction, TransactionType } from '../../../entities/transaction.entity';
 import { CreateWalletDto } from '../dto/create-wallet.dto';
 import { UpdateWalletDto } from '../dto/update-wallet.dto';
+import { WalletConfigService } from './wallet-config.service';
 
 @Injectable()
 export class WalletService {
@@ -13,9 +14,35 @@ export class WalletService {
     private walletRepository: Repository<Wallet>,
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
+    private walletConfigService: WalletConfigService,
   ) {}
 
   async create(userId: number, createWalletDto: CreateWalletDto): Promise<Wallet> {
+    // 如果提供了錢包配置ID，驗證配置並從中取得錢包資訊
+    if (createWalletDto.walletConfigId) {
+      const config = await this.walletConfigService.findOne(
+        createWalletDto.walletConfigId,
+        userId
+      );
+      
+      // 從配置中取得錢包資訊
+      const configData = config.moduleConfigData as any;
+      
+      const wallet = this.walletRepository.create({
+        walletName: configData.walletName || createWalletDto.walletName,
+        walletColor: configData.walletColor || createWalletDto.walletColor,
+        initialBalance: configData.initialBalance || createWalletDto.initialBalance || 0,
+        accountNumber: createWalletDto.accountNumber || `WALLET-${Date.now()}`,
+        walletType: createWalletDto.walletType,
+        operationMode: createWalletDto.operationMode,
+        walletConfigId: createWalletDto.walletConfigId,
+        user: { id: userId },
+      });
+
+      return await this.walletRepository.save(wallet);
+    }
+
+    // 原有的直接建立方式（向後相容）
     const wallet = this.walletRepository.create({
       ...createWalletDto,
       accountNumber: createWalletDto.accountNumber || `WALLET-${Date.now()}`,

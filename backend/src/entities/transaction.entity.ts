@@ -6,6 +6,12 @@ export enum TransactionType {
   Expense = 'expense',
 }
 
+export enum TransactionSource {
+  Manual = 'manual',
+  Sync = 'sync',
+  Import = 'import',
+}
+
 @Entity()
 export class Transaction {
   @PrimaryGeneratedColumn()
@@ -32,6 +38,19 @@ export class Transaction {
 
   @Column({ nullable: true })
   category: string;
+
+  @Column({
+    type: 'enum',
+    enum: TransactionSource,
+    default: TransactionSource.Manual,
+  })
+  source: TransactionSource;
+
+  @Column({ nullable: true })
+  externalTransactionId: string;
+
+  @Column({ default: false })
+  isReconciled: boolean;
 
   @Column('decimal', { precision: 15, scale: 2, nullable: true })
   balanceAfter: number;
