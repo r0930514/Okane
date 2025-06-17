@@ -43,7 +43,7 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                     <WalletHeader wallet={wallet} />
 
                     {/* 右半部 - 餘額和 Tab */}
-                    <div className="w-3/4 p-6 flex flex-col">
+                    <div className="w-3/4 p-6 pb-4 flex flex-col">
                         {/* 餘額顯示 */}
                         <div className="text-end mb-6">
                             <div className="text-3xl font-bold">

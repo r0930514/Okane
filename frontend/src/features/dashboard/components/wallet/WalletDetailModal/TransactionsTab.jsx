@@ -27,7 +27,7 @@ export default function TransactionsTab({
             {/* 交易記錄列表 */}
             <div className="card bg-base-100 p-4">
                 {walletStats && walletStats.allTransactions.length > 0 ? (
-                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                    <div className="space-y-3 overflow-y-auto">
                         <h4 className="font-semibold mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
                         {walletStats.allTransactions.map((transaction, index) => {
                             const transactionType = getTransactionType(transaction);
