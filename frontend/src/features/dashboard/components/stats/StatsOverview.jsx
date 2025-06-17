@@ -99,29 +99,35 @@ export default function StatsOverview({ wallets }) {
             
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <StatCard
-                    title="總資產"
+                    title="淨資產"
                     amount={stats.totalBalance}
                     icon={Wallet}
                     color="text-blue-600"
                 />
-                <StatCard
-                    title="總資產"
-                    amount={stats.totalAssets}
-                    icon={TrendUp}
-                    color="text-green-600"
-                />
-                <StatCard
-                    title="總負債"
-                    amount={stats.totalLiabilities}
-                    icon={TrendDown}
-                    color="text-red-600"
-                />
-                <StatCard
-                    title="交易筆數"
-                    amount={stats.transactionCount}
-                    icon={Receipt}
-                    color="text-purple-600"
-                />
+                <div className="hidden md:block">
+                    <StatCard
+                        title="總資產"
+                        amount={stats.totalAssets}
+                        icon={TrendUp}
+                        color="text-green-600"
+                    />
+                </div>
+                <div className="hidden md:block">
+                    <StatCard
+                        title="總負債"
+                        amount={stats.totalLiabilities}
+                        icon={TrendDown}
+                        color="text-red-600"
+                    />
+                </div>
+                <div className="hidden md:block">
+                    <StatCard
+                        title="交易筆數"
+                        amount={stats.transactionCount}
+                        icon={Receipt}
+                        color="text-purple-600"
+                    />
+                </div>
             </div>
         </div>
     );

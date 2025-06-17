@@ -7,28 +7,37 @@ import { useWallets } from '../../hooks/useWallets.js';
 export default function WalletList() {
     const { wallets, loading, error } = useWallets();
     
-    // 根據錢包類型分組
+    // 分類類型對應的中文名稱
+    const categoryNames = {
+        manual: "手動帳戶",
+        sync: "同步帳戶",
+        crypto: "加密貨幣",
+        bank: "銀行帳戶",
+        credit: "信用卡",
+        investment: "投資帳戶",
+        savings: "儲蓄帳戶",
+        cash: "現金帳戶"
+    };
+    
+    // 動態根據錢包類型分組，只包含有錢包的分類
     const groupedWallets = useMemo(() => {
-        const groups = {
-            manual: [],
-            sync: [],
-            crypto: []
-        };
+        const groups = {};
         
         wallets.forEach(wallet => {
-            // 根據 walletType 或其他屬性來分組
-            if (wallet.walletType === 'manual') {
-                groups.manual.push(wallet);
-            } else if (wallet.walletType === 'sync') {
-                groups.sync.push(wallet);
-            } else {
-                // 預設分到 manual 類別
-                groups.manual.push(wallet);
+            const walletType = wallet.walletType || 'manual'; // 預設為 manual
+            
+            if (!groups[walletType]) {
+                groups[walletType] = [];
             }
+            
+            groups[walletType].push(wallet);
         });
         
         return groups;
     }, [wallets]);
+    
+    // 取得有錢包的分類列表
+    const availableCategories = Object.keys(groupedWallets);
 
     const handleWalletClick = (wallet) => {
         console.log(`點擊錢包: ${wallet.walletName}, 餘額: $${wallet.balance}`);
@@ -98,9 +107,25 @@ export default function WalletList() {
 
     return (
         <div className="flex flex-col w-full h-full overflow-y-auto px-6 py-3 gap-6">
-            <WalletSection title="手動帳戶" wallets={groupedWallets.manual} category="manual" />
-            <WalletSection title="同步帳戶" wallets={groupedWallets.sync} category="sync" />
-            <WalletSection title="加密貨幣" wallets={groupedWallets.crypto} category="crypto" />
+            {availableCategories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                    <div className="text-lg font-medium text-base-content/60 mb-2">
+                        還沒有任何錢包
+                    </div>
+                    <div className="text-sm text-base-content/40">
+                        點擊新增按鈕來建立您的第一個錢包
+                    </div>
+                </div>
+            ) : (
+                availableCategories.map(category => (
+                    <WalletSection 
+                        key={category}
+                        title={categoryNames[category] || category} 
+                        wallets={groupedWallets[category]} 
+                        category={category} 
+                    />
+                ))
+            )}
         </div>
     )
 }
