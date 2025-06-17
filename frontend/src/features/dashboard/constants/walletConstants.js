@@ -1,24 +1,3 @@
-import { 
-    WalletIcon, 
-    BankIcon,
-    CreditCardIcon,
-    CoinsIcon,
-    TrendUpIcon,
-    CoinIcon,
-    CurrencyDollarIcon
-} from "@phosphor-icons/react";
-
-export const WALLET_ICON_MAP = {
-    manual: WalletIcon,
-    bank: BankIcon,
-    credit: CreditCardIcon,
-    crypto: CoinsIcon,
-    investment: TrendUpIcon,
-    savings: CoinIcon,
-    cash: CurrencyDollarIcon,
-    sync: WalletIcon
-};
-
 export const WALLET_TYPE_NAMES = {
     manual: '手動帳戶',
     sync: '同步帳戶',

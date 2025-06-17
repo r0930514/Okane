@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import { TrendUpIcon, TrendDownIcon, CalendarIcon } from "@phosphor-icons/react";
 import { formatCurrency, formatDate, getTransactionType, getTransactionDate, getTransactionDescription } from '../../../../../shared/utils/formatUtils';
 
 export default function TransactionsTab({ 
@@ -25,43 +24,11 @@ export default function TransactionsTab({
 
     return (
         <div className="space-y-4">
-            {/* 統計摘要
-            <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="stat bg-base-200 rounded-lg p-4">
-                    <div className="stat-figure text-success">
-                        <TrendUpIcon size={24} />
-                    </div>
-                    <div className="stat-title text-xs">總收入</div>
-                    <div className="stat-value text-success text-lg">
-                        {formatCurrency(walletStats?.income || 0)}
-                    </div>
-                </div>
-
-                <div className="stat bg-base-200 rounded-lg p-4">
-                    <div className="stat-figure text-error">
-                        <TrendDownIcon size={24} />
-                    </div>
-                    <div className="stat-title text-xs">總支出</div>
-                    <div className="stat-value text-error text-lg">
-                        {formatCurrency(walletStats?.expense || 0)}
-                    </div>
-                </div>
-
-                <div className="stat bg-base-200 rounded-lg p-4">
-                    <div className="stat-figure text-info">
-                        <CalendarIcon size={24} />
-                    </div>
-                    <div className="stat-title text-xs">交易筆數</div>
-                    <div className="stat-value text-info text-lg">
-                        {walletStats?.transactionCount || 0}
-                    </div>
-                </div>
-            </div> */}
-
             {/* 交易記錄列表 */}
             <div className="card bg-base-100 p-4">
                 {walletStats && walletStats.allTransactions.length > 0 ? (
                     <div className="space-y-3 max-h-64 overflow-y-auto">
+                        <h4 className="font-semibold mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
                         {walletStats.allTransactions.map((transaction, index) => {
                             const transactionType = getTransactionType(transaction);
                             const transactionDate = getTransactionDate(transaction);

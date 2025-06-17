@@ -1,4 +1,3 @@
-import { XIcon } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
 import { useState, useCallback } from "react";
 import { useTransactions } from '../../../hooks/useTransactions';
