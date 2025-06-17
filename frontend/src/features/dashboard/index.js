@@ -11,10 +11,8 @@ export { default as SideBarItem } from './components/layout/SideBarItem.jsx';
 export { default as DashboardLayout } from './components/layout/DashboardLayout.jsx';
 
 // Wallet Components
-export { default as WalletIcon } from './components/wallet/WalletIcon.jsx';
 export { default as WalletList } from './components/wallet/WalletList.jsx';
 export { default as WalletListCard } from './components/wallet/WalletListCard.jsx';
-export { default as WalletSummary } from './components/wallet/WalletSummary.jsx';
 
 // Stats Components
 export { default as StatsOverview } from './components/stats/StatsOverview.jsx';
