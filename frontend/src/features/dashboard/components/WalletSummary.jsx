@@ -44,7 +44,7 @@ export default function WalletSummary() {
     };
 
     const StatCard = ({ label, amount, color }) => (
-        <div className='flex h-full w-fit border border-gray-200 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200'>
+        <div className='flex h-full w-fit border border-gray-200 rounded-2xl bg-white shadow-xs hover:shadow-md transition-shadow duration-200'>
             <div className='flex-col py-4 px-6 w-fit'>
                 <div className="text-gray-600 text-sm font-medium mb-1">{label}</div>
                 <div className={`text-3xl font-bold ${color}`}>

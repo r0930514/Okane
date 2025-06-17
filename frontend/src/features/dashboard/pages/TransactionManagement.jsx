@@ -108,7 +108,7 @@ export default function TransactionManagement() {
     };
 
     const TransactionCard = ({ transaction }) => (
-        <div className="card bg-base-100 shadow-sm border">
+        <div className="card bg-base-100 shadow-xs border">
             <div className="card-body p-4">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">

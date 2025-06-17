@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }) {
     const navigate = useNavigate();
 
     return (
-        <div className="drawer mx-auto max-w-[100rem] lg:drawer-open">
+        <div className="drawer mx-auto max-w-400 lg:drawer-open">
             {/* Content */}
             <input id="drawer" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content flex flex-col items-start justify-start h-full">

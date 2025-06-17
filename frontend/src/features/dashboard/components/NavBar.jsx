@@ -26,7 +26,7 @@ export default function NavBar(nav, username) {
     }
 
     return (
-        <nav className="navbar w-full shadow-sm bg-base-100">
+        <nav className="navbar w-full shadow-xs bg-base-100">
             <div className="flex-none">
                 <label htmlFor="drawer" className="btn btn-square btn-ghost drawer-button lg:hidden">
                     <List size={24} />
@@ -45,7 +45,7 @@ export default function NavBar(nav, username) {
                         <UserCircle size={24} />
                         <span className="hidden lg:flex">{username}</span>
                     </div>
-                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <ul tabIndex={0} className="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
                         <li>
                             <button onClick={handleLogout} className="flex items-center gap-2 text-error">
                                 <SignOut size={20} />

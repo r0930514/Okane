@@ -179,8 +179,8 @@ export default function SettingsPage() {
             <DashboardLayout>
                 <div className="p-6">
                     <div className="animate-pulse">
-                        <div className="h-8 bg-gray-200 rounded mb-4"></div>
-                        <div className="h-32 bg-gray-200 rounded"></div>
+                        <div className="h-8 bg-gray-200 rounded-sm mb-4"></div>
+                        <div className="h-32 bg-gray-200 rounded-sm"></div>
                     </div>
                 </div>
             </DashboardLayout>
@@ -226,7 +226,7 @@ export default function SettingsPage() {
 
                         <div className="grid gap-4">
                             {modules.map(module => (
-                                <div key={module.id} className="card bg-base-100 shadow-sm border">
+                                <div key={module.id} className="card bg-base-100 shadow-xs border">
                                     <div className="card-body">
                                         <div className="flex justify-between items-start">
                                             <div>
@@ -236,7 +236,7 @@ export default function SettingsPage() {
                                                     <summary className="cursor-pointer text-sm text-gray-500">
                                                         配置格式
                                                     </summary>
-                                                    <pre className="text-xs bg-gray-100 p-2 rounded mt-1 overflow-auto">
+                                                    <pre className="text-xs bg-gray-100 p-2 rounded-sm mt-1 overflow-auto">
                                                         {JSON.stringify(module.moduleConfigFormat, null, 2)}
                                                     </pre>
                                                 </details>
@@ -281,7 +281,7 @@ export default function SettingsPage() {
                             {configs.map(config => {
                                 const module = modules.find(m => m.id === config.moduleId);
                                 return (
-                                    <div key={config.id} className="card bg-base-100 shadow-sm border">
+                                    <div key={config.id} className="card bg-base-100 shadow-xs border">
                                         <div className="card-body">
                                             <div className="flex justify-between items-start">
                                                 <div>
@@ -295,7 +295,7 @@ export default function SettingsPage() {
                                                         <summary className="cursor-pointer text-sm text-gray-500">
                                                             配置數據
                                                         </summary>
-                                                        <pre className="text-xs bg-gray-100 p-2 rounded mt-1 overflow-auto">
+                                                        <pre className="text-xs bg-gray-100 p-2 rounded-sm mt-1 overflow-auto">
                                                             {JSON.stringify(config.moduleConfigData, null, 2)}
                                                         </pre>
                                                     </details>
