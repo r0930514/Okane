@@ -2,7 +2,7 @@ import { CaretRight, Plus } from "@phosphor-icons/react";
 import { useMemo } from "react";
 import PropTypes from "prop-types";
 import WalletListCard from "./WalletListCard";
-import { useWallets } from '../hooks/useWallets.js';
+import { useWallets } from '../../hooks/useWallets.js';
 
 export default function WalletList() {
     const { wallets, loading, error } = useWallets();

@@ -4,16 +4,24 @@ export { default as WalletManagement } from './pages/WalletManagement.jsx';
 export { default as TransactionManagement } from './pages/TransactionManagement.jsx';
 export { default as SettingsPage } from './pages/Settings.jsx';
 
-export { default as NavBar } from './components/NavBar.jsx';
-export { default as SideBar } from './components/SideBar.jsx';
-export { default as SideBarItem } from './components/SideBarItem.jsx';
-export { default as WalletIcon } from './components/WalletIcon.jsx';
-export { default as WalletList } from './components/WalletList.jsx';
-export { default as WalletListCard } from './components/WalletListCard.jsx';
-export { default as WalletSummary } from './components/WalletSummary.jsx';
-export { default as StatsOverview } from './components/StatsOverview.jsx';
-export { default as DashboardLayout } from './components/DashboardLayout.jsx';
+// Layout Components
+export { default as NavBar } from './components/layout/NavBar.jsx';
+export { default as SideBar } from './components/layout/SideBar.jsx';
+export { default as SideBarItem } from './components/layout/SideBarItem.jsx';
+export { default as DashboardLayout } from './components/layout/DashboardLayout.jsx';
+
+// Wallet Components
+export { default as WalletIcon } from './components/wallet/WalletIcon.jsx';
+export { default as WalletList } from './components/wallet/WalletList.jsx';
+export { default as WalletListCard } from './components/wallet/WalletListCard.jsx';
+export { default as WalletSummary } from './components/wallet/WalletSummary.jsx';
+
+// Stats Components
+export { default as StatsOverview } from './components/stats/StatsOverview.jsx';
 
 // Hooks
 export { useWallets } from './hooks/useWallets.js';
 export { useTransactions } from './hooks/useTransactions.js';
+
+// Constants
+export * from './constants/navigation.jsx';

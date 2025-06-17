@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { TrendUp, TrendDown } from '@phosphor-icons/react';
 import WalletIcon from './WalletIcon.jsx';
-import { useWallets } from '../hooks/useWallets.js';
+import { useWallets } from '../../hooks/useWallets.js';
 
 export default function WalletSummary() {
     const { wallets } = useWallets();

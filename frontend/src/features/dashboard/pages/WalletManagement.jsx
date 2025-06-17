@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Plus, X } from '@phosphor-icons/react';
 import { useWallets } from '../hooks/useWallets.js';
-import DashboardLayout from '../components/DashboardLayout.jsx';
+import DashboardLayout from '../components/layout/DashboardLayout.jsx';
 
 export default function WalletManagement() {
     const { wallets, loading, error, createWallet, updateWallet, deleteWallet } = useWallets();

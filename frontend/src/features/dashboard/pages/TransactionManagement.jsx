@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Plus, X, Calendar, ArrowUp, ArrowDown } from '@phosphor-icons/react';
 import { useTransactions } from '../hooks/useTransactions.js';
 import { useWallets } from '../hooks/useWallets.js';
-import DashboardLayout from '../components/DashboardLayout.jsx';
+import DashboardLayout from '../components/layout/DashboardLayout.jsx';
 
 export default function TransactionManagement() {
     const [selectedWalletId, setSelectedWalletId] = useState(null);

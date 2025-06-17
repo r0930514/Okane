@@ -1,7 +1,8 @@
 import { ListIcon, UserCircleIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react"
 import { useState } from "react"
+import PropTypes from 'prop-types'
 
-export default function NavBar(nav, username) {
+export default function NavBar({ navigate, username }) {
     const [isRefreshing, setIsRefreshing] = useState(false)
 
     const handleRefresh = async () => {
@@ -21,7 +22,7 @@ export default function NavBar(nav, username) {
     const handleLogout = () => {
         if (confirm("確定要登出嗎？")) {
             // AuthService.logout(); // 待後續整合 AuthService
-            nav('/');
+            navigate('/');
         }
     }
 
@@ -79,4 +80,9 @@ export default function NavBar(nav, username) {
             </div>
         </nav>
     )
+}
+
+NavBar.propTypes = {
+    navigate: PropTypes.func.isRequired,
+    username: PropTypes.string.isRequired,
 }
