@@ -1,4 +1,4 @@
-import { List, Plus, ArrowsClockwise, UserCircle, SignOut } from "@phosphor-icons/react"
+import { ListIcon, UserCircleIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react"
 import { useState } from "react"
 
 export default function NavBar(nav, username) {
@@ -29,26 +29,26 @@ export default function NavBar(nav, username) {
         <nav className="navbar w-full shadow-xs bg-base-100">
             <div className="flex-none">
                 <label htmlFor="drawer" className="btn btn-square btn-ghost drawer-button lg:hidden">
-                    <List size={24} />
+                    <ListIcon size={24} />
                 </label>
             </div>
             <div className="flex-1">
                 <a className="btn btn-ghost text-xl gap-0 font-bold hidden lg:flex">
                     {/* <span className="text-blue-600">O</span>kane */}
-                    總覽
+                    
                 </a>
             </div>
             <div className="flex-none pr-2 gap-2">
                 {/* 用戶下拉菜單 */}
                 <div className="dropdown dropdown-end">
                     <div tabIndex={0} role="button" className="btn btn-ghost gap-2">
-                        <UserCircle size={24} />
+                        <UserCircleIcon size={24} />
                         <span className="hidden lg:flex">{username}</span>
                     </div>
                     <ul tabIndex={0} className="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
                         <li>
                             <button onClick={handleLogout} className="flex items-center gap-2 text-error">
-                                <SignOut size={20} />
+                                <SignOutIcon size={20} />
                                 登出
                             </button>
                         </li>
@@ -62,7 +62,7 @@ export default function NavBar(nav, username) {
                     disabled={isRefreshing}
                     title="刷新數據"
                 >
-                    <ArrowsClockwise 
+                    <ArrowsClockwiseIcon
                         size={24} 
                         className={isRefreshing ? 'animate-spin' : ''} 
                     />
@@ -74,7 +74,7 @@ export default function NavBar(nav, username) {
                     onClick={handleAddNew}
                     title="新增資產"
                 >
-                    <Plus size={24} />
+                    <PlusIcon size={24} />
                 </button>
             </div>
         </nav>

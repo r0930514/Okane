@@ -1,56 +1,65 @@
-import { Gear, ListMagnifyingGlass, Monitor, Question, WaveSawtooth, Wallet, Receipt } from "@phosphor-icons/react"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { HouseIcon, ReceiptIcon, WaveSawtoothIcon, ListMagnifyingGlassIcon, GearIcon, QuestionIcon, WalletIcon } from "@phosphor-icons/react"
+import { useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 import SideBarItem from "./SideBarItem"
 
 export default function SideBar() {
     const [activeItem, setActiveItem] = useState("總覽")
     const navigate = useNavigate()
+    const location = useLocation()
 
     const menuItems = [
         {
-            icon: <Monitor size={24} />,
+            icon: <HouseIcon size={24} />,
             text: "總覽",
             id: "overview",
             path: "/dashboard"
         },
         {
-            icon: <Wallet size={24} />,
+            icon: <WalletIcon size={24} />,
             text: "錢包管理",
             id: "wallets",
             path: "/wallets"
         },
         {
-            icon: <Receipt size={24} />,
+            icon: <ReceiptIcon size={24} />,
             text: "交易管理",
             id: "transactions",
             path: "/transactions"
         },
         {
-            icon: <WaveSawtooth size={24} />,
+            icon: <WaveSawtoothIcon size={24} />,
             text: "趨勢圖",
             id: "trends",
             path: "/trends"
         },
         {
-            icon: <ListMagnifyingGlass size={24} />,
+            icon: <ListMagnifyingGlassIcon size={24} />,
             text: "所有紀錄",
             id: "records",
             path: "/records"
         },
         {
-            icon: <Gear size={24} />,
+            icon: <GearIcon size={24} />,
             text: "設定",
             id: "settings",
             path: "/settings"
         },
         {
-            icon: <Question size={24} />,
+            icon: <QuestionIcon size={24} />,
             text: "幫助",
             id: "help",
             path: "/help"
         }
     ]
+
+    useEffect(() => {
+        const currentPath = location.pathname
+        const matchedItem = menuItems.find(item => item.path === currentPath)
+        if (matchedItem) {
+            setActiveItem(matchedItem.text)
+        }
+    }, [location.pathname])
 
     const handleItemClick = (itemText, itemId, path) => {
         setActiveItem(itemText)

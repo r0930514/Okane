@@ -4,8 +4,8 @@ export default function SideBarItem({ icon, text, isFocused, onClick }) {
     return (
         <li>
             <button 
-                className={`flex items-center gap-4 p-3 rounded-lg w-full text-left transition-colors duration-200 hover:bg-base-200 ${
-                    isFocused ? 'bg-primary text-primary-content' : 'text-base-content'
+                className={`btn btn-ghost w-full justify-start gap-4 ${
+                    isFocused ? 'btn-active bg-primary! text-primary-content!' : ''
                 }`}
                 onClick={onClick}
             >
