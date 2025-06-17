@@ -29,7 +29,7 @@ export default function WalletListCard({ name, balance, color = "#10b981", onCli
                         {name}
                     </div>
                     <div className="text-gray-900 text-2xl font-bold">
-                        ${balance.toLocaleString()}
+                        ${(balance || 0).toLocaleString()}
                     </div>
                 </div>
             </div>
@@ -40,6 +40,6 @@ export default function WalletListCard({ name, balance, color = "#10b981", onCli
 WalletListCard.propTypes = {
     color: PropTypes.string, // 支持任何 CSS 顏色值：hex, rgb, hsl, 顏色名稱等
     name: PropTypes.string.isRequired,
-    balance: PropTypes.number.isRequired,
+    balance: PropTypes.number,
     onClick: PropTypes.func,
 }

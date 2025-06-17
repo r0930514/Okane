@@ -2,18 +2,33 @@ import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { TrendUp, TrendDown } from '@phosphor-icons/react';
 import WalletIcon from './WalletIcon.jsx';
+import { useWallets } from '../hooks/useWallets.js';
 
 export default function WalletSummary() {
-    // 模擬財務數據
-    const [financialData] = useState({
-        assets: 354600,
-        liabilities: 85000,
-        monthlyChange: 12500,
-        changePercentage: 4.2,
+    const { wallets } = useWallets();
+    const [financialData, setFinancialData] = useState({
+        assets: 0,
+        liabilities: 0,
+        monthlyChange: 0,
+        changePercentage: 0,
         isPositiveChange: true
     });
 
     const [netWorth, setNetWorth] = useState(0);
+
+    useEffect(() => {
+        if (wallets.length > 0) {
+            const totalBalance = wallets.reduce((sum, wallet) => {
+                return sum + (wallet.balance || wallet.currentBalance || 0);
+            }, 0);
+            
+            setFinancialData(prev => ({
+                ...prev,
+                assets: totalBalance > 0 ? totalBalance : 0,
+                liabilities: totalBalance < 0 ? Math.abs(totalBalance) : 0,
+            }));
+        }
+    }, [wallets]);
 
     useEffect(() => {
         setNetWorth(financialData.assets - financialData.liabilities);
@@ -28,7 +43,7 @@ export default function WalletSummary() {
         }).format(amount).replace('NT$', '$');
     };
 
-    const StatCard = ({ label, amount, color, trend = null }) => (
+    const StatCard = ({ label, amount, color }) => (
         <div className='flex h-full w-fit border border-gray-200 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow duration-200'>
             <div className='flex-col py-4 px-6 w-fit'>
                 <div className="text-gray-600 text-sm font-medium mb-1">{label}</div>

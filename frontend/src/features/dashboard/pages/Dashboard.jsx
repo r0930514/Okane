@@ -1,11 +1,13 @@
 import { UserService } from "../../../shared";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { NavBar, SideBar, WalletSummary, WalletList } from "..";
+import { NavBar, SideBar, WalletList, StatsOverview } from "..";
+import { useWallets } from "../hooks/useWallets";
 import "@fontsource/roboto-condensed/400.css";
 
 export default function Dashboard() {
     const [username] = useState(UserService.getUser().username);
+    const { wallets } = useWallets();
     const nav = useNavigate();
     return (
         <div>
@@ -15,8 +17,12 @@ export default function Dashboard() {
                 <div className="drawer-content flex flex-col items-start justify-start h-full">
                     {/* Navbar */}
                     { NavBar(nav, username) }
-                    { WalletSummary()}
-                    { WalletList() }
+                    
+                    {/* Main Content */}
+                    <div className="w-full px-6 py-4">
+                        <StatsOverview wallets={wallets} />
+                        { WalletList() }
+                    </div>
                 </div>
 
                 {/* Sidebar */}
