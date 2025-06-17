@@ -1,11 +1,16 @@
 import { CaretRight, Plus } from "@phosphor-icons/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import WalletListCard from "./WalletListCard";
+import WalletDetailModal from "./WalletDetailModal/index";
 import { useWallets } from '../../hooks/useWallets.js';
 
 export default function WalletList() {
     const { wallets, loading, error } = useWallets();
+    
+    // Modal 狀態管理
+    const [selectedWallet, setSelectedWallet] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     
     // 分類類型對應的中文名稱
     const categoryNames = {
@@ -40,8 +45,13 @@ export default function WalletList() {
     const availableCategories = Object.keys(groupedWallets);
 
     const handleWalletClick = (wallet) => {
-        console.log(`點擊錢包: ${wallet.walletName}, 餘額: $${wallet.balance}`);
-        // 這裡之後可以導航到錢包詳細頁面
+        setSelectedWallet(wallet);
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedWallet(null);
     };
 
     const handleAddWallet = (category) => {
@@ -106,26 +116,35 @@ export default function WalletList() {
     };
 
     return (
-        <div className="flex flex-col w-full h-full overflow-y-auto px-6 py-3 gap-6">
-            {availableCategories.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                    <div className="text-lg font-medium text-base-content/60 mb-2">
-                        還沒有任何錢包
+        <>
+            <div className="flex flex-col w-full h-full overflow-y-auto px-6 py-3 gap-6">
+                {availableCategories.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                        <div className="text-lg font-medium text-base-content/60 mb-2">
+                            還沒有任何錢包
+                        </div>
+                        <div className="text-sm text-base-content/40">
+                            點擊新增按鈕來建立您的第一個錢包
+                        </div>
                     </div>
-                    <div className="text-sm text-base-content/40">
-                        點擊新增按鈕來建立您的第一個錢包
-                    </div>
-                </div>
-            ) : (
-                availableCategories.map(category => (
-                    <WalletSection 
-                        key={category}
-                        title={categoryNames[category] || category} 
-                        wallets={groupedWallets[category]} 
-                        category={category} 
-                    />
-                ))
-            )}
-        </div>
+                ) : (
+                    availableCategories.map(category => (
+                        <WalletSection 
+                            key={category}
+                            title={categoryNames[category] || category} 
+                            wallets={groupedWallets[category]} 
+                            category={category} 
+                        />
+                    ))
+                )}
+            </div>
+
+            {/* 錢包詳細資訊 Modal */}
+            <WalletDetailModal
+                wallet={selectedWallet}
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+            />
+        </>
     )
 }
