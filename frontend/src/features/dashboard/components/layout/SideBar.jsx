@@ -1,30 +1,29 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import SideBarItem from "./SideBarItem"
 import { NAVIGATION_GROUPS, NAVIGATION_ITEMS, DEFAULT_ACTIVE_ITEM } from "../../constants/navigation.jsx"
 import { UserService } from "../../../../shared"
 
 export default function SideBar() {
-    const [activeItem, setActiveItem] = useState(DEFAULT_ACTIVE_ITEM)
     const [user] = useState(UserService.getUser())
     const navigate = useNavigate()
     const location = useLocation()
 
-    useEffect(() => {
+    // 根據當前路徑判斷哪個項目應該被高亮
+    const getActiveItem = () => {
         const currentPath = location.pathname
         const matchedItem = NAVIGATION_ITEMS.find(item => item.path === currentPath)
-        if (matchedItem) {
-            setActiveItem(matchedItem.text)
-        }
-    }, [location.pathname])
+        return matchedItem ? matchedItem.text : DEFAULT_ACTIVE_ITEM
+    }
 
     const handleItemClick = (itemText, itemId, path) => {
-        setActiveItem(itemText)
         if (path) {
             navigate(path)
         }
         console.log(`切換到頁面: ${itemText} (${itemId})`)
     }
+
+    const activeItem = getActiveItem()
 
     return (
         <aside className="flex flex-col h-full w-60 bg-base-100 border border-base-200" role="navigation" aria-label="主要導航">
@@ -42,7 +41,7 @@ export default function SideBar() {
                     <div key={group.title}>
                         <ul className="menu bg-base-100 rounded-box w-full">
                             <li>
-                                <h2 className="menu-title">
+                                <h2 className="menu-title text-base font-semibold">
                                     {group.title}
                                 </h2>
                             </li>

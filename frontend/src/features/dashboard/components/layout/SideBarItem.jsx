@@ -4,7 +4,7 @@ export default function SideBarItem({ icon, text, isFocused, onClick }) {
     return (
         <li>
             <a 
-                className={isFocused ? 'active' : ''}
+                className={`text-base ${isFocused ? 'menu-focus' : ''}`}
                 onClick={(e) => {
                     e.preventDefault()
                     onClick()
