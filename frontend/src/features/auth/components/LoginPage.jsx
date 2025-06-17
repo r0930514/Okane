@@ -1,4 +1,4 @@
-import { XCircle, CaretRight } from "@phosphor-icons/react";
+import { XCircleIcon, CaretRightIcon } from "@phosphor-icons/react";
 import PropTypes from 'prop-types';
 import { useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
@@ -58,7 +58,7 @@ export default function LoginPage({ email, setEmail }) {
             {/* 錯誤訊息 */}
             {error && (
                 <div className="alert alert-error shadow-lg animate-in slide-in-from-top duration-300">
-                    <XCircle className="shrink-0 h-6 w-6" />
+                    <XCircleIcon className="shrink-0 h-6 w-6" />
                     <span className="text-sm">{error}</span>
                 </div>
             )}
@@ -67,28 +67,22 @@ export default function LoginPage({ email, setEmail }) {
             <div className="space-y-4">
                 {/* Email 輸入框 */}
                 <div className="form-control">
-                    <label className="label">
-                        <span className="label-text text-gray-700 font-medium">電子郵件</span>
-                    </label>
-                    <div className={`input input-bordered flex items-center gap-3 
-                        ${ error ? 'input-error' : ''}`
-                    }>
-                        <EmailIcon />
-                        <input 
-                            type="email" 
-                            className="grow text-gray-800 placeholder-gray-400" 
-                            placeholder="請輸入您的電子郵件"
-                            value={email} 
-                            onChange={(e) => setEmail(e.target.value)}
-                            onKeyDown={handleKeyPress}
-                            disabled={isLoading}
-                        />
-                    </div>
-                    <label className="label">
-                        <span className="label-text-alt text-gray-500">
-                            我們將檢查此電子郵件是否已註冊
-                        </span>
-                    </label>
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">電子郵件</legend>
+                        <label className="input validator w-full ">
+                            <EmailIcon className="h-5 w-5 text-gray-500" />
+                            <input 
+                                type="email" 
+                                required
+                                className="grow" 
+                                placeholder="請輸入您的電子郵件" 
+                                value={email} 
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyDown={handleKeyPress}
+                                disabled={isLoading} />
+                        </label>
+                        <p className="label">我們將檢查此電子郵件是否已註冊</p>
+                    </fieldset>
                 </div>
             </div>
 
@@ -107,7 +101,7 @@ export default function LoginPage({ email, setEmail }) {
                     ) : (
                         <>
                             繼續
-                            <CaretRight weight="bold" className="h-4 w-4 ml-2" />
+                            <CaretRightIcon weight="bold" className="h-4 w-4 ml-2" />
                         </>
                     )}
                 </button>
