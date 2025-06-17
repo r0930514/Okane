@@ -3,15 +3,24 @@ import PropTypes from "prop-types"
 export default function SideBarItem({ icon, text, isFocused, onClick }) {
     return (
         <li>
-            <button 
-                className={`btn btn-ghost w-full justify-start gap-4 ${
-                    isFocused ? 'btn-active bg-primary! text-primary-content!' : ''
-                }`}
-                onClick={onClick}
+            <a 
+                className={isFocused ? 'active' : ''}
+                onClick={(e) => {
+                    e.preventDefault()
+                    onClick()
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        onClick()
+                    }
+                }}
             >
                 {icon}
                 <span className="text-base font-medium">{text}</span>
-            </button>
+            </a>
         </li>
     )
 }
