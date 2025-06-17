@@ -5,19 +5,19 @@ export const NAVIGATION_GROUPS = [
         title: "主要功能",
         items: [
             {
-                icon: <HouseIcon size={24} />,
+                icon: <HouseIcon size={16} />,
                 text: "總覽",
                 id: "overview",
                 path: "/dashboard"
             },
             {
-                icon: <WalletIcon size={24} />,
+                icon: <WalletIcon size={16} />,
                 text: "錢包管理",
                 id: "wallets",
                 path: "/wallets"
             },
             {
-                icon: <ReceiptIcon size={24} />,
+                icon: <ReceiptIcon size={16} />,
                 text: "交易管理",
                 id: "transactions",
                 path: "/transactions"
@@ -25,16 +25,16 @@ export const NAVIGATION_GROUPS = [
         ]
     },
     {
-        title: "分析工具 ❌",
+        title: "分析工具❌",
         items: [
             {
-                icon: <WaveSawtoothIcon size={24} />,
+                icon: <WaveSawtoothIcon size={16} />,
                 text: "趨勢圖",
                 id: "trends",
                 path: "/trends"
             },
             {
-                icon: <ListMagnifyingGlassIcon size={24} />,
+                icon: <ListMagnifyingGlassIcon size={16} />,
                 text: "所有紀錄",
                 id: "records",
                 path: "/records"
@@ -45,13 +45,13 @@ export const NAVIGATION_GROUPS = [
         title: "系統功能",
         items: [
             {
-                icon: <GearIcon size={24} />,
+                icon: <GearIcon size={16} />,
                 text: "設定",
                 id: "settings",
                 path: "/settings"
             },
             {
-                icon: <QuestionIcon size={24} />,
+                icon: <QuestionIcon size={16} />,
                 text: "幫助",
                 id: "help",
                 path: "/help"

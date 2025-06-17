@@ -19,7 +19,7 @@ export default function SideBarItem({ icon, text, isFocused, onClick }) {
                 }}
             >
                 {icon}
-                <span className="text-base font-medium">{text}</span>
+                {text}
             </a>
         </li>
     )
