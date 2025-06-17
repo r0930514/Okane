@@ -89,10 +89,10 @@ function HomePage() {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-base-200 to-indigo-100">
+        <div className="min-h-screen bg-linear-to-br from-base-200 to-indigo-100">
             {/* Navigation Bar */}
             <nav className={`navbar sticky top-0 z-50 px-4 transition-all duration-300 
-                ${isScrolled? 'bg-white shadow-lg backdrop-blur-sm' : 'base-200 backdrop-blur-sm ' }`}>
+                ${isScrolled? 'bg-white shadow-lg backdrop-blur-xs' : 'base-200 backdrop-blur-xs ' }`}>
                 <div className="container mx-auto flex items-center justify-between">
 
                     {/* Logo */}
@@ -134,7 +134,7 @@ function HomePage() {
                                 <List className="w-5 h-5" size={24}/>
                             </div>
                             {/* Dropdown Menu */}
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow-sm bg-base-100 rounded-box w-52">
                                 <li>
                                     <button>使用手冊</button></li>
                                 <li><button>關於我們</button></li>

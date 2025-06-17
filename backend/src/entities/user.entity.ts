@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Wallet } from './wallet.entity';
+import { WalletConfig } from './wallet-config.entity';
 
 @Entity()
 export class User {
@@ -20,4 +21,7 @@ export class User {
 
   @OneToMany(() => Wallet, (wallet) => wallet.user)
   wallets: Wallet[];
+
+  @OneToMany(() => WalletConfig, (config) => config.user)
+  walletConfigs: WalletConfig[];
 }

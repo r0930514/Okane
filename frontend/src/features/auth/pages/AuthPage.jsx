@@ -8,7 +8,7 @@ export default function AuthPage() {
     const [email, setEmail] = useState('');
     
     return (
-        <div className="min-h-screen flex justify-center items-start bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-4 sm:py-8">
+        <div className="min-h-screen flex justify-center items-start bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50 px-4 py-4 sm:py-8">
             {/* 背景裝飾元素 */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-400 rounded-full opacity-10"></div>

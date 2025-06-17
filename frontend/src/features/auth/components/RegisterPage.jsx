@@ -98,123 +98,114 @@ export default function RegisterPage({ email }) {
             <div className="space-y-4">
                 {/* Email 顯示 (唯讀) */}
                 <div className="form-control">
-                    <label className="label">
-                        <span className="label-text text-gray-700 font-medium">電子郵件</span>
-                    </label>
-                    <div className="input input-bordered flex items-center gap-3 bg-gray-50">
-                        <EmailIcon className="text-gray-400" />
-                        <input 
-                            type="email" 
-                            className="grow text-gray-600 bg-transparent" 
-                            value={email} 
-                            disabled 
-                        />
-                        <div className="badge badge-info badge-sm">新用戶</div>
-                    </div>
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">電子郵件</legend>
+                        <label className="input w-full">
+                            <EmailIcon className="h-5 w-5 text-gray-500" />
+                            <input 
+                                type="email" 
+                                className="grow" 
+                                value={email} 
+                                disabled 
+                            />
+                            <div className="badge badge-info badge-sm">新用戶</div>
+                        </label>
+                        <p className="label">新用戶電子郵件地址</p>
+                    </fieldset>
                 </div>
 
                 {/* 使用者名稱輸入框 */}
                 <div className="form-control">
-                    <label className="label">
-                        <span className="label-text text-gray-700 font-medium">使用者名稱</span>
-                    </label>
-                    <div className={`input input-bordered flex items-center gap-3 transition-all duration-200 ${
-                        error ? 'input-error' : ''
-                    }`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <input 
-                            type="text" 
-                            className="grow text-gray-800 placeholder-gray-400" 
-                            placeholder="請輸入使用者名稱"
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)}
-                            onKeyDown={createKeyPressHandler(handleRegister)}
-                            disabled={isLoading}
-                        />
-                    </div>
-                    <label className="label">
-                        <span className="label-text-alt text-gray-500">
-                            2-20 個字元，將顯示為您的帳號名稱
-                        </span>
-                    </label>
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">使用者名稱</legend>
+                        <label className="input w-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                            <input 
+                                type="text" 
+                                required
+                                className="grow" 
+                                placeholder="請輸入使用者名稱"
+                                value={username} 
+                                onChange={(e) => setUsername(e.target.value)}
+                                onKeyDown={createKeyPressHandler(handleRegister)}
+                                disabled={isLoading}
+                            />
+                        </label>
+                        <p className="label">2-20 個字元，將顯示為您的帳號名稱</p>
+                    </fieldset>
                 </div>
 
                 {/* 密碼輸入框 */}
                 <div className="form-control">
-                    <label className="label">
-                        <span className="label-text text-gray-700 font-medium">密碼</span>
-                    </label>
-                    <div className={`input input-bordered flex items-center gap-3 transition-all duration-200 ${
-                        error ? 'input-error' : ''
-                    }`}>
-                        <PasswordIcon />
-                        <input 
-                            type={showPassword ? "text" : "password"} 
-                            className="grow text-gray-800 placeholder-gray-400" 
-                            placeholder="請輸入密碼"
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)}
-                            onKeyDown={createKeyPressHandler(handleRegister)}
-                            disabled={isLoading}
-                        />
-                        <button
-                            type="button"
-                            className="btn btn-ghost btn-sm p-1"
-                            onClick={() => setShowPassword(!showPassword)}
-                            disabled={isLoading}
-                        >
-                            {showPassword ? (
-                                <EyeClosed className="h-4 w-4" size={24} weight="bold" />
-                            ) : (
-                                <Eye className="h-4 w-4" size={24} weight="bold" />
-                            )}
-                        </button>
-                    </div>
-                    <label className="label">
-                        <span className="label-text-alt text-gray-500">
-                            至少 6 個字元
-                        </span>
-                    </label>
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">密碼</legend>
+                        <label className="input w-full">
+                            <PasswordIcon className="h-5 w-5 text-gray-500" />
+                            <input 
+                                type={showPassword ? "text" : "password"} 
+                                required
+                                className="grow" 
+                                placeholder="請輸入密碼"
+                                value={password} 
+                                onChange={(e) => setPassword(e.target.value)}
+                                onKeyDown={createKeyPressHandler(handleRegister)}
+                                disabled={isLoading}
+                            />
+                            <button
+                                type="button"
+                                className="btn btn-ghost btn-sm p-1"
+                                onClick={() => setShowPassword(!showPassword)}
+                                disabled={isLoading}
+                            >
+                                {showPassword ? (
+                                    <EyeClosed className="h-4 w-4" size={24} weight="bold" />
+                                ) : (
+                                    <Eye className="h-4 w-4" size={24} weight="bold" />
+                                )}
+                            </button>
+                        </label>
+                        <p className="label">至少 6 個字元</p>
+                    </fieldset>
                 </div>
 
                 {/* 確認密碼輸入框 */}
                 <div className="form-control">
-                    <label className="label">
-                        <span className="label-text text-gray-700 font-medium">確認密碼</span>
-                    </label>
-                    <div className={`input input-bordered flex items-center gap-3 transition-all duration-200 ${
-                        error ? 'input-error' : ''
-                    } ${password && confirmPassword && password === confirmPassword ? 'border-green-500' : ''}`}>
-                        <PasswordIcon />
-                        <input 
-                            type={showConfirmPassword ? "text" : "password"} 
-                            className="grow text-gray-800 placeholder-gray-400" 
-                            placeholder="請再次輸入密碼"
-                            value={confirmPassword} 
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            onKeyDown={createKeyPressHandler(handleRegister)}
-                            disabled={isLoading}
-                        />
-                        <button
-                            type="button"
-                            className="btn btn-ghost btn-sm p-1"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            disabled={isLoading}
-                        >
-                            {showConfirmPassword ? (
-                                <EyeClosed className="h-4 w-4" size={24} weight="bold" />
-                            ) : (
-                                <Eye className="h-4 w-4" size={24} weight="bold" />
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">確認密碼</legend>
+                        <label className="input w-full">
+                            <PasswordIcon className="h-5 w-5 text-gray-500" />
+                            <input 
+                                type={showConfirmPassword ? "text" : "password"} 
+                                required
+                                className="grow" 
+                                placeholder="請再次輸入密碼"
+                                value={confirmPassword} 
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                onKeyDown={createKeyPressHandler(handleRegister)}
+                                disabled={isLoading}
+                            />
+                            <button
+                                type="button"
+                                className="btn btn-ghost btn-sm p-1"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                disabled={isLoading}
+                            >
+                                {showConfirmPassword ? (
+                                    <EyeClosed className="h-4 w-4" size={24} weight="bold" />
+                                ) : (
+                                    <Eye className="h-4 w-4" size={24} weight="bold" />
+                                )}
+                            </button>
+                            {password && confirmPassword && password === confirmPassword && (
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
                             )}
-                        </button>
-                        {password && confirmPassword && password === confirmPassword && (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                        )}
-                    </div>
+                        </label>
+                        <p className="label">請確認兩次密碼輸入一致</p>
+                    </fieldset>
                 </div>
             </div>
 
