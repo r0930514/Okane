@@ -192,8 +192,8 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                                             type="button"
                                             className={`btn btn-sm ${
                                                 formData.category === category 
-                                                    ? 'btn-primary' 
-                                                    : 'btn-outline'
+                                                    ? 'btn-neutral' 
+                                                    : 'btn'
                                             }`}
                                             onClick={() => {
                                                 handleInputChange('category', category);
@@ -213,8 +213,8 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                                         type="button"
                                         className={`btn btn-sm ${
                                             showCustomCategory 
-                                                ? 'btn-primary' 
-                                                : 'btn-outline'
+                                                ? 'btn-neutral' 
+                                                : 'btn'
                                         }`}
                                         onClick={() => {
                                             setShowCustomCategory(!showCustomCategory);
@@ -352,7 +352,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
             <div className="flex justify-end gap-3 pt-4">
                 <button
                     type="button"
-                    className="btn btn-outline"
+                    className="btn"
                     onClick={onCancel}
                     disabled={loading}
                 >

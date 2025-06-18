@@ -33,18 +33,29 @@ export default function TransactionsTab({
                             const transactionType = getTransactionType(transaction);
                             const transactionDate = getTransactionDate(transaction);
                             const transactionAmount = transaction.amount || 0;
+                            const category = transaction.category;
                             
                             return (
-                                <div key={transaction.id || index} className="flex justify-between items-center py-3 border-b border-base-300 last:border-b-0">
-                                    <div>
-                                        <div className="font-medium">
-                                            {getTransactionDescription(transaction)}
+                                <div key={transaction.id || index} className="flex items-center py-3 border-b border-base-300 last:border-b-0 gap-3">
+                                    {/* 左側交易資訊 */}
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <div className="font-medium truncate">
+                                                {getTransactionDescription(transaction)}
+                                            </div>
+                                            {category && (
+                                                <div className="badge badge-ghost badge-sm">
+                                                    {category}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="text-sm text-base-content/60">
                                             {formatDate(transactionDate)}
                                         </div>
                                     </div>
-                                    <div className={`font-semibold text-lg ${
+                                    
+                                    {/* 中間金額 */}
+                                    <div className={`font-semibold text-lg shrink-0 ${
                                         transactionType === 'income' ? 'text-success' : 'text-error'
                                     }`}>
                                         {transactionType === 'income' ? '+' : '-'}
