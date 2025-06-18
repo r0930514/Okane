@@ -27,7 +27,7 @@ export default function NavBar({ navigate, username }) {
     }
 
     return (
-        <nav className="navbar w-full shadow-xs bg-base-100">
+        <nav className="navbar w-full shadow-xs bg-base-100 border-b border-base-200">
             <div className="flex-none">
                 <label htmlFor="drawer" className="btn btn-square btn-ghost drawer-button lg:hidden">
                     <ListIcon size={24} />

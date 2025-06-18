@@ -7,7 +7,7 @@ export default function Dashboard() {
     
     return (
         <DashboardLayout>
-            <div className="w-full px-6 py-4">
+            <div className="w-full h-full">
                 <StatsOverview wallets={wallets} />
                 <WalletList />
             </div>

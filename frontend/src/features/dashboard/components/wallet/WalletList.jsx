@@ -76,8 +76,8 @@ export default function WalletList() {
     }
 
     const WalletSection = ({ title, wallets, category }) => (
-        <div className="flex flex-col py-3 gap-3 w-full">
-            <div className="flex items-center justify-between h-12">
+        <div className="flex flex-col gap-3 w-full">
+            <div className="flex items-center justify-between h-12 px-6 lg:px-6">
                 <div className="flex items-center gap-2">
                     <div className="text-start justify-start text-2xl font-semibold text-base-content">{title}</div>
                     <CaretRight size={24} className="text-gray-400" />
@@ -90,7 +90,7 @@ export default function WalletList() {
                     新增
                 </button>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-2">
+            <div className="flex gap-4 overflow-x-auto pb-2 pl-6 lg:pl-6 pr-0">
                 {wallets.map((wallet) => (
                     <WalletListCard
                         key={wallet.id}
@@ -117,9 +117,9 @@ export default function WalletList() {
 
     return (
         <>
-            <div className="flex flex-col w-full h-full overflow-y-auto px-6 py-3 gap-6">
+            <div className="flex flex-col w-full h-full overflow-y-auto py-4 gap-6">
                 {availableCategories.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12">
+                    <div className="flex flex-col items-center justify-center py-12 px-3 lg:px-6">
                         <div className="text-lg font-medium text-base-content/60 mb-2">
                             還沒有任何錢包
                         </div>
