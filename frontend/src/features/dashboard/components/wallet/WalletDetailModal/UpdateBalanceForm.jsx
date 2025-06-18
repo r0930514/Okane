@@ -67,22 +67,22 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
 
     return (
         <div className="h-full flex flex-col">
-            {/* 右上角金額顯示 */}
-            <div className="text-end mb-6">
+            {/* 金額顯示 - 響應式設計 */}
+            <div className="text-center lg:text-end mb-4 lg:mb-6">
                 {targetBalance && parseFloat(adjustmentAmount) !== 0 && (
                     <>
-                        <div className={`text-lg font-medium ${
+                        <div className={`text-base lg:text-lg font-medium ${
                             parseFloat(adjustmentAmount) > 0 ? 'text-success' : 'text-error'
                         }`}>
                             {parseFloat(adjustmentAmount) > 0 ? '+' : '-'}${Math.abs(parseFloat(adjustmentAmount)).toLocaleString()}
                         </div>
-                        <div className="text-3xl font-bold">
+                        <div className="text-2xl lg:text-3xl font-bold">
                             ${newBalance.toLocaleString()}
                         </div>
                     </>
                 )}
                 {(!targetBalance || parseFloat(adjustmentAmount) === 0) && (
-                    <div className="text-3xl font-bold">
+                    <div className="text-2xl lg:text-3xl font-bold">
                         ${currentBalance.toLocaleString()}
                     </div>
                 )}
@@ -194,11 +194,11 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                 </form>
             </div>
 
-            {/* 完成按鈕 */}
-            <div className="flex justify-end gap-3 pt-4">
+            {/* 完成按鈕 - 響應式設計 */}
+            <div className="flex flex-col sm:flex-row justify-center lg:justify-end gap-2 sm:gap-3 pt-4">
                 <button
                     type="button"
-                    className="btn"
+                    className="btn btn-sm lg:btn-md w-full sm:w-auto"
                     onClick={onCancel}
                     disabled={loading}
                 >
@@ -206,7 +206,7 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                 </button>
                 <button
                     type="submit"
-                    className="btn btn-primary"
+                    className="btn btn-primary btn-sm lg:btn-md w-full sm:w-auto"
                     onClick={handleSubmit}
                     disabled={loading || !targetBalance || !description.trim()}
                 >

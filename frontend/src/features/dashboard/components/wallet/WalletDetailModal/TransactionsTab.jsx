@@ -8,15 +8,15 @@ export default function TransactionsTab({
 }) {
     if (transactionsLoading) {
         return (
-            <div className="flex justify-center items-center py-8">
-                <span className="loading loading-spinner loading-lg"></span>
+            <div className="flex justify-center items-center py-6 lg:py-8">
+                <span className="loading loading-spinner loading-md lg:loading-lg"></span>
             </div>
         );
     }
 
     if (transactionsError) {
         return (
-            <div className="text-center py-8 text-error">
+            <div className="text-center py-6 lg:py-8 text-error text-sm lg:text-base">
                 載入交易記錄時發生錯誤：{transactionsError}
             </div>
         );
@@ -25,10 +25,10 @@ export default function TransactionsTab({
     return (
         <div className="space-y-4">
             {/* 交易記錄列表 */}
-            <div className="card bg-base-100 p-4">
+            <div className="card bg-base-100 p-3 lg:p-4">
                 {walletStats && walletStats.allTransactions.length > 0 ? (
-                    <div className="space-y-3 overflow-y-auto">
-                        <h4 className="font-semibold mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
+                    <div className="space-y-2 lg:space-y-3 overflow-y-auto">
+                        <h4 className="font-semibold text-sm lg:text-base mb-3 lg:mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
                         {walletStats.allTransactions.map((transaction, index) => {
                             const transactionType = getTransactionType(transaction);
                             const transactionDate = getTransactionDate(transaction);
@@ -36,26 +36,26 @@ export default function TransactionsTab({
                             const category = transaction.category;
                             
                             return (
-                                <div key={transaction.id || index} className="flex items-center py-3 border-b border-base-300 last:border-b-0 gap-3">
+                                <div key={transaction.id || index} className="flex items-center py-3 border-b border-base-300 last:border-b-0 gap-2 lg:gap-3">
                                     {/* 左側交易資訊 */}
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <div className="font-medium truncate">
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
+                                            <div className="font-medium text-sm lg:text-base truncate">
                                                 {getTransactionDescription(transaction)}
                                             </div>
                                             {category && (
-                                                <div className="badge badge-ghost badge-sm">
+                                                <div className="badge badge-ghost badge-xs sm:badge-sm">
                                                     {category}
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="text-sm text-base-content/60">
+                                        <div className="text-xs lg:text-sm text-base-content/60">
                                             {formatDate(transactionDate)}
                                         </div>
                                     </div>
                                     
-                                    {/* 中間金額 */}
-                                    <div className={`font-semibold text-lg shrink-0 ${
+                                    {/* 右側金額 */}
+                                    <div className={`font-semibold text-sm lg:text-lg shrink-0 ${
                                         transactionType === 'income' ? 'text-success' : 'text-error'
                                     }`}>
                                         {transactionType === 'income' ? '+' : '-'}

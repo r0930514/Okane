@@ -26,18 +26,41 @@ export default function WalletHeader({ wallet, onUpdateBalance, onAddTransaction
 
     return (
         <div 
-            className="h-full px-8 py-8 rounded-2xl flex flex-col items-left justify-between border-1 border-base-content/20"
+            className="h-full px-4 py-4 lg:px-8 lg:py-8 rounded-2xl flex flex-col lg:flex-col items-left justify-between border-1 border-base-content/20"
             style={headerStyle}
         >
-            <div className="text-left">
-                <p className="text-base-content/60 text-base">
-                    {WALLET_TYPE_NAMES[wallet.walletType] || wallet.walletType}
-                </p>
-                <h3 className="text-2xl font-bold mb-2">{wallet.walletName}</h3>
+            {/* 錢包資訊 - 小裝置水平佈局，大裝置垂直佈局 */}
+            <div className="flex lg:flex-col items-center lg:items-start lg:text-left lg:mb-0">
+                <div className="flex-1 lg:flex-none">
+                    <p className="text-base-content/60 text-sm lg:text-base">
+                        {WALLET_TYPE_NAMES[wallet.walletType] || wallet.walletType}
+                    </p>
+                    <h3 className="text-lg lg:text-2xl font-bold mb-0 lg:mb-2">{wallet.walletName}</h3>
+                </div>
+                
+                {/* 手機版按鈕 - 在錢包名稱旁邊 */}
+                <div className="flex gap-2 lg:hidden">
+                    <button 
+                        className="btn btn-sm transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center justify-center"
+                        style={primaryButtonStyle}
+                        onClick={onUpdateBalance}
+                    >
+                        <ArrowsClockwiseIcon size={14} weight="bold" />
+                    </button>
+                    <button 
+                        className="btn btn-sm transition-all duration-200 hover:scale-105 flex items-center justify-center"
+                        style={secondaryButtonStyle}
+                        onClick={onAddTransaction}
+                    >
+                        <PlusIcon size={14} weight="bold" />
+                    </button>
+                </div>
             </div>
-            <div className="space-y-3">
+            
+            {/* 桌面版按鈕 - 垂直佈局，顯示完整文字 */}
+            <div className="hidden lg:flex flex-col gap-3">
                 <button 
-                    className="btn w-full transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
+                    className="btn btn-md w-full transition-all duration-200 hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
                     style={primaryButtonStyle}
                     onClick={onUpdateBalance}
                 >
@@ -45,7 +68,7 @@ export default function WalletHeader({ wallet, onUpdateBalance, onAddTransaction
                     更新餘額
                 </button>
                 <button 
-                    className="btn w-full transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2"
+                    className="btn btn-md w-full transition-all duration-200 hover:scale-105 flex items-center justify-center gap-2"
                     style={secondaryButtonStyle}
                     onClick={onAddTransaction}
                 >

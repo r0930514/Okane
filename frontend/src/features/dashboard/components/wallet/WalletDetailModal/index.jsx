@@ -59,12 +59,12 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
 
     return (
         <dialog className="modal modal-open">
-            <div className="modal-box w-11/12 max-w-5xl h-4/5">
+            <div className="modal-box w-full h-full max-w-none mt-4  lg:w-11/12 lg:max-w-5xl lg:h-4/5 lg:max-h-screen m-0 lg:m-auto rounded-t-4xl lg:rounded-2xl">
 
-                {/* 主要內容區域 - 左右分割 */}
-                <div className="flex h-full">
-                    {/* 左半部 - 錢包類型和名稱 - 固定寬度 */}
-                    <div className="w-1/4 flex-shrink-0">
+                {/* 主要內容區域 - 響應式佈局，小螢幕全螢幕，大螢幕保持適當間距 */}
+                <div className="flex flex-col lg:flex-row h-full">
+                    {/* 錢包 Header - 小裝置上置頂，大裝置左側 */}
+                    <div className="w-full lg:w-1/4 lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r border-base-200">
                         <WalletHeader 
                             wallet={wallet} 
                             onUpdateBalance={handleUpdateBalance}
@@ -72,8 +72,8 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                         />
                     </div>
 
-                    {/* 右半部 - 根據視圖模式顯示不同內容 */}
-                    <div className="flex-1 p-6 pb-4 flex flex-col">
+                    {/* 主要內容 - 根據視圖模式顯示不同內容 */}
+                    <div className="flex-1 p-4 lg:p-6 pb-4 flex flex-col min-h-0">
                         {viewMode === VIEW_MODES.UPDATE_BALANCE ? (
                             <UpdateBalanceForm
                                 wallet={wallet}
@@ -88,35 +88,37 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                             />
                         ) : (
                             <>
-                                {/* 餘額顯示 */}
-                                <div className="text-end mb-6">
-                                    <div className="text-3xl font-bold">
+                                {/* 餘額顯示 - 響應式字體大小 */}
+                                <div className="text-center lg:text-end mb-4 lg:mb-6">
+                                    <div className="text-2xl lg:text-3xl font-bold">
                                         {formatCurrency(wallet.balance || wallet.currentBalance)}
                                     </div>
                                 </div>
 
-                                {/* Tab 導航 */}
+                                {/* Tab 導航 - 響應式大小 */}
                                 <div className="tabs tabs-lift mb-4 w-full" role="tablist">
                                     <button 
-                                        className={`tab tab-lg w-1/2 ${activeTab === TAB_TYPES.TRANSACTIONS ? 'tab-active' : ''}`}
+                                        className={`tab tab-md lg:tab-lg w-1/2 ${activeTab === TAB_TYPES.TRANSACTIONS ? 'tab-active' : ''}`}
                                         onClick={() => handleTabChange(TAB_TYPES.TRANSACTIONS)}
                                         role="tab"
                                         aria-selected={activeTab === TAB_TYPES.TRANSACTIONS}
                                     >
-                                        交易明細
+                                        <span className="hidden sm:inline">交易明細</span>
+                                        <span className="sm:hidden">明細</span>
                                     </button>
                                     <button 
-                                        className={`tab tab-lg w-1/2 ${activeTab === TAB_TYPES.SETTINGS ? 'tab-active' : ''}`}
+                                        className={`tab tab-md lg:tab-lg w-1/2 ${activeTab === TAB_TYPES.SETTINGS ? 'tab-active' : ''}`}
                                         onClick={() => handleTabChange(TAB_TYPES.SETTINGS)}
                                         role="tab"
                                         aria-selected={activeTab === TAB_TYPES.SETTINGS}
                                     >
-                                        錢包設定
+                                        <span className="hidden sm:inline">錢包設定</span>
+                                        <span className="sm:hidden">設定</span>
                                     </button>
                                 </div>
 
-                                {/* Tab 內容 */}
-                                <div className="flex-1 overflow-y-auto" role="tabpanel">
+                                {/* Tab 內容 - 確保可滾動 */}
+                                <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
                                     {activeTab === TAB_TYPES.TRANSACTIONS && (
                                         <TransactionsTab 
                                             walletStats={walletStats}
@@ -130,9 +132,9 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                                     )}
                                 </div>
 
-                                {/* 完成按鈕 */}
-                                <div className="flex justify-end">
-                                    <button className="btn mt-4 w-fit" onClick={handleClose}>
+                                {/* 完成按鈕 - 響應式設計 */}
+                                <div className="flex justify-center lg:justify-end mt-4">
+                                    <button className="btn btn-md w-full sm:w-auto max-w-xs" onClick={handleClose}>
                                         完成
                                     </button>
                                 </div>
