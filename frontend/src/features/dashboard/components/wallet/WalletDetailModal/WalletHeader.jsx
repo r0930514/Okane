@@ -26,7 +26,7 @@ export default function WalletHeader({ wallet, onUpdateBalance, onAddTransaction
 
     return (
         <div 
-            className="w-1/4 px-8 py-8 rounded-2xl flex flex-col items-left justify-between border-1 border-base-content/20"
+            className="h-full px-8 py-8 rounded-2xl flex flex-col items-left justify-between border-1 border-base-content/20"
             style={headerStyle}
         >
             <div className="text-left">

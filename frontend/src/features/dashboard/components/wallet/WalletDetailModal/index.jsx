@@ -63,15 +63,17 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
 
                 {/* 主要內容區域 - 左右分割 */}
                 <div className="flex h-full">
-                    {/* 左半部 - 錢包類型和名稱 */}
-                    <WalletHeader 
-                        wallet={wallet} 
-                        onUpdateBalance={handleUpdateBalance}
-                        onAddTransaction={handleAddTransaction}
-                    />
+                    {/* 左半部 - 錢包類型和名稱 - 固定寬度 */}
+                    <div className="w-1/4 flex-shrink-0">
+                        <WalletHeader 
+                            wallet={wallet} 
+                            onUpdateBalance={handleUpdateBalance}
+                            onAddTransaction={handleAddTransaction}
+                        />
+                    </div>
 
                     {/* 右半部 - 根據視圖模式顯示不同內容 */}
-                    <div className="w-3/4 p-6 pb-4 flex flex-col">
+                    <div className="flex-1 p-6 pb-4 flex flex-col">
                         {viewMode === VIEW_MODES.UPDATE_BALANCE ? (
                             <UpdateBalanceForm
                                 wallet={wallet}

@@ -23,3 +23,4 @@ export { useTransactions } from './hooks/useTransactions.js';
 
 // Constants
 export * from './constants/navigation.jsx';
+export * from './constants/walletConstants.jsx';

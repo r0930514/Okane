@@ -1,7 +1,12 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { CalendarIcon, TagIcon, FileTextIcon, CurrencyDollarIcon } from "@phosphor-icons/react";
+import { 
+    CalendarIcon, 
+    TagIcon, 
+    CurrencyDollarIcon
+} from "@phosphor-icons/react";
 import { useTransactions } from '../../../hooks/useTransactions';
+import { CATEGORY_ICONS } from '../../../constants/walletConstants.jsx';
 
 // 交易類型選項
 const TRANSACTION_TYPES = [
@@ -25,6 +30,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showCustomCategory, setShowCustomCategory] = useState(false);
 
     const { createTransaction } = useTransactions(wallet?.id);
 
@@ -104,203 +110,279 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
 
     const currentCategories = DEFAULT_CATEGORIES[formData.type];
 
+    // 計算顯示金額
+    const displayAmount = formData.amount ? parseFloat(formData.amount) : 0;
+    const currentBalance = wallet?.balance || wallet?.currentBalance || 0;
+    const newBalance = formData.amount ? currentBalance + (formData.type === 'income' ? displayAmount : -displayAmount) : currentBalance;
+
     return (
         <div className="h-full flex flex-col">
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">新增交易記錄</h3>
-                <p className="text-base-content/60">記錄一筆新的收入或支出</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-                <div className="space-y-4 flex-1">
-                    {/* 交易類型選擇 */}
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label">交易類型</span>
-                        </label>
-                        <div className="flex gap-2">
-                            {TRANSACTION_TYPES.map(type => (
-                                <button
-                                    key={type.value}
-                                    type="button"
-                                    className={`btn flex-1 ${
-                                        formData.type === type.value 
-                                            ? 'btn-primary' 
-                                            : 'btn-outline'
-                                    }`}
-                                    onClick={() => handleTypeChange(type.value)}
-                                    disabled={loading}
-                                >
-                                    <span className={type.color}>{type.label}</span>
-                                </button>
-                            ))}
+            {/* 餘額顯示 */}
+            <div className="text-end mb-6">
+                {formData.amount && displayAmount > 0 && (
+                    <>
+                        <div className={`text-lg font-medium ${
+                            formData.type === 'income' ? 'text-success' : 'text-error'
+                        }`}>
+                            {formData.type === 'income' ? '+' : '-'}${displayAmount.toLocaleString()}
                         </div>
+                        <div className="text-3xl font-bold">
+                        ${newBalance.toLocaleString()}
+                        </div>
+                    </>
+                )}
+                {(!formData.amount || displayAmount === 0) && (
+                    <div className="text-3xl font-bold">
+                    ${currentBalance.toLocaleString()}
                     </div>
+                )}
+            </div>
+      
+            {/* Tab 內容 */}
+            <div className="flex-1 overflow-y-auto px-2" role="tabpanel">
+                <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+                    <div className="space-y-4 flex-1  pr-2">
+                        {/* 交易類型選擇 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">交易類型</legend>
+                            <div role="tablist" className="tabs tabs-box">
+                                {TRANSACTION_TYPES.map(type => (
+                                    <input
+                                        key={type.value}
+                                        type="radio"
+                                        name="transaction-type"
+                                        className="tab"
+                                        aria-label={type.label}
+                                        checked={formData.type === type.value}
+                                        onChange={() => handleTypeChange(type.value)}
+                                        disabled={loading}
+                                    />
+                                ))}
+                            </div>
+                            <p className="label">請選擇交易類型</p>
+                        </fieldset>
 
-                    {/* 金額 */}
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label flex items-center gap-2">
-                                <CurrencyDollarIcon size={16} />
-                                金額
-                            </span>
-                        </label>
-                        <input
-                            type="text"
-                            className="input input-md"
-                            placeholder="0.00"
-                            value={formData.amount}
-                            onChange={handleAmountChange}
-                            disabled={loading}
-                        />
-                    </div>
+                        {/* 金額 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">金額</legend>
+                            <label className="input validator w-full">
+                                <CurrencyDollarIcon className="h-5 w-5 text-gray-500" />
+                                <input
+                                    type="text"
+                                    className="grow"
+                                    placeholder="0.00"
+                                    value={formData.amount}
+                                    onChange={handleAmountChange}
+                                    disabled={loading}
+                                />
+                            </label>
+                            <p className="label">請輸入交易金額</p>
+                        </fieldset>
 
-                    {/* 分類 */}
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label flex items-center gap-2">
-                                <TagIcon size={16} />
-                                分類
-                            </span>
-                        </label>
-                        <select
-                            className="select select-md"
-                            value={formData.category}
-                            onChange={(e) => handleInputChange('category', e.target.value)}
-                            disabled={loading}
-                        >
-                            <option value="">選擇分類</option>
-                            {currentCategories.map(category => (
-                                <option key={category} value={category}>
-                                    {category}
-                                </option>
-                            ))}
-                        </select>
-                        <input
-                            type="text"
-                            className="input input-md mt-2"
-                            placeholder="或輸入自訂分類"
-                            value={formData.category}
-                            onChange={(e) => handleInputChange('category', e.target.value)}
-                            disabled={loading}
-                        />
-                    </div>
-
-                    {/* 交易描述 */}
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label flex items-center gap-2">
-                                <FileTextIcon size={16} />
-                                交易描述
-                            </span>
-                        </label>
-                        <textarea
-                            className="textarea textarea-md"
-                            placeholder="請輸入交易的詳細描述"
-                            value={formData.description}
-                            onChange={(e) => handleInputChange('description', e.target.value)}
-                            disabled={loading}
-                            rows={3}
-                        />
-                    </div>
-
-                    {/* 交易日期 */}
-                    <div className="form-control">
-                        <label className="label">
-                            <span className="label flex items-center gap-2">
-                                <CalendarIcon size={16} />
-                                交易日期
-                            </span>
-                        </label>
-                        <input
-                            type="date"
-                            className="input input-md"
-                            value={formData.date}
-                            onChange={(e) => handleInputChange('date', e.target.value)}
-                            disabled={loading}
-                            max={new Date().toISOString().split('T')[0]}
-                        />
-                    </div>
-
-                    {/* 預覽 */}
-                    {formData.amount && formData.description && (
-                        <div className="card card-border p-4">
-                            <h4 className="font-medium mb-2">交易預覽</h4>
-                            <div className="space-y-1 text-sm">
-                                <div className="flex justify-between">
-                                    <span>類型：</span>
-                                    <span className={
-                                        formData.type === 'income' 
-                                            ? 'text-success' 
-                                            : 'text-error'
-                                    }>
-                                        {formData.type === 'income' ? '收入' : '支出'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>金額：</span>
-                                    <span className={
-                                        formData.type === 'income' 
-                                            ? 'text-success font-semibold' 
-                                            : 'text-error font-semibold'
-                                    }>
-                                        {formData.type === 'income' ? '+' : '-'}
-                                        ${parseFloat(formData.amount || 0).toLocaleString()}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>分類：</span>
-                                    <span>{formData.category || '未分類'}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>日期：</span>
-                                    <span>{formData.date}</span>
+                        {/* 分類 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">分類</legend>
+                            
+                            {/* 快速分類按鈕 */}
+                            <div className="mb-3">
+                                <div className="flex flex-wrap gap-2">
+                                    {currentCategories.map(category => (
+                                        <button
+                                            key={category}
+                                            type="button"
+                                            className={`btn btn-sm ${
+                                                formData.category === category 
+                                                    ? 'btn-primary' 
+                                                    : 'btn-outline'
+                                            }`}
+                                            onClick={() => {
+                                                handleInputChange('category', category);
+                                                setShowCustomCategory(false);
+                                            }}
+                                            disabled={loading}
+                                        >
+                                            <span className="mr-1">
+                                                {CATEGORY_ICONS[formData.type]?.[category]}
+                                            </span>
+                                            {category}
+                                        </button>
+                                    ))}
+                                    
+                                    {/* 自訂分類按鈕 */}
+                                    <button
+                                        type="button"
+                                        className={`btn btn-sm ${
+                                            showCustomCategory 
+                                                ? 'btn-primary' 
+                                                : 'btn-outline'
+                                        }`}
+                                        onClick={() => {
+                                            setShowCustomCategory(!showCustomCategory);
+                                            if (!showCustomCategory) {
+                                                setFormData(prev => ({ ...prev, category: '' }));
+                                            }
+                                        }}
+                                        disabled={loading}
+                                    >
+                                        <TagIcon size={16} className="mr-1" />
+                                        自訂分類
+                                    </button>
                                 </div>
                             </div>
-                        </div>
-                    )}
 
-                    {/* 錯誤訊息 */}
-                    {error && (
-                        <div className="alert alert-error">
-                            <span>{error}</span>
-                        </div>
-                    )}
-                </div>
+                            {!showCustomCategory && (
+                                <select
+                                    className="select select-md w-full mb-2"
+                                    value={formData.category}
+                                    onChange={(e) => handleInputChange('category', e.target.value)}
+                                    disabled={loading}
+                                >
+                                    <option value="">選擇分類</option>
+                                    {currentCategories.map(category => (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
+                            
+                            {showCustomCategory && (
+                                <label className="input validator w-full">
+                                    <TagIcon className="h-5 w-5 text-gray-500" />
+                                    <input
+                                        type="text"
+                                        className="grow"
+                                        placeholder="請輸入自訂分類"
+                                        value={formData.category}
+                                        onChange={(e) => handleInputChange('category', e.target.value)}
+                                        disabled={loading}
+                                    />
+                                </label>
+                            )}
+                            <p className="label">請選擇或輸入交易分類</p>
+                        </fieldset>
 
-                {/* 按鈕區域 */}
-                <div className="flex justify-end gap-3 pt-4">
-                    <button
-                        type="button"
-                        className="btn btn-outline"
-                        onClick={onCancel}
-                        disabled={loading}
-                    >
-                        取消
-                    </button>
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={loading || !formData.amount || !formData.description.trim() || !formData.category.trim()}
-                    >
-                        {loading ? (
-                            <>
-                                <span className="loading loading-spinner loading-sm"></span>
-                                新增中...
-                            </>
-                        ) : (
-                            '確認新增'
+                        {/* 交易描述 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">交易描述</legend>
+                            <label className="textarea validator w-full">
+                                <textarea
+                                    className="grow w-full"
+                                    placeholder="請輸入交易的詳細描述"
+                                    value={formData.description}
+                                    onChange={(e) => handleInputChange('description', e.target.value)}
+                                    disabled={loading}
+                                    rows={3}
+                                />
+                            </label>
+                            <p className="label">請詳細描述此筆交易</p>
+                        </fieldset>
+
+                        {/* 交易日期 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">交易日期</legend>
+                            <label className="input validator w-full">
+                                <CalendarIcon className="h-5 w-5 text-gray-500" />
+                                <input
+                                    type="date"
+                                    className="grow"
+                                    value={formData.date}
+                                    onChange={(e) => handleInputChange('date', e.target.value)}
+                                    disabled={loading}
+                                    max={new Date().toISOString().split('T')[0]}
+                                />
+                            </label>
+                            <p className="label">請選擇交易發生的日期</p>
+                        </fieldset>
+
+                        {/* 預覽 */}
+                        {formData.amount && formData.description && (
+                            <div className="card card-border p-4">
+                                <h4 className="font-medium mb-2">交易預覽</h4>
+                                <div className="space-y-1 text-sm">
+                                    <div className="flex justify-between">
+                                        <span>類型：</span>
+                                        <span className={
+                                            formData.type === 'income' 
+                                                ? 'text-success' 
+                                                : 'text-error'
+                                        }>
+                                            {formData.type === 'income' ? '收入' : '支出'}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>金額：</span>
+                                        <span className={
+                                            formData.type === 'income' 
+                                                ? 'text-success font-semibold' 
+                                                : 'text-error font-semibold'
+                                        }>
+                                            {formData.type === 'income' ? '+' : '-'}
+                                    ${parseFloat(formData.amount || 0).toLocaleString()}
+                                        </span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>分類：</span>
+                                        <span>{formData.category || '未分類'}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>日期：</span>
+                                        <span>{formData.date}</span>
+                                    </div>
+                                </div>
+                            </div>
                         )}
-                    </button>
-                </div>
-            </form>
+
+                        {/* 錯誤訊息 */}
+                        {error && (
+                            <div className="alert alert-error">
+                                <span>{error}</span>
+                            </div>
+                        )}
+                    </div>
+
+               
+                </form>
+                
+        
+                
+            </div>
+        
+            {/* 完成按鈕 */}
+            <div className="flex justify-end gap-3 pt-4">
+                <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={onCancel}
+                    disabled={loading}
+                >
+                        取消
+                </button>
+                <button
+                    type="submit"
+                    className="btn btn-primary"
+                    onClick={handleSubmit}
+                    disabled={loading || !formData.amount || !formData.description.trim() || !formData.category.trim()}
+                >
+                    {loading ? (
+                        <>
+                            <span className="loading loading-spinner loading-sm"></span>
+                                新增中...
+                        </>
+                    ) : (
+                        '確認新增'
+                    )}
+                </button>
+            </div>
         </div>
     );
 }
 
 AddTransactionForm.propTypes = {
     wallet: PropTypes.shape({
-        id: PropTypes.number
+        id: PropTypes.number,
+        balance: PropTypes.number,
+        currentBalance: PropTypes.number
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
     onSuccess: PropTypes.func

@@ -63,13 +63,29 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
 
     return (
         <div className="h-full flex flex-col">
-            <div className="mb-6">
-                <h3 className="text-lg font-semibold mb-2">更新餘額</h3>
-                <p className="text-base-content/60">透過新增調整分錄來更新錢包餘額</p>
+            {/* 右上角金額顯示 */}
+            <div className="text-end mb-6">
+                {adjustmentAmount && parseFloat(adjustmentAmount) !== 0 && (
+                    <>
+                        <div className={`text-lg font-medium ${
+                            parseFloat(adjustmentAmount) > 0 ? 'text-success' : 'text-error'
+                        }`}>
+                            {parseFloat(adjustmentAmount) > 0 ? '+' : ''}${Math.abs(parseFloat(adjustmentAmount)).toLocaleString()}
+                        </div>
+                        <div className="text-3xl font-bold">
+                            ${newBalance.toLocaleString()}
+                        </div>
+                    </>
+                )}
+                {(!adjustmentAmount || parseFloat(adjustmentAmount) === 0) && (
+                    <div className="text-3xl font-bold">
+                        ${currentBalance.toLocaleString()}
+                    </div>
+                )}
             </div>
 
             <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-                <div className="space-y-4 flex-1">
+                <div className="space-y-4 flex-1 overflow-y-auto pr-2">
                     {/* 當前餘額顯示 */}
                     <div className="card card-border p-4">
                         <div className="flex justify-between items-center mb-2">
