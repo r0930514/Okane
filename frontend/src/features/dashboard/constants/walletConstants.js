@@ -13,3 +13,9 @@ export const TAB_TYPES = {
     TRANSACTIONS: 'transactions',
     SETTINGS: 'settings'
 };
+
+export const VIEW_MODES = {
+    DEFAULT: 'default',
+    UPDATE_BALANCE: 'updateBalance',
+    ADD_TRANSACTION: 'addTransaction'
+};
