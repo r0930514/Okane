@@ -93,7 +93,7 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                 <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
                     <div className="space-y-4 flex-1 pr-2">
                         {/* 當前餘額顯示 */}
-                        <div className="card card-border p-4">
+                        <div className="card card-border bg-base-200 p-4">
                             <h4 className="font-medium mb-2">餘額資訊</h4>
                             <div className="space-y-1 text-sm">
                                 <div className="flex justify-between">
