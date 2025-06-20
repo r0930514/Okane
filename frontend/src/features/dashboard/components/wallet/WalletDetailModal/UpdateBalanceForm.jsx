@@ -198,7 +198,7 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
             <div className="flex flex-col sm:flex-row justify-center lg:justify-end gap-2 sm:gap-3 pt-4">
                 <button
                     type="button"
-                    className="btn btn-sm lg:btn-md w-full sm:w-auto"
+                    className="btn btn-md w-full sm:w-auto"
                     onClick={onCancel}
                     disabled={loading}
                 >
@@ -206,7 +206,7 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                 </button>
                 <button
                     type="submit"
-                    className="btn btn-primary btn-sm lg:btn-md w-full sm:w-auto"
+                    className="btn btn-primary btn-md w-full sm:w-auto"
                     onClick={handleSubmit}
                     disabled={loading || !targetBalance || !description.trim()}
                 >

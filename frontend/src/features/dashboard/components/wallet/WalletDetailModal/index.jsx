@@ -56,10 +56,9 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
     }, [refetch]);
 
     if (!isOpen || !wallet) return null;
-
     return (
-        <dialog className="modal modal-open">
-            <div className="modal-box w-full h-full max-w-none mt-4  lg:w-11/12 lg:max-w-5xl lg:h-4/5 lg:max-h-screen m-0 lg:m-auto rounded-t-4xl lg:rounded-2xl">
+        <dialog className="modal modal-bottom sm:modal-middle modal-open">
+            <div className="modal-box w-full h-screen max-w-none mt-4  lg:w-11/12 lg:max-w-5xl lg:h-4/5 lg:max-h-screen m-0 lg:m-auto rounded-t-4xl lg:rounded-2xl">
 
                 {/* 主要內容區域 - 響應式佈局，小螢幕全螢幕，大螢幕保持適當間距 */}
                 <div className="flex flex-col lg:flex-row h-full">
@@ -73,7 +72,7 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                     </div>
 
                     {/* 主要內容 - 根據視圖模式顯示不同內容 */}
-                    <div className="flex-1 p-4 lg:p-6 pb-4 flex flex-col min-h-0">
+                    <div className="flex-1 p-2 lg:p-6 pb-4 flex flex-col min-h-0">
                         {viewMode === VIEW_MODES.UPDATE_BALANCE ? (
                             <UpdateBalanceForm
                                 wallet={wallet}

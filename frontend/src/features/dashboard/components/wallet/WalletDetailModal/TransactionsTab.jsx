@@ -25,10 +25,10 @@ export default function TransactionsTab({
     return (
         <div className="space-y-4">
             {/* 交易記錄列表 */}
-            <div className="card bg-base-100 p-3 lg:p-4">
+            <div className="card bg-base-100 pt-3 lg:p-4">
                 {walletStats && walletStats.allTransactions.length > 0 ? (
                     <div className="space-y-2 lg:space-y-3 overflow-y-auto">
-                        <h4 className="font-semibold text-sm lg:text-base mb-3 lg:mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
+                        <h4 className="font-semibold text-base mb-3 lg:mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
                         {walletStats.allTransactions.map((transaction, index) => {
                             const transactionType = getTransactionType(transaction);
                             const transactionDate = getTransactionDate(transaction);
@@ -40,22 +40,22 @@ export default function TransactionsTab({
                                     {/* 左側交易資訊 */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
-                                            <div className="font-medium text-sm lg:text-base truncate">
+                                            <div className="font-medium text-base truncate">
                                                 {getTransactionDescription(transaction)}
                                             </div>
                                             {category && (
-                                                <div className="badge badge-ghost badge-xs sm:badge-sm">
+                                                <div className="badge badge-ghost badge-sm">
                                                     {category}
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="text-xs lg:text-sm text-base-content/60">
+                                        <div className="text-sm text-base-content/60">
                                             {formatDate(transactionDate)}
                                         </div>
                                     </div>
                                     
                                     {/* 右側金額 */}
-                                    <div className={`font-semibold text-sm lg:text-lg shrink-0 ${
+                                    <div className={`font-semibold text-lg shrink-0 ${
                                         transactionType === 'income' ? 'text-success' : 'text-error'
                                     }`}>
                                         {transactionType === 'income' ? '+' : '-'}
