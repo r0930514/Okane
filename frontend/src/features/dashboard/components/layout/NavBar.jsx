@@ -1,9 +1,11 @@
 import { ListIcon, UserCircleIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react"
+import { useAuth } from "../../../auth/hooks/useAuth";
 import { useState } from "react"
 import PropTypes from 'prop-types'
 
 export default function NavBar({ navigate, username }) {
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const { logout } = useAuth();
 
     const handleRefresh = async () => {
         setIsRefreshing(true)
@@ -19,9 +21,9 @@ export default function NavBar({ navigate, username }) {
         // 這裡之後可以打開新增資產的模態框
     }
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         if (confirm("確定要登出嗎？")) {
-            // AuthService.logout(); // 待後續整合 AuthService
+            await logout(); // 待後續整合 AuthService
             navigate('/');
         }
     }
