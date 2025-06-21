@@ -179,9 +179,9 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
                     <>
                         <div className="flex gap-3 justify-end">
                             <div className={`${currentAmount === displayAmount.toString() ? 'hidden': 'text-lg'} font-bold line-through ${
-                                formData.type === 'income' ? 'text-success' : 'text-error'
+                                transaction.type === 'income' ? 'text-success' : 'text-error'
                             }`}>
-                                {formData.type === 'income' ? '+' : '-'}${currentAmount}
+                                {transaction.type === 'income' ? '+' : '-'}${currentAmount}
                             </div>
                             <div className={`text-lg font-bold ${
                                 formData.type === 'income' ? 'text-success' : 'text-error'
