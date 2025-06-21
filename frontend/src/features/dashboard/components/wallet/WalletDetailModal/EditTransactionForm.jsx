@@ -23,6 +23,8 @@ const DEFAULT_CATEGORIES = {
 };
 
 export default function EditTransactionForm({ wallet, transaction, onCancel, onSuccess }) {
+    const currentBalance = wallet?.balance || wallet?.currentBalance || 0;  
+    const currentAmount = Math.abs(parseFloat(transaction.amount) || 0).toString()
     const [formData, setFormData] = useState({
         type: 'expense',
         amount: '',
@@ -173,17 +175,25 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
         <div className="h-full flex flex-col">
             {/* 金額顯示 */}
             <div className="text-end mb-6">
-                {formData.amount && displayAmount > 0 && (
-                    <div className={`text-3xl font-bold ${
-                        formData.type === 'income' ? 'text-success' : 'text-error'
-                    }`}>
-                        {formData.type === 'income' ? '+' : '-'}${displayAmount.toLocaleString()}
-                    </div>
-                )}
-                {(!formData.amount || displayAmount === 0) && (
-                    <div className="text-3xl font-bold text-base-content/60">
-                        $0
-                    </div>
+                { (
+                    <>
+                        <div className="flex gap-3 justify-end">
+                            <div className={`${currentAmount === displayAmount.toString() ? 'hidden': 'text-lg'} font-bold line-through ${
+                                formData.type === 'income' ? 'text-success' : 'text-error'
+                            }`}>
+                                {formData.type === 'income' ? '+' : '-'}${currentAmount}
+                            </div>
+                            <div className={`text-lg font-bold ${
+                                formData.type === 'income' ? 'text-success' : 'text-error'
+                            }`}>
+                                {formData.type === 'income' ? '+' : '-'}${displayAmount.toLocaleString()}
+                            </div>
+                        </div>
+                        <div className="text-3xl font-bold ">
+                            ${currentBalance.toLocaleString()}
+                        </div>
+                    </>
+                    
                 )}
             </div>
       
