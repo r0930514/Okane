@@ -32,7 +32,8 @@ export const TAB_TYPES = {
 export const VIEW_MODES = {
     DEFAULT: 'default',
     UPDATE_BALANCE: 'updateBalance',
-    ADD_TRANSACTION: 'addTransaction'
+    ADD_TRANSACTION: 'addTransaction',
+    EDIT_TRANSACTION: 'editTransaction'
 };
 
 // 交易分類圖示配置

@@ -9,10 +9,12 @@ import TransactionsTab from './TransactionsTab';
 import SettingsTab from './SettingsTab';
 import UpdateBalanceForm from './UpdateBalanceForm';
 import AddTransactionForm from './AddTransactionForm';
+import EditTransactionForm from './EditTransactionForm';
 
 export default function WalletDetailModal({ wallet, isOpen, onClose }) {
     const [activeTab, setActiveTab] = useState(TAB_TYPES.TRANSACTIONS);
     const [viewMode, setViewMode] = useState(VIEW_MODES.DEFAULT);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
     
     // 使用 useTransactions hook 取得該錢包的交易明細
     const { 
@@ -46,12 +48,19 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
         setViewMode(VIEW_MODES.ADD_TRANSACTION);
     }, []);
 
+    const handleEditTransaction = useCallback((transaction) => {
+        setSelectedTransaction(transaction);
+        setViewMode(VIEW_MODES.EDIT_TRANSACTION);
+    }, []);
+
     const handleFormCancel = useCallback(() => {
         setViewMode(VIEW_MODES.DEFAULT);
+        setSelectedTransaction(null);
     }, []);
 
     const handleFormSuccess = useCallback(() => {
         setViewMode(VIEW_MODES.DEFAULT);
+        setSelectedTransaction(null);
         refetch(); // 重新載入交易資料
     }, [refetch]);
 
@@ -82,6 +91,13 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                         ) : viewMode === VIEW_MODES.ADD_TRANSACTION ? (
                             <AddTransactionForm
                                 wallet={wallet}
+                                onCancel={handleFormCancel}
+                                onSuccess={handleFormSuccess}
+                            />
+                        ) : viewMode === VIEW_MODES.EDIT_TRANSACTION ? (
+                            <EditTransactionForm
+                                wallet={wallet}
+                                transaction={selectedTransaction}
                                 onCancel={handleFormCancel}
                                 onSuccess={handleFormSuccess}
                             />
@@ -123,6 +139,9 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                                             walletStats={walletStats}
                                             transactionsLoading={transactionsLoading}
                                             transactionsError={transactionsError}
+                                            wallet={wallet}
+                                            onTransactionChange={refetch}
+                                            onEditTransaction={handleEditTransaction}
                                         />
                                     )}
 

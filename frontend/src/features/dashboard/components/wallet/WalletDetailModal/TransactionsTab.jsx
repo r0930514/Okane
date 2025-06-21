@@ -4,8 +4,13 @@ import { formatCurrency, formatDate, getTransactionType, getTransactionDate, get
 export default function TransactionsTab({ 
     walletStats, 
     transactionsLoading, 
-    transactionsError 
+    transactionsError,
+    onEditTransaction
 }) {
+    const handleTransactionClick = (transaction) => {
+        onEditTransaction?.(transaction);
+    };
+    
     if (transactionsLoading) {
         return (
             <div className="flex justify-center items-center py-6 lg:py-8">
@@ -27,7 +32,7 @@ export default function TransactionsTab({
             {/* 交易記錄列表 */}
             <div className="card bg-base-100 pt-3 lg:p-4">
                 {walletStats && walletStats.allTransactions.length > 0 ? (
-                    <div className="space-y-2 lg:space-y-3 overflow-y-auto">
+                    <div className="overflow-y-auto">
                         <h4 className="font-semibold text-base mb-3 lg:mb-4">共 {walletStats?.transactionCount || 0} 筆資料</h4>
                         {walletStats.allTransactions.map((transaction, index) => {
                             const transactionType = getTransactionType(transaction);
@@ -36,7 +41,11 @@ export default function TransactionsTab({
                             const category = transaction.category;
                             
                             return (
-                                <div key={transaction.id || index} className="flex items-center py-3 border-b border-base-300 last:border-b-0 gap-2 lg:gap-3">
+                                <div 
+                                    key={transaction.id || index}
+                                    className="flex items-center py-3 border-b border-base-300 last:border-b-0 gap-2 lg:gap-3 cursor-pointer hover:bg-base-200 transition-colors"
+                                    onClick={() => handleTransactionClick(transaction)}
+                                >
                                     {/* 左側交易資訊 */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-1">
@@ -83,5 +92,12 @@ TransactionsTab.propTypes = {
         allTransactions: PropTypes.arrayOf(PropTypes.object)
     }),
     transactionsLoading: PropTypes.bool.isRequired,
-    transactionsError: PropTypes.string
+    transactionsError: PropTypes.string,
+    wallet: PropTypes.shape({
+        id: PropTypes.number,
+        balance: PropTypes.number,
+        currentBalance: PropTypes.number
+    }),
+    onTransactionChange: PropTypes.func,
+    onEditTransaction: PropTypes.func
 };
