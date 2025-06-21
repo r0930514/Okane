@@ -58,15 +58,18 @@ export default function NavBar({ navigate, username }) {
                 
                 {/* 刷新按鈕 */}
                 <button 
-                    className={`btn btn-ghost btn-square ${isRefreshing ? 'loading' : ''}`}
+                    className={`btn btn-ghost btn-square`}
                     onClick={handleRefresh}
-                    disabled={isRefreshing}
-                    title="刷新數據"
+                    // disabled={isRefreshing}
+                    title="更新數據"
                 >
-                    <ArrowsClockwiseIcon
-                        size={24} 
-                        className={isRefreshing ? 'animate-spin' : ''} 
-                    />
+                    {isRefreshing ?
+                        <div className="loading loading-sm"></div>:
+                        <ArrowsClockwiseIcon
+                            size={24} 
+                            className={isRefreshing ? 'animate-spin' : ''} 
+                        />
+                    }
                 </button>
                 
                 {/* 新增按鈕 */}
