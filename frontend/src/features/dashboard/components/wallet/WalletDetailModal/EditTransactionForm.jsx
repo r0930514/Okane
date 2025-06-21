@@ -32,6 +32,9 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
         category: '',
         date: new Date().toISOString().split('T')[0]
     });
+    const originalAmount = transaction.type === 'income' ? parseFloat(transaction.amount) : -parseFloat(transaction.amount);
+    const updatedAmount = formData.type === 'income' ? parseFloat(formData.amount || 0) : -parseFloat(formData.amount || 0);
+    const newBalance = currentBalance - originalAmount + updatedAmount;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showCustomCategory, setShowCustomCategory] = useState(false);
@@ -175,14 +178,9 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
         <div className="h-full flex flex-col">
             {/* 金額顯示 */}
             <div className="text-end mb-6">
-                { (
+                { currentAmount === displayAmount.toString() && (
                     <>
                         <div className="flex gap-3 justify-end">
-                            <div className={`${currentAmount === displayAmount.toString() ? 'hidden': 'text-lg'} font-bold line-through ${
-                                transaction.type === 'income' ? 'text-success' : 'text-error'
-                            }`}>
-                                {transaction.type === 'income' ? '+' : '-'}${currentAmount}
-                            </div>
                             <div className={`text-lg font-bold ${
                                 formData.type === 'income' ? 'text-success' : 'text-error'
                             }`}>
@@ -193,7 +191,20 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
                             ${currentBalance.toLocaleString()}
                         </div>
                     </>
-                    
+                )}
+                { currentAmount !== displayAmount.toString() && (
+                    <>
+                        <div className="flex gap-3 justify-end">
+                            <div className={`${currentAmount === displayAmount.toString() ? 'hidden' : 'text-lg'} font-bold line-through ${transaction.type === 'income' ? 'text-success' : 'text-error'}`}>
+                                {transaction.type === 'income' ? '+' : '-'}${currentAmount}
+                            </div>
+                            <div className={`text-lg font-bold ${formData.type === 'income' ? 'text-success' : 'text-error'}`}>
+                                {formData.type === 'income' ? '+' : '-'}${displayAmount.toLocaleString()}
+                            </div>
+                        </div><div className="text-3xl font-bold ">
+                            ${newBalance.toLocaleString()}
+                        </div>
+                    </>
                 )}
             </div>
       
