@@ -106,7 +106,7 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                                 {/* 餘額顯示 - 響應式字體大小 */}
                                 <div className="text-center lg:text-end mb-4 lg:mb-6">
                                     <div className="text-2xl lg:text-3xl font-bold">
-                                        {formatCurrency(wallet.balance || wallet.currentBalance)}
+                                        {formatCurrency(walletStats?.currentBalance || wallet.balance || wallet.currentBalance || 0)}
                                     </div>
                                 </div>
 

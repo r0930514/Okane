@@ -13,6 +13,7 @@ export const useWalletStats = (wallet, transactions) => {
             return {
                 income: 0,
                 expense: 0,
+                currentBalance: wallet?.balance || wallet?.currentBalance || 0,
                 allTransactions: [],
                 transactionCount: 0
             };
@@ -33,9 +34,13 @@ export const useWalletStats = (wallet, transactions) => {
                 return dateB - dateA;
             });
 
+        // 使用後端計算好的餘額，不需要重新計算
+        const currentBalance = wallet.currentBalance || wallet.balance || 0;
+
         return {
             income,
             expense,
+            currentBalance,
             allTransactions,
             transactionCount: transactions.length
         };

@@ -6,7 +6,7 @@ import WalletDetailModal from "./WalletDetailModal/index";
 import { useWallets } from '../../hooks/useWallets.js';
 
 export default function WalletList() {
-    const { wallets, loading, error } = useWallets();
+    const { wallets, loading, error, refetch } = useWallets();
     
     // Modal 狀態管理
     const [selectedWallet, setSelectedWallet] = useState(null);
@@ -52,6 +52,8 @@ export default function WalletList() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedWallet(null);
+        // 重新獲取錢包資料以更新餘額
+        refetch();
     };
 
     const handleAddWallet = (category) => {
