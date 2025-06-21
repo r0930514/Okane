@@ -59,10 +59,10 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
             return;
         }
 
-        if (!formData.description.trim()) {
-            setError('請輸入交易描述');
-            return;
-        }
+        // if (!formData.description.trim()) {
+        //     setError('請輸入交易描述');
+        //     return;
+        // }
 
         if (!formData.category.trim()) {
             setError('請選擇或輸入分類');
@@ -81,7 +81,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
             const transactionData = {
                 amount: parseFloat(formData.amount),
                 type: formData.type,
-                description: formData.description.trim(),
+                description: formData.description.trim() || formData.category.trim(),
                 category: formData.category.trim(),
                 date: formData.date
             };
@@ -265,7 +265,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                         {/* 交易描述 */}
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">交易描述</legend>
-                            <label className="textarea validator w-full">
+                            <label className="textarea w-full">
                                 <textarea
                                     className="grow w-full"
                                     placeholder="請輸入交易的詳細描述"
@@ -362,7 +362,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                     type="submit"
                     className="btn btn-primary"
                     onClick={handleSubmit}
-                    disabled={loading || !formData.amount || !formData.description.trim() || !formData.category.trim()}
+                    disabled={loading || !formData.amount ||  !formData.category.trim()}
                 >
                     {loading ? (
                         <>
