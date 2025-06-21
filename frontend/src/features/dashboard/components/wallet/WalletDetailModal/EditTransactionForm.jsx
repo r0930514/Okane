@@ -151,6 +151,7 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
                 setError(result.error || '刪除交易失敗');
                 setShowDeleteModal(false);
             }
+            onSuccess?.();
         } catch (err) {
             setError('系統錯誤，請稍後再試');
             setShowDeleteModal(false);

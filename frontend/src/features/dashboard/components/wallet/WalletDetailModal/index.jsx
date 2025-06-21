@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useCallback } from "react";
 import { useTransactions } from '../../../hooks/useTransactions';
+import { useWallets } from '../../../hooks/useWallets';
 import { useWalletStats } from '../../../hooks/useWalletStats';
 import { formatCurrency } from '../../../../../shared/utils/formatUtils';
 import { TAB_TYPES, VIEW_MODES } from '../../../constants/walletConstants';
@@ -11,17 +12,19 @@ import UpdateBalanceForm from './UpdateBalanceForm';
 import AddTransactionForm from './AddTransactionForm';
 import EditTransactionForm from './EditTransactionForm';
 
-export default function WalletDetailModal({ wallet, isOpen, onClose }) {
+export default function WalletDetailModal({ walletId, isOpen, onClose }) {
+    const { wallets, error, refetch: refetchWallets } = useWallets();
+    const wallet = wallets.find(w => w.id === walletId);
     const [activeTab, setActiveTab] = useState(TAB_TYPES.TRANSACTIONS);
     const [viewMode, setViewMode] = useState(VIEW_MODES.DEFAULT);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
     
-    // 使用 useTransactions hook 取得該錢包的交易明細
+    // 使用 useWallets hook 取得錢包資料
     const { 
         transactions, 
         loading: transactionsLoading, 
         error: transactionsError,
-        refetch
+        refetch: refetchTransactions
     } = useTransactions(wallet?.id);
 
     // 使用自定義 hook 計算錢包統計資訊
@@ -61,10 +64,33 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
     const handleFormSuccess = useCallback(() => {
         setViewMode(VIEW_MODES.DEFAULT);
         setSelectedTransaction(null);
-        refetch(); // 重新載入交易資料
-    }, [refetch]);
+        refetchTransactions(); // 重新載入交易明細
+        refetchWallets(); // 重新載入錢包資料
+    }, [refetchWallets, refetchTransactions]);
 
-    if (!isOpen || !wallet) return null;
+    if (!isOpen) return null;
+
+    if (error) {
+        return (
+            <dialog className="modal modal-bottom sm:modal-middle modal-open">
+                <div className="modal-box">
+                    <p>Error: {error}</p>
+                    <button className="btn btn-error" onClick={onClose}>Close</button>
+                </div>
+            </dialog>
+        );
+    }
+
+    if (!wallet) {
+        return (
+            <dialog className="modal modal-bottom sm:modal-middle modal-open">
+                <div className="modal-box">
+                    <p>No wallet data available.</p>
+                    <button className="btn btn-error" onClick={onClose}>Close</button>
+                </div>
+            </dialog>
+        );
+    }
     return (
         <dialog className="modal modal-bottom sm:modal-middle modal-open">
             <div className="modal-box w-full h-screen max-w-none mt-4  lg:w-11/12 lg:max-w-5xl lg:h-4/5 lg:max-h-screen m-0 lg:m-auto rounded-t-4xl lg:rounded-2xl">
@@ -140,7 +166,7 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
                                             transactionsLoading={transactionsLoading}
                                             transactionsError={transactionsError}
                                             wallet={wallet}
-                                            onTransactionChange={refetch}
+                                            onTransactionChange={refetchTransactions}
                                             onEditTransaction={handleEditTransaction}
                                         />
                                     )}
@@ -169,17 +195,7 @@ export default function WalletDetailModal({ wallet, isOpen, onClose }) {
 }
 
 WalletDetailModal.propTypes = {
-    wallet: PropTypes.shape({
-        id: PropTypes.number,
-        walletName: PropTypes.string,
-        walletType: PropTypes.string,
-        balance: PropTypes.number,
-        currentBalance: PropTypes.number,
-        walletColor: PropTypes.string,
-        description: PropTypes.string,
-        createdAt: PropTypes.string,
-        updatedAt: PropTypes.string
-    }),
+    walletId: PropTypes.number,
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired
 };

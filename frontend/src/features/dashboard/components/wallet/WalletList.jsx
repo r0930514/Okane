@@ -143,7 +143,7 @@ export default function WalletList() {
 
             {/* 錢包詳細資訊 Modal */}
             <WalletDetailModal
-                wallet={selectedWallet}
+                walletId={selectedWallet?.id}
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
             />
