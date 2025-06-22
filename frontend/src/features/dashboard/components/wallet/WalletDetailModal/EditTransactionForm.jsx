@@ -367,7 +367,7 @@ export default function EditTransactionForm({ wallet, transaction, onCancel, onS
 
                         {/* 預覽 */}
                         {formData.amount && formData.description && (
-                            <div className="card card-border p-4">
+                            <div className="card card-border p-4 bg-base-200">
                                 <h4 className="font-medium mb-2">交易預覽</h4>
                                 <div className="space-y-1 text-sm">
                                     <div className="flex justify-between">
