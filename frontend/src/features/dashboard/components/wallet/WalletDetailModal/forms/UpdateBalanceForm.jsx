@@ -1,56 +1,58 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { 
-    CurrencyDollarIcon
-} from "@phosphor-icons/react";
-import { useTransactions } from '../../../../hooks/useTransactions';
+import { CurrencyDollarIcon } from "@phosphor-icons/react";
+import { useTransactions } from "../../../../hooks/useTransactions";
 
 export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
-    const [targetBalance, setTargetBalance] = useState('');
-    const [description, setDescription] = useState('');
+    const [targetBalance, setTargetBalance] = useState("");
+    const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
 
     const { createTransaction } = useTransactions(wallet?.id);
 
     const currentBalance = wallet?.balance || wallet?.currentBalance || 0;
-    const newBalance = targetBalance ? parseFloat(targetBalance) : currentBalance;
-    const adjustmentAmount = targetBalance ? parseFloat(targetBalance) - currentBalance : 0;
+    const newBalance = targetBalance
+        ? parseFloat(targetBalance)
+        : currentBalance;
+    const adjustmentAmount = targetBalance
+        ? parseFloat(targetBalance) - currentBalance
+        : 0;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!targetBalance || parseFloat(targetBalance) === currentBalance) {
-            setError('請輸入目標餘額');
+            setError("請輸入目標餘額");
             return;
         }
 
         if (!description.trim()) {
-            setError('請輸入調整說明');
+            setError("請輸入調整說明");
             return;
         }
 
         setLoading(true);
-        setError('');
+        setError("");
 
         try {
             const transactionData = {
                 amount: parseFloat(adjustmentAmount),
-                type: parseFloat(adjustmentAmount) > 0 ? 'income' : 'expense',
+                type: parseFloat(adjustmentAmount) > 0 ? "income" : "expense",
                 description: description.trim(),
-                category: '餘額調整',
-                date: new Date().toISOString().split('T')[0]
+                category: "餘額調整",
+                date: new Date().toISOString().split("T")[0],
             };
 
             const result = await createTransaction(transactionData);
-            
+
             if (result.success) {
                 onSuccess?.();
             } else {
-                setError(result.error || '更新失敗');
+                setError(result.error || "更新失敗");
             }
         } catch (err) {
-            setError('系統錯誤，請稍後再試');
+            setError("系統錯誤，請稍後再試");
         } finally {
             setLoading(false);
         }
@@ -59,9 +61,9 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
     const handleTargetBalanceChange = (e) => {
         const value = e.target.value;
         // 只允許正數和小數點
-        if (value === '' || /^\d*\.?\d*$/.test(value)) {
+        if (value === "" || /^\d*\.?\d*$/.test(value)) {
             setTargetBalance(value);
-            setError('');
+            setError("");
         }
     };
 
@@ -71,10 +73,17 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
             <div className="text-center lg:text-end mb-4 lg:mb-6">
                 {targetBalance && parseFloat(adjustmentAmount) !== 0 && (
                     <>
-                        <div className={`text-base lg:text-lg font-medium ${
-                            parseFloat(adjustmentAmount) > 0 ? 'text-success' : 'text-error'
-                        }`}>
-                            {parseFloat(adjustmentAmount) > 0 ? '+' : '-'}${Math.abs(parseFloat(adjustmentAmount)).toLocaleString()}
+                        <div
+                            className={`text-base lg:text-lg font-medium ${
+                                parseFloat(adjustmentAmount) > 0
+                                    ? "text-success"
+                                    : "text-error"
+                            }`}
+                        >
+                            {parseFloat(adjustmentAmount) > 0 ? "+" : "-"}$
+                            {Math.abs(
+                                parseFloat(adjustmentAmount),
+                            ).toLocaleString()}
                         </div>
                         <div className="text-2xl lg:text-3xl font-bold">
                             ${newBalance.toLocaleString()}
@@ -104,9 +113,13 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                                 </div>
                                 <div className="flex justify-between">
                                     <span>調整後餘額：</span>
-                                    <span className={`font-semibold ${
-                                        newBalance >= 0 ? 'text-success' : 'text-error'
-                                    }`}>
+                                    <span
+                                        className={`font-semibold ${
+                                            newBalance >= 0
+                                                ? "text-success"
+                                                : "text-error"
+                                        }`}
+                                    >
                                         ${newBalance.toLocaleString()}
                                     </span>
                                 </div>
@@ -115,7 +128,9 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
 
                         {/* 目標餘額 */}
                         <fieldset className="fieldset">
-                            <legend className="fieldset-legend">目標餘額</legend>
+                            <legend className="fieldset-legend">
+                                目標餘額
+                            </legend>
                             <label className="input validator w-full">
                                 <CurrencyDollarIcon className="h-5 w-5 text-gray-500" />
                                 <input
@@ -127,49 +142,76 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                                     disabled={loading}
                                 />
                             </label>
-                            <p className="label">請輸入您希望錢包調整到的餘額數值</p>
+                            <p className="label">
+                                請輸入您希望錢包調整到的餘額數值
+                            </p>
                         </fieldset>
 
                         {/* 調整說明 */}
                         <fieldset className="fieldset">
-                            <legend className="fieldset-legend">調整說明</legend>
-                            <label className="textarea validator w-full">
-                                <textarea
-                                    className="grow w-full"
-                                    placeholder="請說明此次餘額調整的原因"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    disabled={loading}
-                                    rows={3}
-                                />
-                            </label>
-                            <p className="label">請詳細說明此次餘額調整的原因</p>
+                            <legend className="fieldset-legend">
+                                調整說明
+                            </legend>
+                            <textarea
+                                className="textarea validator w-full"
+                                placeholder="請說明此次餘額調整的原因"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                disabled={loading}
+                                rows={3}
+                            />
+                            <p className="label">
+                                請詳細說明此次餘額調整的原因
+                            </p>
                         </fieldset>
 
                         {/* 預覽 */}
-                        {targetBalance && parseFloat(adjustmentAmount) !== 0 && description && (
+                        {targetBalance &&
+                            parseFloat(adjustmentAmount) !== 0 &&
+                            description && (
                             <div className="card card-border p-4">
-                                <h4 className="font-medium mb-2">調整預覽</h4>
+                                <h4 className="font-medium mb-2">
+                                        調整預覽
+                                </h4>
                                 <div className="space-y-1 text-sm">
                                     <div className="flex justify-between">
                                         <span>類型：</span>
-                                        <span className={
-                                            parseFloat(adjustmentAmount) > 0
-                                                ? 'text-success' 
-                                                : 'text-error'
-                                        }>
-                                            {parseFloat(adjustmentAmount) > 0 ? '餘額增加' : '餘額減少'}
+                                        <span
+                                            className={
+                                                parseFloat(
+                                                    adjustmentAmount,
+                                                ) > 0
+                                                    ? "text-success"
+                                                    : "text-error"
+                                            }
+                                        >
+                                            {parseFloat(adjustmentAmount) >
+                                                0
+                                                ? "餘額增加"
+                                                : "餘額減少"}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span>金額：</span>
-                                        <span className={
-                                            parseFloat(adjustmentAmount) > 0
-                                                ? 'text-success font-semibold' 
-                                                : 'text-error font-semibold'
-                                        }>
-                                            {parseFloat(adjustmentAmount) > 0 ? '+' : '-'}
-                                            ${Math.abs(parseFloat(adjustmentAmount)).toLocaleString()}
+                                        <span
+                                            className={
+                                                parseFloat(
+                                                    adjustmentAmount,
+                                                ) > 0
+                                                    ? "text-success font-semibold"
+                                                    : "text-error font-semibold"
+                                            }
+                                        >
+                                            {parseFloat(adjustmentAmount) >
+                                                0
+                                                ? "+"
+                                                : "-"}
+                                                $
+                                            {Math.abs(
+                                                parseFloat(
+                                                    adjustmentAmount,
+                                                ),
+                                            ).toLocaleString()}
                                         </span>
                                     </div>
                                     <div className="flex justify-between">
@@ -178,7 +220,13 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                                     </div>
                                     <div className="flex justify-between">
                                         <span>日期：</span>
-                                        <span>{new Date().toISOString().split('T')[0]}</span>
+                                        <span>
+                                            {
+                                                new Date()
+                                                    .toISOString()
+                                                    .split("T")[0]
+                                            }
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -216,7 +264,7 @@ export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
                             處理中...
                         </>
                     ) : (
-                        '確認更新'
+                        "確認更新"
                     )}
                 </button>
             </div>
@@ -228,8 +276,8 @@ UpdateBalanceForm.propTypes = {
     wallet: PropTypes.shape({
         id: PropTypes.number,
         balance: PropTypes.number,
-        currentBalance: PropTypes.number
+        currentBalance: PropTypes.number,
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
-    onSuccess: PropTypes.func
+    onSuccess: PropTypes.func,
 };

@@ -7,27 +7,13 @@ import CategorySelector from "../shared/CategorySelector";
 import AmountInput from "../shared/AmountInput";
 import TransactionPreview from "../shared/TransactionPreview";
 import useTransactionFormValidation from "../../../../hooks/useTransactionFormValidation";
+import { DEFAULT_CATEGORIES } from "../../../../constants/walletConstants";
 
 // 交易類型選項
 const TRANSACTION_TYPES = [
     { value: "income", label: "收入", color: "text-success" },
     { value: "expense", label: "支出", color: "text-error" },
 ];
-
-// 預設分類
-const DEFAULT_CATEGORIES = {
-    income: ["薪水", "獎金", "投資收益", "副業收入", "其他收入"],
-    expense: [
-        "餐飲",
-        "交通",
-        "購物",
-        "娛樂",
-        "醫療",
-        "教育",
-        "居住",
-        "其他支出",
-    ],
-};
 
 export default function EditTransactionForm({
     wallet,
@@ -265,6 +251,27 @@ export default function EditTransactionForm({
                             loading={loading}
                         />
 
+                        {/* 交易描述 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">
+                                交易描述
+                            </legend>
+                            <textarea
+                                className="textarea validator w-full h-24"
+                                placeholder="請輸入交易的詳細描述"
+                                value={formData.description}
+                                onChange={(e) =>
+                                    handleInputChange(
+                                        "description",
+                                        e.target.value,
+                                    )
+                                }
+                                disabled={loading}
+                                rows={3}
+                            />
+                            <p className="label">請詳細描述此筆交易</p>
+                        </fieldset>
+
                         {/* 分類 */}
                         <CategorySelector
                             categories={currentCategories}
@@ -277,29 +284,6 @@ export default function EditTransactionForm({
                             loading={loading}
                             type={formData.type}
                         />
-
-                        {/* 交易描述 */}
-                        <fieldset className="fieldset">
-                            <legend className="fieldset-legend">
-                                交易描述
-                            </legend>
-                            <label className="textarea validator w-full">
-                                <textarea
-                                    className="grow w-full"
-                                    placeholder="請輸入交易的詳細描述"
-                                    value={formData.description}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "description",
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={loading}
-                                    rows={3}
-                                />
-                            </label>
-                            <p className="label">請詳細描述此筆交易</p>
-                        </fieldset>
 
                         {/* 交易日期 */}
                         <fieldset className="fieldset">
