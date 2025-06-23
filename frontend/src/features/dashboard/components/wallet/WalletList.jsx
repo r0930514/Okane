@@ -3,15 +3,15 @@ import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import WalletListCard from "./WalletListCard";
 import WalletDetailModal from "./WalletDetailModal/index";
-import { useWallets } from '../../hooks/useWallets.js';
+import { useWallets } from "../../hooks/useWallets.js";
 
 export default function WalletList() {
     const { wallets, loading, error, refetch } = useWallets();
-    
+
     // Modal 狀態管理
     const [selectedWallet, setSelectedWallet] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
+
     // 分類類型對應的中文名稱
     const categoryNames = {
         manual: "手動帳戶",
@@ -21,26 +21,26 @@ export default function WalletList() {
         credit: "信用卡",
         investment: "投資帳戶",
         savings: "儲蓄帳戶",
-        cash: "現金帳戶"
+        cash: "現金帳戶",
     };
-    
+
     // 動態根據錢包類型分組，只包含有錢包的分類
     const groupedWallets = useMemo(() => {
         const groups = {};
-        
-        wallets.forEach(wallet => {
-            const walletType = wallet.walletType || 'manual'; // 預設為 manual
-            
+
+        wallets.forEach((wallet) => {
+            const walletType = wallet.walletType || "manual"; // 預設為 manual
+
             if (!groups[walletType]) {
                 groups[walletType] = [];
             }
-            
+
             groups[walletType].push(wallet);
         });
-        
+
         return groups;
     }, [wallets]);
-    
+
     // 取得有錢包的分類列表
     const availableCategories = Object.keys(groupedWallets);
 
@@ -81,10 +81,12 @@ export default function WalletList() {
         <div className="flex flex-col gap-3 w-full">
             <div className="flex items-center justify-between h-12 px-6 lg:px-6">
                 <div className="flex items-center gap-2">
-                    <div className="text-start justify-start text-2xl font-semibold text-base-content">{title}</div>
+                    <div className="text-start justify-start text-2xl font-semibold text-base-content">
+                        {title}
+                    </div>
                     <CaretRight size={24} className="text-gray-400" />
                 </div>
-                <button 
+                <button
                     className="btn btn-ghost btn-sm gap-2"
                     onClick={() => handleAddWallet(category)}
                 >
@@ -108,12 +110,14 @@ export default function WalletList() {
 
     WalletSection.propTypes = {
         title: PropTypes.string.isRequired,
-        wallets: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            walletName: PropTypes.string.isRequired,
-            balance: PropTypes.number,
-            walletColor: PropTypes.string.isRequired,
-        })).isRequired,
+        wallets: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.number.isRequired,
+                walletName: PropTypes.string.isRequired,
+                balance: PropTypes.number,
+                walletColor: PropTypes.string.isRequired,
+            }),
+        ).isRequired,
         category: PropTypes.string.isRequired,
     };
 
@@ -130,12 +134,12 @@ export default function WalletList() {
                         </div>
                     </div>
                 ) : (
-                    availableCategories.map(category => (
-                        <WalletSection 
+                    availableCategories.map((category) => (
+                        <WalletSection
                             key={category}
-                            title={categoryNames[category] || category} 
-                            wallets={groupedWallets[category]} 
-                            category={category} 
+                            title={categoryNames[category] || category}
+                            wallets={groupedWallets[category]}
+                            category={category}
                         />
                     ))
                 )}
@@ -148,5 +152,5 @@ export default function WalletList() {
                 onClose={handleCloseModal}
             />
         </>
-    )
+    );
 }
