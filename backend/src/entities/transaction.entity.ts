@@ -58,8 +58,24 @@ export class Transaction {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
+
+  @Column({ default: 'TWD' })
+  currency: string;
+
+  @Column('decimal', { precision: 18, scale: 6, nullable: true })
+  exchangeRate: number;
+
+  @Column({ default: 'manual' })
+  exchangeRateSource: string;
+
+  @Column('decimal', { precision: 18, scale: 2, nullable: true })
+  amountInWalletCurrency: number;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.transactionHistory)
   wallet: Wallet;

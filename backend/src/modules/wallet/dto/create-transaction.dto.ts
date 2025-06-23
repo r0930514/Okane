@@ -72,4 +72,28 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsString()
   externalTransactionId?: string;
+
+  @ApiPropertyOptional({
+    description: '交易貨幣（如 TWD, USD, JPY）',
+    example: 'TWD',
+  })
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @ApiPropertyOptional({
+    description: '交易匯率（交易貨幣兌錢包主貨幣）',
+    example: 32.5,
+  })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 6 })
+  exchangeRate?: number;
+
+  @ApiPropertyOptional({
+    description: '匯率來源（如 yahoo, google, twcb, manual）',
+    example: 'manual',
+  })
+  @IsOptional()
+  @IsString()
+  exchangeRateSource?: string;
 }
