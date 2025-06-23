@@ -1,9 +1,11 @@
 import { ListIcon, UserCircleIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react"
+import { useAuth } from "../../../auth/hooks/useAuth";
 import { useState } from "react"
 import PropTypes from 'prop-types'
 
 export default function NavBar({ navigate, username }) {
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const { logout } = useAuth();
 
     const handleRefresh = async () => {
         setIsRefreshing(true)
@@ -19,15 +21,15 @@ export default function NavBar({ navigate, username }) {
         // 這裡之後可以打開新增資產的模態框
     }
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         if (confirm("確定要登出嗎？")) {
-            // AuthService.logout(); // 待後續整合 AuthService
+            await logout(); // 待後續整合 AuthService
             navigate('/');
         }
     }
 
     return (
-        <nav className="navbar w-full shadow-xs bg-base-100">
+        <nav className="navbar w-full shadow-xs bg-base-100 border-b border-base-200">
             <div className="flex-none">
                 <label htmlFor="drawer" className="btn btn-square btn-ghost drawer-button lg:hidden">
                     <ListIcon size={24} />
@@ -58,15 +60,18 @@ export default function NavBar({ navigate, username }) {
                 
                 {/* 刷新按鈕 */}
                 <button 
-                    className={`btn btn-ghost btn-square ${isRefreshing ? 'loading' : ''}`}
+                    className={`btn btn-ghost btn-square`}
                     onClick={handleRefresh}
-                    disabled={isRefreshing}
-                    title="刷新數據"
+                    // disabled={isRefreshing}
+                    title="更新數據"
                 >
-                    <ArrowsClockwiseIcon
-                        size={24} 
-                        className={isRefreshing ? 'animate-spin' : ''} 
-                    />
+                    {isRefreshing ?
+                        <div className="loading loading-sm"></div>:
+                        <ArrowsClockwiseIcon
+                            size={24} 
+                            className={isRefreshing ? 'animate-spin' : ''} 
+                        />
+                    }
                 </button>
                 
                 {/* 新增按鈕 */}

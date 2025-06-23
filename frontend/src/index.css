@@ -56,3 +56,9 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 }
+
+@layer components {
+  .fieldset-legend {
+    font-size: 0.875rem !important; /* 14px */
+  }
+}

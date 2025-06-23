@@ -10,21 +10,23 @@ export default function DashboardLayout({ children }) {
     const navigate = useNavigate();
 
     return (
-        <div className="drawer mx-auto lg:drawer-open">
+        <div className="drawer mx-auto lg:drawer-open h-screen">
             {/* Content */}
             <input id="drawer" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col items-start justify-start h-full">
-                {/* Navbar */}
-                <NavBar navigate={navigate} username={username} />
+            <div className="drawer-content flex flex-col h-full">
+                {/* Navbar - 固定在頂端 */}
+                <div className="sticky top-0 z-50">
+                    <NavBar navigate={navigate} username={username} />
+                </div>
                 
-                {/* Main content */}
-                <main className="flex-1 w-full">
+                {/* Main content - 可捲動區域 */}
+                <main className="flex-1 overflow-y-auto">
                     {children}
                 </main>
             </div>
 
             {/* Sidebar */}
-            <div className="drawer-side">
+            <div className="drawer-side z-[60]">
                 <label htmlFor="drawer" aria-label="close sidebar" className="drawer-overlay"></label>
                 <SideBar />
             </div>
