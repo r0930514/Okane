@@ -136,10 +136,7 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
                                 <div className="text-center lg:text-end mb-4 lg:mb-6">
                                     <div className="text-2xl lg:text-3xl font-bold">
                                         {formatCurrency(
-                                            walletStats?.currentBalance ||
-                                                wallet.balance ||
-                                                wallet.currentBalance ||
-                                                0,
+                                            walletStats?.currentBalance || 0,
                                         )}
                                     </div>
                                 </div>

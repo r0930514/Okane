@@ -42,7 +42,8 @@ export const useWalletStats = (wallet, transactions) => {
             expense,
             currentBalance,
             allTransactions,
-            transactionCount: transactions.length
+            transactionCount: transactions.length,
+            currency: wallet.currency || 'TWD',
         };
     }, [wallet, transactions]);
 

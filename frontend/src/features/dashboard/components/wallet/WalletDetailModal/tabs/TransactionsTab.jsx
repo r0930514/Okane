@@ -52,12 +52,11 @@ export default function TransactionsTab({
                                     transaction.amount || 0;
                                 const category = transaction.category;
                                 const walletCurrency =
-                                    walletStats?.currency || "TWD";
+                                    walletStats?.currency ;
                                 const showConverted =
                                     transaction.currency &&
                                     walletCurrency &&
-                                    transaction.currency !== walletCurrency &&
-                                    transaction.amountInWalletCurrency;
+                                    transaction.currency !== walletCurrency;
                                 return (
                                     <div
                                         key={transaction.id || index}
