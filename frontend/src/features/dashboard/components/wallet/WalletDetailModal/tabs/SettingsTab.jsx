@@ -147,7 +147,7 @@ export default function SettingsTab({ wallet }) {
                             <label className="input validator w-full">
                                 <input
                                     type="text"
-                                    className="grow input input-bordered"
+                                    className="grow"
                                     name="walletName"
                                     placeholder="請輸入錢包名稱"
                                     value={formData.walletName}
@@ -165,7 +165,7 @@ export default function SettingsTab({ wallet }) {
                             <label className="input validator w-full">
                                 <input
                                     type="text"
-                                    className="grow input input-bordered"
+                                    className="grow"
                                     name="accountNumber"
                                     placeholder="請輸入帳戶號碼"
                                     value={formData.accountNumber}
@@ -221,7 +221,7 @@ export default function SettingsTab({ wallet }) {
                             <label className="input validator w-full">
                                 <input
                                     type="color"
-                                    className="input input-bordered h-12 w-16"
+                                    className="w-16 h-12"
                                     name="walletColor"
                                     value={formData.walletColor}
                                     onChange={handleChange}
@@ -238,7 +238,7 @@ export default function SettingsTab({ wallet }) {
                                 <input
                                     type="number"
                                     step="0.01"
-                                    className="grow input input-bordered"
+                                    className="grow"
                                     name="initialBalance"
                                     value={formData.initialBalance}
                                     onChange={(e) => {
