@@ -1,45 +1,42 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { CalendarIcon } from "@phosphor-icons/react";
-import { useTransactions } from '../../../hooks/useTransactions';
-import CategorySelector from './CategorySelector';
-import AmountInput from './AmountInput';
-import TransactionPreview from './TransactionPreview';
-import useTransactionFormValidation from '../../../hooks/useTransactionFormValidation';
+import { useTransactions } from "../../../../hooks/useTransactions";
+import CategorySelector from "../shared/CategorySelector";
+import AmountInput from "../shared/AmountInput";
+import TransactionPreview from "../shared/TransactionPreview";
+import useTransactionFormValidation from "../../../../hooks/useTransactionFormValidation";
+import { DEFAULT_CATEGORIES } from "../../../../constants/walletConstants";
 
 // 交易類型選項
 const TRANSACTION_TYPES = [
-    { value: 'income', label: '收入', color: 'text-success' },
-    { value: 'expense', label: '支出', color: 'text-error' }
+    { value: "income", label: "收入", color: "text-success" },
+    { value: "expense", label: "支出", color: "text-error" },
 ];
-
-// 預設分類
-const DEFAULT_CATEGORIES = {
-    income: ['薪水', '獎金', '投資收益', '副業收入', '其他收入'],
-    expense: ['餐飲', '交通', '購物', '娛樂', '醫療', '教育', '居住', '其他支出']
-};
 
 export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
     const [formData, setFormData] = useState({
-        type: 'expense',
-        amount: '',
-        description: '',
-        category: '',
-        date: new Date().toISOString().split('T')[0]
+        type: "expense",
+        amount: "",
+        description: "",
+        category: "",
+        date: new Date().toISOString().split("T")[0],
     });
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [showCustomCategory, setShowCustomCategory] = useState(false);
     const { createTransaction } = useTransactions(wallet?.id);
-    const { validate } = useTransactionFormValidation({ requireDescription: false });
+    const { validate } = useTransactionFormValidation({
+        requireDescription: false,
+    });
 
     const handleInputChange = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        if (error) setError('');
+        setFormData((prev) => ({ ...prev, [field]: value }));
+        if (error) setError("");
     };
 
     const handleTypeChange = (type) => {
-        setFormData(prev => ({ ...prev, type, category: '' }));
+        setFormData((prev) => ({ ...prev, type, category: "" }));
         setShowCustomCategory(false);
     };
 
@@ -51,23 +48,24 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
             return;
         }
         setLoading(true);
-        setError('');
+        setError("");
         try {
             const transactionData = {
                 amount: parseFloat(formData.amount),
                 type: formData.type,
-                description: formData.description.trim() || formData.category.trim(),
+                description:
+                    formData.description.trim() || formData.category.trim(),
                 category: formData.category.trim(),
-                date: formData.date
+                date: formData.date,
             };
             const result = await createTransaction(transactionData);
             if (result.success) {
                 onSuccess?.();
             } else {
-                setError(result.error || '新增交易失敗');
+                setError(result.error || "新增交易失敗");
             }
         } catch (err) {
-            setError('系統錯誤，請稍後再試');
+            setError("系統錯誤，請稍後再試");
         } finally {
             setLoading(false);
         }
@@ -76,7 +74,10 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
     const currentCategories = DEFAULT_CATEGORIES[formData.type];
     const displayAmount = formData.amount ? parseFloat(formData.amount) : 0;
     const currentBalance = wallet?.balance || wallet?.currentBalance || 0;
-    const newBalance = formData.amount ? currentBalance + (formData.type === 'income' ? displayAmount : -displayAmount) : currentBalance;
+    const newBalance = formData.amount
+        ? currentBalance +
+          (formData.type === "income" ? displayAmount : -displayAmount)
+        : currentBalance;
 
     return (
         <div className="h-full flex flex-col">
@@ -84,16 +85,19 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
             <div className="text-end mb-6">
                 {formData.amount && displayAmount > 0 ? (
                     <>
-                        <div className={`text-lg font-medium ${formData.type === 'income' ? 'text-success' : 'text-error'}`}>
-                            {formData.type === 'income' ? '+' : '-'}${displayAmount.toLocaleString()}
+                        <div
+                            className={`text-lg font-medium ${formData.type === "income" ? "text-success" : "text-error"}`}
+                        >
+                            {formData.type === "income" ? "+" : "-"}$
+                            {displayAmount.toLocaleString()}
                         </div>
                         <div className="text-3xl font-bold">
-              ${newBalance.toLocaleString()}
+                            ${newBalance.toLocaleString()}
                         </div>
                     </>
                 ) : (
                     <div className="text-3xl font-bold">
-            ${currentBalance.toLocaleString()}
+                        ${currentBalance.toLocaleString()}
                     </div>
                 )}
             </div>
@@ -103,9 +107,11 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                     <div className="space-y-4 flex-1 pr-2">
                         {/* 交易類型選擇 */}
                         <fieldset className="fieldset">
-                            <legend className="fieldset-legend">交易類型</legend>
+                            <legend className="fieldset-legend">
+                                交易類型
+                            </legend>
                             <div role="tablist" className="tabs tabs-box">
-                                {TRANSACTION_TYPES.map(type => (
+                                {TRANSACTION_TYPES.map((type) => (
                                     <input
                                         key={type.value}
                                         type="radio"
@@ -113,7 +119,9 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                                         className="tab"
                                         aria-label={type.label}
                                         checked={formData.type === type.value}
-                                        onChange={() => handleTypeChange(type.value)}
+                                        onChange={() =>
+                                            handleTypeChange(type.value)
+                                        }
                                         disabled={loading}
                                     />
                                 ))}
@@ -123,7 +131,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                         {/* 金額 */}
                         <AmountInput
                             value={formData.amount}
-                            onChange={val => handleInputChange('amount', val)}
+                            onChange={(val) => handleInputChange("amount", val)}
                             loading={loading}
                         />
                         {/* 分類 */}
@@ -131,20 +139,29 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                             categories={currentCategories}
                             value={formData.category}
                             showCustomCategory={showCustomCategory}
-                            onCategoryChange={val => handleInputChange('category', val)}
+                            onCategoryChange={(val) =>
+                                handleInputChange("category", val)
+                            }
                             onCustomToggle={setShowCustomCategory}
                             loading={loading}
                             type={formData.type}
                         />
                         {/* 交易描述 */}
                         <fieldset className="fieldset">
-                            <legend className="fieldset-legend">交易描述</legend>
+                            <legend className="fieldset-legend">
+                                交易描述
+                            </legend>
                             <label className="textarea w-full">
                                 <textarea
                                     className="grow w-full"
                                     placeholder="請輸入交易的詳細描述"
                                     value={formData.description}
-                                    onChange={e => handleInputChange('description', e.target.value)}
+                                    onChange={(e) =>
+                                        handleInputChange(
+                                            "description",
+                                            e.target.value,
+                                        )
+                                    }
                                     disabled={loading}
                                     rows={3}
                                 />
@@ -153,16 +170,23 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                         </fieldset>
                         {/* 交易日期 */}
                         <fieldset className="fieldset">
-                            <legend className="fieldset-legend">交易日期</legend>
+                            <legend className="fieldset-legend">
+                                交易日期
+                            </legend>
                             <label className="input validator w-full">
                                 <CalendarIcon className="h-5 w-5 text-gray-500" />
                                 <input
                                     type="date"
                                     className="grow"
                                     value={formData.date}
-                                    onChange={e => handleInputChange('date', e.target.value)}
+                                    onChange={(e) =>
+                                        handleInputChange(
+                                            "date",
+                                            e.target.value,
+                                        )
+                                    }
                                     disabled={loading}
-                                    max={new Date().toISOString().split('T')[0]}
+                                    max={new Date().toISOString().split("T")[0]}
                                 />
                             </label>
                             <p className="label">請選擇交易發生的日期</p>
@@ -192,21 +216,23 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                     onClick={onCancel}
                     disabled={loading}
                 >
-          取消
+                    取消
                 </button>
                 <button
                     type="submit"
                     className="btn btn-primary"
                     onClick={handleSubmit}
-                    disabled={loading || !formData.amount || !formData.category.trim()}
+                    disabled={
+                        loading || !formData.amount || !formData.category.trim()
+                    }
                 >
                     {loading ? (
                         <>
                             <span className="loading loading-spinner loading-sm"></span>
-              新增中...
+                            新增中...
                         </>
                     ) : (
-                        '確認新增'
+                        "確認新增"
                     )}
                 </button>
             </div>
@@ -218,8 +244,8 @@ AddTransactionForm.propTypes = {
     wallet: PropTypes.shape({
         id: PropTypes.number,
         balance: PropTypes.number,
-        currentBalance: PropTypes.number
+        currentBalance: PropTypes.number,
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
-    onSuccess: PropTypes.func
+    onSuccess: PropTypes.func,
 };

@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { CalendarIcon, TrashIcon } from "@phosphor-icons/react";
-import { useTransactions } from "../../../hooks/useTransactions";
-import DeleteConfirmModal from "./DeleteConfirmModal";
-import CategorySelector from "./CategorySelector";
-import AmountInput from "./AmountInput";
-import TransactionPreview from "./TransactionPreview";
-import useTransactionFormValidation from "../../../hooks/useTransactionFormValidation";
+import { useTransactions } from "../../../../hooks/useTransactions";
+import DeleteConfirmModal from "../modals/DeleteConfirmModal";
+import CategorySelector from "../shared/CategorySelector";
+import AmountInput from "../shared/AmountInput";
+import TransactionPreview from "../shared/TransactionPreview";
+import useTransactionFormValidation from "../../../../hooks/useTransactionFormValidation";
 
 // 交易類型選項
 const TRANSACTION_TYPES = [

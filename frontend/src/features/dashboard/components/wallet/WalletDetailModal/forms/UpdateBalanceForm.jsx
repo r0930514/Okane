@@ -3,7 +3,7 @@ import { useState } from "react";
 import { 
     CurrencyDollarIcon
 } from "@phosphor-icons/react";
-import { useTransactions } from '../../../hooks/useTransactions';
+import { useTransactions } from '../../../../hooks/useTransactions';
 
 export default function UpdateBalanceForm({ wallet, onCancel, onSuccess }) {
     const [targetBalance, setTargetBalance] = useState('');

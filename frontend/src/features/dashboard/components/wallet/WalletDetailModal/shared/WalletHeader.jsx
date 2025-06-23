@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react";
-import { WALLET_TYPE_NAMES } from '../../../constants/walletConstants';
+import { WALLET_TYPE_NAMES } from '../../../../constants/walletConstants';
 
 export default function WalletHeader({ wallet, onUpdateBalance, onAddTransaction }) {
     const walletColor = wallet.walletColor || '#10b981';

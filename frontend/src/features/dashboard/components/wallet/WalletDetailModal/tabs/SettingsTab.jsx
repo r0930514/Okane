@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { GearIcon } from "@phosphor-icons/react";
-import { formatDate } from '../../../../../shared/utils/formatUtils';
-import { WALLET_TYPE_NAMES } from '../../../constants/walletConstants';
+import { formatDate } from '../../../../../../shared/utils/formatUtils';
+import { WALLET_TYPE_NAMES } from '../../../../constants/walletConstants';
 
 export default function SettingsTab({ wallet }) {
     return (

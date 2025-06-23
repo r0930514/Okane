@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { formatCurrency, formatDate, getTransactionType, getTransactionDate, getTransactionDescription } from '../../../../../shared/utils/formatUtils';
+import { formatCurrency, formatDate, getTransactionType, getTransactionDate, getTransactionDescription } from '../../../../../../shared/utils/formatUtils';
 
 export default function TransactionsTab({ 
     walletStats, 

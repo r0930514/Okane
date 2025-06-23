@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { TagIcon } from "@phosphor-icons/react";
-import { CATEGORY_ICONS } from '../../../constants/walletConstants.jsx';
+import { CATEGORY_ICONS } from '../../../../constants/walletConstants.jsx';
 
 export default function CategorySelector({
     categories,

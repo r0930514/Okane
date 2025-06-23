@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { TrashIcon, XCircleIcon } from "@phosphor-icons/react";
-import { useTransactions } from '../../../hooks/useTransactions';
-import { formatCurrency, formatDate, getTransactionType, getTransactionDate, getTransactionDescription } from '../../../../../shared/utils/formatUtils';
+import { useTransactions } from '../../../../hooks/useTransactions';
+import { formatCurrency, formatDate, getTransactionType, getTransactionDate, getTransactionDescription } from '../../../../../../shared/utils/formatUtils';
 
 export default function DeleteConfirmModal({ 
     isOpen, 

@@ -1,30 +1,30 @@
 import PropTypes from "prop-types";
 import { useState, useCallback } from "react";
-import { useTransactions } from '../../../hooks/useTransactions';
-import { useWallets } from '../../../hooks/useWallets';
-import { useWalletStats } from '../../../hooks/useWalletStats';
-import { formatCurrency } from '../../../../../shared/utils/formatUtils';
-import { TAB_TYPES, VIEW_MODES } from '../../../constants/walletConstants';
-import WalletHeader from './WalletHeader';
-import TransactionsTab from './TransactionsTab';
-import SettingsTab from './SettingsTab';
-import UpdateBalanceForm from './UpdateBalanceForm';
-import AddTransactionForm from './AddTransactionForm';
-import EditTransactionForm from './EditTransactionForm';
+import { useTransactions } from "../../../hooks/useTransactions";
+import { useWallets } from "../../../hooks/useWallets";
+import { useWalletStats } from "../../../hooks/useWalletStats";
+import { formatCurrency } from "../../../../../shared/utils/formatUtils";
+import { TAB_TYPES, VIEW_MODES } from "../../../constants/walletConstants";
+import WalletHeader from "./shared/WalletHeader";
+import TransactionsTab from "./tabs/TransactionsTab";
+import SettingsTab from "./tabs/SettingsTab";
+import UpdateBalanceForm from "./forms/UpdateBalanceForm";
+import AddTransactionForm from "./forms/AddTransactionForm";
+import EditTransactionForm from "./forms/EditTransactionForm";
 
 export default function WalletDetailModal({ walletId, isOpen, onClose }) {
     const { wallets, error, refetch: refetchWallets } = useWallets();
-    const wallet = wallets.find(w => w.id === walletId);
+    const wallet = wallets.find((w) => w.id === walletId);
     const [activeTab, setActiveTab] = useState(TAB_TYPES.TRANSACTIONS);
     const [viewMode, setViewMode] = useState(VIEW_MODES.DEFAULT);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
-    
+
     // 使用 useWallets hook 取得錢包資料
-    const { 
-        transactions, 
-        loading: transactionsLoading, 
+    const {
+        transactions,
+        loading: transactionsLoading,
         error: transactionsError,
-        refetch: refetchTransactions
+        refetch: refetchTransactions,
     } = useTransactions(wallet?.id);
 
     // 使用自定義 hook 計算錢包統計資訊
@@ -75,7 +75,9 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
             <dialog className="modal modal-bottom sm:modal-middle modal-open">
                 <div className="modal-box">
                     <p>Error: {error}</p>
-                    <button className="btn btn-error" onClick={onClose}>Close</button>
+                    <button className="btn btn-error" onClick={onClose}>
+                        Close
+                    </button>
                 </div>
             </dialog>
         );
@@ -86,7 +88,9 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
             <dialog className="modal modal-bottom sm:modal-middle modal-open">
                 <div className="modal-box">
                     <p>No wallet data available.</p>
-                    <button className="btn btn-error" onClick={onClose}>Close</button>
+                    <button className="btn btn-error" onClick={onClose}>
+                        Close
+                    </button>
                 </div>
             </dialog>
         );
@@ -94,13 +98,12 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
     return (
         <dialog className="modal modal-bottom sm:modal-middle modal-open">
             <div className="modal-box w-full h-screen max-w-none mt-4  lg:w-11/12 lg:max-w-5xl lg:h-4/5 lg:max-h-screen m-0 lg:m-auto rounded-t-4xl lg:rounded-2xl">
-
                 {/* 主要內容區域 - 響應式佈局，小螢幕全螢幕，大螢幕保持適當間距 */}
                 <div className="flex flex-col lg:flex-row h-full">
                     {/* 錢包 Header - 小裝置上置頂，大裝置左側 */}
                     <div className="w-full lg:w-1/4 lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r border-base-200">
-                        <WalletHeader 
-                            wallet={wallet} 
+                        <WalletHeader
+                            wallet={wallet}
                             onUpdateBalance={handleUpdateBalance}
                             onAddTransaction={handleAddTransaction}
                         />
@@ -132,42 +135,75 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
                                 {/* 餘額顯示 - 響應式字體大小 */}
                                 <div className="text-center lg:text-end mb-4 lg:mb-6">
                                     <div className="text-2xl lg:text-3xl font-bold">
-                                        {formatCurrency(walletStats?.currentBalance || wallet.balance || wallet.currentBalance || 0)}
+                                        {formatCurrency(
+                                            walletStats?.currentBalance ||
+                                                wallet.balance ||
+                                                wallet.currentBalance ||
+                                                0,
+                                        )}
                                     </div>
                                 </div>
 
                                 {/* Tab 導航 - 響應式大小 */}
-                                <div className="tabs tabs-lift mb-4 w-full" role="tablist">
-                                    <button 
-                                        className={`tab tab-md lg:tab-lg w-1/2 ${activeTab === TAB_TYPES.TRANSACTIONS ? 'tab-active' : ''}`}
-                                        onClick={() => handleTabChange(TAB_TYPES.TRANSACTIONS)}
+                                <div
+                                    className="tabs tabs-lift mb-4 w-full"
+                                    role="tablist"
+                                >
+                                    <button
+                                        className={`tab tab-md lg:tab-lg w-1/2 ${activeTab === TAB_TYPES.TRANSACTIONS ? "tab-active" : ""}`}
+                                        onClick={() =>
+                                            handleTabChange(
+                                                TAB_TYPES.TRANSACTIONS,
+                                            )
+                                        }
                                         role="tab"
-                                        aria-selected={activeTab === TAB_TYPES.TRANSACTIONS}
+                                        aria-selected={
+                                            activeTab === TAB_TYPES.TRANSACTIONS
+                                        }
                                     >
-                                        <span className="hidden sm:inline">交易明細</span>
+                                        <span className="hidden sm:inline">
+                                            交易明細
+                                        </span>
                                         <span className="sm:hidden">明細</span>
                                     </button>
-                                    <button 
-                                        className={`tab tab-md lg:tab-lg w-1/2 ${activeTab === TAB_TYPES.SETTINGS ? 'tab-active' : ''}`}
-                                        onClick={() => handleTabChange(TAB_TYPES.SETTINGS)}
+                                    <button
+                                        className={`tab tab-md lg:tab-lg w-1/2 ${activeTab === TAB_TYPES.SETTINGS ? "tab-active" : ""}`}
+                                        onClick={() =>
+                                            handleTabChange(TAB_TYPES.SETTINGS)
+                                        }
                                         role="tab"
-                                        aria-selected={activeTab === TAB_TYPES.SETTINGS}
+                                        aria-selected={
+                                            activeTab === TAB_TYPES.SETTINGS
+                                        }
                                     >
-                                        <span className="hidden sm:inline">錢包設定</span>
+                                        <span className="hidden sm:inline">
+                                            錢包設定
+                                        </span>
                                         <span className="sm:hidden">設定</span>
                                     </button>
                                 </div>
 
                                 {/* Tab 內容 - 確保可滾動 */}
-                                <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
+                                <div
+                                    className="flex-1 overflow-y-auto min-h-0"
+                                    role="tabpanel"
+                                >
                                     {activeTab === TAB_TYPES.TRANSACTIONS && (
-                                        <TransactionsTab 
+                                        <TransactionsTab
                                             walletStats={walletStats}
-                                            transactionsLoading={transactionsLoading}
-                                            transactionsError={transactionsError}
+                                            transactionsLoading={
+                                                transactionsLoading
+                                            }
+                                            transactionsError={
+                                                transactionsError
+                                            }
                                             wallet={wallet}
-                                            onTransactionChange={refetchTransactions}
-                                            onEditTransaction={handleEditTransaction}
+                                            onTransactionChange={
+                                                refetchTransactions
+                                            }
+                                            onEditTransaction={
+                                                handleEditTransaction
+                                            }
                                         />
                                     )}
 
@@ -178,7 +214,10 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
 
                                 {/* 完成按鈕 - 響應式設計 */}
                                 <div className="flex justify-center lg:justify-end mt-4">
-                                    <button className="btn btn-md w-full sm:w-auto max-w-xs" onClick={handleClose}>
+                                    <button
+                                        className="btn btn-md w-full sm:w-auto max-w-xs"
+                                        onClick={handleClose}
+                                    >
                                         完成
                                     </button>
                                 </div>
@@ -188,7 +227,9 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
                 </div>
             </div>
             <form method="dialog" className="modal-backdrop">
-                <button onClick={handleClose} aria-label="關閉錢包詳細資訊">close</button>
+                <button onClick={handleClose} aria-label="關閉錢包詳細資訊">
+                    close
+                </button>
             </form>
         </dialog>
     );
@@ -197,5 +238,5 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
 WalletDetailModal.propTypes = {
     walletId: PropTypes.number,
     isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
 };
