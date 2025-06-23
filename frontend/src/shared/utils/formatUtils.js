@@ -7,8 +7,8 @@ export const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
         style: 'currency',
         currency: 'TWD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     }).format(amount || 0);
 };
 
@@ -55,7 +55,7 @@ export const getTransactionType = (transaction) => {
  * @returns {string} 交易日期
  */
 export const getTransactionDate = (transaction) => {
-    return transaction.createdAt || transaction.date || transaction.transactionDate;
+    return transaction.date || transaction.transactionDate;
 };
 
 /**

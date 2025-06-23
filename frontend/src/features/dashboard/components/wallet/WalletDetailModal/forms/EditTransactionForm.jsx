@@ -7,7 +7,10 @@ import CategorySelector from "../shared/CategorySelector";
 import AmountInput from "../shared/AmountInput";
 import TransactionPreview from "../shared/TransactionPreview";
 import useTransactionFormValidation from "../../../../hooks/useTransactionFormValidation";
-import { DEFAULT_CATEGORIES } from "../../../../constants/walletConstants";
+import {
+    DEFAULT_CATEGORIES,
+    CURRENCY_OPTIONS,
+} from "../../../../constants/walletConstants";
 
 // 交易類型選項
 const TRANSACTION_TYPES = [
@@ -31,6 +34,9 @@ export default function EditTransactionForm({
         description: "",
         category: "",
         date: new Date().toISOString().split("T")[0],
+        currency: transaction?.currency || wallet?.currency || "TWD",
+        exchangeRate: transaction?.exchangeRate || 1,
+        exchangeRateSource: transaction?.exchangeRateSource || "manual",
     });
     const originalAmount =
         transaction.type === "income"
@@ -72,6 +78,9 @@ export default function EditTransactionForm({
                 description: transaction.description || "",
                 category: transaction.category || "",
                 date: dateString,
+                currency: transaction.currency || wallet?.currency || "TWD",
+                exchangeRate: transaction.exchangeRate || 1,
+                exchangeRateSource: transaction.exchangeRateSource || "manual",
             });
 
             // 檢查是否使用自訂分類
@@ -118,6 +127,9 @@ export default function EditTransactionForm({
                 description: formData.description.trim(),
                 category: formData.category.trim(),
                 date: formData.date,
+                currency: formData.currency,
+                exchangeRate: parseFloat(formData.exchangeRate),
+                exchangeRateSource: formData.exchangeRateSource.trim(),
             };
 
             const result = await updateTransaction(transaction.id, updateData);
@@ -309,6 +321,64 @@ export default function EditTransactionForm({
                             <p className="label">請選擇交易發生的日期</p>
                         </fieldset>
 
+                        {/* 幣別與匯率 */}
+                        <fieldset className="fieldset">
+                            <legend className="fieldset-legend">
+                                幣別與匯率
+                            </legend>
+                            <div className="flex gap-2 items-center">
+                                <select
+                                    className="select select-bordered"
+                                    value={formData.currency}
+                                    onChange={(e) =>
+                                        handleInputChange(
+                                            "currency",
+                                            e.target.value,
+                                        )
+                                    }
+                                    disabled={loading}
+                                >
+                                    {CURRENCY_OPTIONS.map((opt) => (
+                                        <option
+                                            key={opt.value}
+                                            value={opt.value}
+                                        >
+                                            {opt.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                <input
+                                    type="number"
+                                    className="input input-bordered w-32"
+                                    step="0.000001"
+                                    min="0"
+                                    placeholder="匯率"
+                                    value={formData.exchangeRate}
+                                    onChange={(e) =>
+                                        handleInputChange(
+                                            "exchangeRate",
+                                            e.target.value,
+                                        )
+                                    }
+                                    disabled={loading}
+                                />
+                                <input
+                                    type="text"
+                                    className="input input-bordered w-32"
+                                    placeholder="來源 (如 manual, yahoo)"
+                                    value={formData.exchangeRateSource}
+                                    onChange={(e) =>
+                                        handleInputChange(
+                                            "exchangeRateSource",
+                                            e.target.value,
+                                        )
+                                    }
+                                    disabled={loading}
+                                />
+                            </div>
+                            <p className="label">選擇幣別、填寫匯率與來源</p>
+                        </fieldset>
+
                         {/* 預覽 */}
                         <TransactionPreview
                             type={formData.type}
@@ -316,6 +386,16 @@ export default function EditTransactionForm({
                             category={formData.category}
                             date={formData.date}
                             description={formData.description}
+                            currency={formData.currency}
+                            walletCurrency={wallet?.currency || "TWD"}
+                            exchangeRate={formData.exchangeRate}
+                            exchangeRateSource={formData.exchangeRateSource}
+                            amountInWalletCurrency={
+                                formData.amount && formData.exchangeRate
+                                    ? parseFloat(formData.amount) *
+                                      parseFloat(formData.exchangeRate)
+                                    : ""
+                            }
                         />
 
                         {/* 錯誤訊息 */}
