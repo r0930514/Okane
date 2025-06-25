@@ -71,6 +71,9 @@ export class Wallet {
   @Column({ default: 'TWD' })
   currency: string;
 
+  @Column({ default: '' })
+  secondaryCurrency: string;
+
   @ManyToOne(() => User, (user) => user.wallets)
   user: User;
 

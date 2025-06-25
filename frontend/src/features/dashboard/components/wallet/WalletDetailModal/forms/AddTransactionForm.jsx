@@ -321,6 +321,7 @@ AddTransactionForm.propTypes = {
         id: PropTypes.number,
         balance: PropTypes.number,
         currentBalance: PropTypes.number,
+        currency: PropTypes.string,
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
     onSuccess: PropTypes.func,

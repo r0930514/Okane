@@ -33,12 +33,12 @@ export class WalletController {
   @ApiOperation({
     summary: '建立新錢包',
     description:
-      '建立一個新的錢包，可指定名稱、帳號、顏色、初始餘額、主幣別等。\n\n- walletName: 錢包名稱，必填。\n- accountNumber: 帳戶號碼，選填。\n- walletType: 錢包類型，選填。\n- walletColor: 錢包顏色，選填。\n- initialBalance: 初始餘額，選填。\n- currency: 主幣別，選填，預設 TWD。',
+      '建立一個新的錢包，可指定名稱、帳號、顏色、初始餘額、主幣別、次要幣別等。\n\n- walletName: 錢包名稱，必填。\n- accountNumber: 帳戶號碼，選填。\n- walletType: 錢包類型，選填。\n- walletColor: 錢包顏色，選填。\n- initialBalance: 初始餘額，選填。\n- currency: 主幣別，選填，預設 TWD。\n- secondaryCurrency: 次要幣別，選填，預設空字串。',
   })
   @ApiBody({
     type: CreateWalletDto,
     description:
-      '建立錢包時可傳入的欄位：\n- walletName: 錢包名稱，必填。\n- accountNumber: 帳戶號碼，選填。\n- walletType: 錢包類型，選填。\n- walletColor: 錢包顏色，選填。\n- initialBalance: 初始餘額，選填。\n- currency: 主幣別，選填，預設 TWD。',
+      '建立錢包時可傳入的欄位：\n- walletName: 錢包名稱，必填。\n- accountNumber: 帳戶號碼，選填。\n- walletType: 錢包類型，選填。\n- walletColor: 錢包顏色，選填。\n- initialBalance: 初始餘額，選填。\n- currency: 主幣別，選填，預設 TWD。\n- secondaryCurrency: 次要幣別，選填，預設空字串。',
     examples: {
       basic: {
         summary: '建立台幣錢包',
@@ -46,6 +46,7 @@ export class WalletController {
           walletName: '現金錢包',
           currency: 'TWD',
           initialBalance: 1000,
+          secondaryCurrency: 'USD',
         },
       },
       usd: {
@@ -54,6 +55,7 @@ export class WalletController {
           walletName: '美金帳戶',
           currency: 'USD',
           initialBalance: 500,
+          secondaryCurrency: 'TWD',
         },
       },
     },
@@ -174,18 +176,19 @@ export class WalletController {
   @ApiOperation({
     summary: '更新錢包資訊',
     description:
-      '可更新錢包名稱、帳號、顏色、初始餘額、主幣別等。\n\n注意：若錢包已有交易紀錄，建議謹慎更動主幣別（currency），以免影響歷史資料。',
+      '可更新錢包名稱、帳號、顏色、初始餘額、主幣別、次要幣別等。\n\n注意：若錢包已有交易紀錄，建議謹慎更動主幣別（currency），以免影響歷史資料。',
   })
   @ApiParam({ name: 'id', description: '錢包 ID' })
   @ApiBody({
     type: UpdateWalletDto,
     description:
-      '可更新欄位：\n- walletName: 錢包名稱\n- accountNumber: 帳戶號碼\n- walletType: 錢包類型\n- walletColor: 錢包顏色\n- initialBalance: 初始餘額\n- currency: 主幣別（如 TWD, USD, JPY）\n- operationMode: 操作模式',
+      '可更新欄位：\n- walletName: 錢包名稱\n- accountNumber: 帳戶號碼\n- walletType: 錢包類型\n- walletColor: 錢包顏色\n- initialBalance: 初始餘額\n- currency: 主幣別（如 TWD, USD, JPY）\n- secondaryCurrency: 次要幣別（如 TWD, USD, JPY）\n- operationMode: 操作模式',
     examples: {
       updateCurrency: {
         summary: '更新錢包主幣別',
         value: {
           currency: 'USD',
+          secondaryCurrency: 'TWD',
         },
       },
       updateName: {
@@ -212,6 +215,7 @@ export class WalletController {
           walletName: '多欄位測試',
           walletColor: '#00ff00',
           currency: 'JPY',
+          secondaryCurrency: 'USD',
           initialBalance: 5000,
         },
       },

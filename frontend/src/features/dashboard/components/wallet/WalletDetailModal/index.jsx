@@ -3,7 +3,10 @@ import { useState, useCallback } from "react";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useWallets } from "../../../hooks/useWallets";
 import { useWalletStats } from "../../../hooks/useWalletStats";
-import { formatCurrency } from "../../../../../shared/utils/formatUtils";
+import {
+    formatCurrency,
+    formatConvertedCurrency,
+} from "../../../../../shared/utils/formatUtils";
 import { TAB_TYPES, VIEW_MODES } from "../../../constants/walletConstants";
 import WalletHeader from "./shared/WalletHeader";
 import TransactionsTab from "./tabs/TransactionsTab";
@@ -11,6 +14,7 @@ import SettingsTab from "./tabs/SettingsTab";
 import UpdateBalanceForm from "./forms/UpdateBalanceForm";
 import AddTransactionForm from "./forms/AddTransactionForm";
 import EditTransactionForm from "./forms/EditTransactionForm";
+import useExchangeRate from "../../../../../shared/hooks/useExchangeRate";
 
 export default function WalletDetailModal({ walletId, isOpen, onClose }) {
     const { wallets, error, refetch: refetchWallets } = useWallets();
@@ -29,6 +33,13 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
 
     // 使用自定義 hook 計算錢包統計資訊
     const walletStats = useWalletStats(wallet, transactions);
+
+    // 換算金額 hook
+    const { rate } = useExchangeRate({
+        from: wallet?.currency,
+        to: wallet?.secondaryCurrency,
+        amount: walletStats?.currentBalance || 0,
+    });
 
     // 使用 useCallback 避免不必要的重新渲染
     const handleTabChange = useCallback((tab) => {
@@ -103,7 +114,10 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
                     {/* 錢包 Header - 小裝置上置頂，大裝置左側 */}
                     <div className="w-full lg:w-1/4 lg:flex-shrink-0 border-b lg:border-b-0 lg:border-r border-base-200">
                         <WalletHeader
-                            wallet={wallet}
+                            wallet={{
+                                ...wallet,
+                                allTransactions: walletStats.allTransactions,
+                            }}
                             onUpdateBalance={handleUpdateBalance}
                             onAddTransaction={handleAddTransaction}
                         />
@@ -139,6 +153,19 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
                                             walletStats?.currentBalance || 0,
                                         )}
                                     </div>
+                                    {/* 換算結果顯示 */}
+                                    {wallet.secondaryCurrency &&
+                                        wallet.secondaryCurrency !== "" && (
+                                        <div className="text-xs text-base-content/50 mt-1 lg:text-end">
+                                            {formatConvertedCurrency(
+                                                walletStats?.currentBalance ||
+                                                        0,
+                                                rate,
+                                                wallet.currency,
+                                                wallet.secondaryCurrency,
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Tab 導航 - 響應式大小 */}

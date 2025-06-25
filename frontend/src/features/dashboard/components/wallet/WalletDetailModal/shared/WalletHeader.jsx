@@ -1,6 +1,11 @@
 import PropTypes from "prop-types";
 import { ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react";
 import { WALLET_TYPE_NAMES } from "../../../../constants/walletConstants";
+import {
+    formatConvertedCurrency,
+    calcAverageCost,
+} from "../../../../../../shared/utils/formatUtils";
+import useExchangeRate from "../../../../../../shared/hooks/useExchangeRate";
 
 export default function WalletHeader({
     wallet,
@@ -28,6 +33,31 @@ export default function WalletHeader({
         backdropFilter: "blur(10px)",
     };
 
+    // 取得匯率（1 主幣別 to 次要幣別）
+    const { rate } = useExchangeRate({
+        from: wallet.currency,
+        to: wallet.secondaryCurrency,
+        amount: 1,
+    });
+
+    // 計算平均成本（用工具函數）
+    const avgCost = calcAverageCost(
+        wallet.allTransactions,
+        wallet.secondaryCurrency,
+    );
+    const shouldShowAvgCost =
+        wallet.secondaryCurrency &&
+        wallet.secondaryCurrency !== "" &&
+        Array.isArray(wallet.allTransactions) &&
+        avgCost > 0;
+    // debug log
+    console.log("[平均成本 debug]", {
+        secondaryCurrency: wallet.secondaryCurrency,
+        allTransactions: wallet.allTransactions,
+        avgCost,
+        shouldShowAvgCost,
+    });
+
     return (
         <div
             className="h-full px-4 py-4 lg:px-8 lg:py-8 rounded-2xl flex flex-col lg:flex-col items-left justify-between border-1 border-base-content/20"
@@ -48,6 +78,26 @@ export default function WalletHeader({
                             <span className="badge badge-outline badge-sm lg:badge-md text-base-content/60 font-normal">
                                 {wallet.currency}
                             </span>
+                            {/* 顯示次要幣別與換算結果 */}
+                            {wallet.secondaryCurrency &&
+                                wallet.secondaryCurrency !== "" && (
+                                <>
+                                    <div className="text-xs text-base-content/50 mt-1">
+                                        {formatConvertedCurrency(
+                                            1,
+                                            rate,
+                                            wallet.currency,
+                                            wallet.secondaryCurrency,
+                                        )}
+                                    </div>
+                                    {shouldShowAvgCost && (
+                                        <div className="text-xs text-info mt-1">
+                                                平均成本：{avgCost.toFixed(4)}{" "}
+                                            {wallet.currency}
+                                        </div>
+                                    )}
+                                </>
+                            )}
                         </div>
                     )}
                 </div>
@@ -100,6 +150,8 @@ WalletHeader.propTypes = {
         walletType: PropTypes.string.isRequired,
         walletColor: PropTypes.string,
         currency: PropTypes.string,
+        secondaryCurrency: PropTypes.string,
+        allTransactions: PropTypes.array,
     }).isRequired,
     onUpdateBalance: PropTypes.func.isRequired,
     onAddTransaction: PropTypes.func.isRequired,

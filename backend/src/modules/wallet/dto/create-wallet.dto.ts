@@ -87,4 +87,12 @@ export class CreateWalletDto {
   @IsOptional()
   @IsString()
   currency?: string;
+
+  @ApiPropertyOptional({
+    description: '錢包次要幣別（常用對照幣別，如 USD, JPY, EUR）',
+    example: 'USD',
+  })
+  @IsOptional()
+  @IsString()
+  secondaryCurrency?: string;
 }
