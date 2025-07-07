@@ -2,32 +2,41 @@ name: okane
 version: '3.8'
 
 services:
-  frontend:
+  frontend-build:
     build:
       context: ../frontend
       dockerfile: Dockerfile
     user: node
-    ports:
-      - "5173:5173"
     environment:
       - VITE_API_URL=${VITE_API_URL_PROD}
+    volumes:
+      - ../frontend/dist:/app/dist
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
     depends_on:
+      - frontend-build
       - backend
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ../frontend/dist:/usr/share/nginx/html:ro
     restart: unless-stopped
 
   backend:
     build:
       context: ../backend
       dockerfile: Dockerfile
-    user: node
+      target: production
     ports:
       - "3000:3000"
     environment:
-      - POSTGRES_HOST=postgres  # 改用 PostgreSQL
-      - POSTGRES_PORT=5432
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}  
+      - POSTGRES_HOST=postgres  
+      - POSTGRES_PORT=${POSTGRES_PORT}
       - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=production
     depends_on:
