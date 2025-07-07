@@ -23,6 +23,7 @@ services:
     build:
       context: ../backend
       dockerfile: Dockerfile
+      target: development
     user: node
     ports:
       - "3000:3000"
