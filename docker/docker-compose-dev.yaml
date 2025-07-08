@@ -6,6 +6,7 @@ services:
     build:
       context: ../frontend
       dockerfile: Dockerfile
+      target: development
     user: node
     ports:
       - "5173:5173"
