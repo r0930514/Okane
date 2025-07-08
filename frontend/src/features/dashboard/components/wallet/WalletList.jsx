@@ -57,7 +57,6 @@ export default function WalletList() {
     };
 
     const handleAddWallet = (category) => {
-        console.log(`新增 ${category} 錢包`);
         // 這裡之後可以打開新增錢包的模態框
     };
 

@@ -50,13 +50,6 @@ export default function WalletHeader({
         wallet.secondaryCurrency !== "" &&
         Array.isArray(wallet.allTransactions) &&
         avgCost > 0;
-    // debug log
-    console.log("[平均成本 debug]", {
-        secondaryCurrency: wallet.secondaryCurrency,
-        allTransactions: wallet.allTransactions,
-        avgCost,
-        shouldShowAvgCost,
-    });
 
     return (
         <div

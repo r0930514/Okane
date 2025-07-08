@@ -12,12 +12,10 @@ export default function NavBar({ navigate, username }) {
         // 模擬刷新操作
         setTimeout(() => {
             setIsRefreshing(false)
-            console.log("數據已刷新")
         }, 1500)
     }
 
     const handleAddNew = () => {
-        console.log("新增資產/錢包")
         // 這裡之後可以打開新增資產的模態框
     }
 
