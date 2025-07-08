@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { TagIcon } from "@phosphor-icons/react";
 import { CATEGORY_ICONS } from '../../../../constants/walletConstants.jsx';
+import { useRef, useEffect } from 'react';
 
 export default function CategorySelector({
     categories,
@@ -11,19 +12,27 @@ export default function CategorySelector({
     loading,
     type
 }) {
+    const customInputRef = useRef(null);
+
+    useEffect(() => {
+        if (showCustomCategory && customInputRef.current) {
+            customInputRef.current.focus();
+        }
+    }, [showCustomCategory]);
+
     return (
         <fieldset className="fieldset">
             <legend className="fieldset-legend">分類</legend>
             <div className="mb-3">
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 items-center">
                     {categories.map(category => (
                         <button
                             key={category}
                             type="button"
-                            className={`btn btn-sm ${value === category ? 'btn-neutral' : 'btn'}`}
+                            className={`btn btn-sm ${value === category ? 'btn-neutral' : 'btn-outline'}`}
                             onClick={() => {
                                 onCategoryChange(category);
-                                onCustomToggle(false);
+                                if (showCustomCategory) onCustomToggle(false);
                             }}
                             disabled={loading}
                         >
@@ -33,45 +42,35 @@ export default function CategorySelector({
                             {category}
                         </button>
                     ))}
-                    <button
-                        type="button"
-                        className={`btn btn-sm ${showCustomCategory ? 'btn-neutral' : 'btn'}`}
-                        onClick={() => {
-                            onCustomToggle(!showCustomCategory);
-                            if (!showCustomCategory) onCategoryChange('');
-                        }}
-                        disabled={loading}
-                    >
-                        <TagIcon size={16} className="mr-1" />
-            自訂分類
-                    </button>
+                    {!showCustomCategory && (
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-outline"
+                            onClick={() => onCustomToggle(true)}
+                            disabled={loading}
+                        >
+                            <TagIcon size={16} className="mr-1" />
+                            自訂
+                        </button>
+                    )}
                 </div>
             </div>
-            {!showCustomCategory && (
-                <select
-                    className="select select-md w-full mb-2"
-                    value={value}
-                    onChange={e => onCategoryChange(e.target.value)}
-                    disabled={loading}
-                >
-                    <option value="">選擇分類</option>
-                    {categories.map(category => (
-                        <option key={category} value={category}>{category}</option>
-                    ))}
-                </select>
-            )}
+
             {showCustomCategory && (
-                <label className="input validator w-full">
-                    <TagIcon className="h-5 w-5 text-gray-500" />
-                    <input
-                        type="text"
-                        className="grow"
-                        placeholder="請輸入自訂分類"
-                        value={value}
-                        onChange={e => onCategoryChange(e.target.value)}
-                        disabled={loading}
-                    />
-                </label>
+                <div className="form-control">
+                    <label className="input input-bordered flex items-center gap-2">
+                        <TagIcon className="h-5 w-5 text-gray-500" />
+                        <input
+                            ref={customInputRef}
+                            type="text"
+                            className="grow"
+                            placeholder="請輸入自訂分類"
+                            value={value}
+                            onChange={e => onCategoryChange(e.target.value)}
+                            disabled={loading}
+                        />
+                    </label>
+                </div>
             )}
             <p className="label">請選擇或輸入交易分類</p>
         </fieldset>

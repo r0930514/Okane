@@ -31,6 +31,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showCustomCategory, setShowCustomCategory] = useState(false);
+    const [showAdvanced, setShowAdvanced] = useState(false);
     const { createTransaction } = useTransactions(wallet?.id);
     const { validate } = useTransactionFormValidation({
         requireDescription: false,
@@ -111,7 +112,7 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                 )}
             </div>
             {/* Tab 內容 */}
-            <div className="flex-1 overflow-y-auto px-2" role="tabpanel">
+            <div className="flex-1 overflow-y-auto px-1" role="tabpanel">
                 <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
                     <div className="space-y-4 flex-1 pr-2">
                         {/* 交易類型選擇 */}
@@ -135,14 +136,39 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                                     />
                                 ))}
                             </div>
-                            <p className="label">請選擇交易類型</p>
                         </fieldset>
-                        {/* 金額 */}
-                        <AmountInput
-                            value={formData.amount}
-                            onChange={(val) => handleInputChange("amount", val)}
-                            loading={loading}
-                        />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* 金額 */}
+                            <AmountInput
+                                value={formData.amount}
+                                onChange={(val) => handleInputChange("amount", val)}
+                                loading={loading}
+                            />
+                            {/* 交易日期 */}
+                            <fieldset className="fieldset">
+                                <legend className="fieldset-legend">
+                                    交易日期
+                                </legend>
+                                <label className="input input-bordered flex items-center gap-2">
+                                    <CalendarIcon className="h-5 w-5 text-gray-500" />
+                                    <input
+                                        type="date"
+                                        className="grow"
+                                        value={formData.date}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                "date",
+                                                e.target.value,
+                                            )
+                                        }
+                                        disabled={loading}
+                                        max={new Date().toISOString().split("T")[0]}
+                                    />
+                                </label>
+                            </fieldset>
+                        </div>
+
                         {/* 分類 */}
                         <CategorySelector
                             categories={currentCategories}
@@ -158,12 +184,12 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                         {/* 交易描述 */}
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">
-                                交易描述
+                                交易描述 (選填)
                             </legend>
-                            <label className="textarea w-full">
+                            <label className="textarea textarea-bordered w-full">
                                 <textarea
                                     className="grow w-full"
-                                    placeholder="請輸入交易的詳細描述"
+                                    placeholder="預設使用分類名稱，可自行修改"
                                     value={formData.description}
                                     onChange={(e) =>
                                         handleInputChange(
@@ -172,91 +198,77 @@ export default function AddTransactionForm({ wallet, onCancel, onSuccess }) {
                                         )
                                     }
                                     disabled={loading}
-                                    rows={3}
+                                    rows={2}
                                 />
                             </label>
-                            <p className="label">請詳細描述此筆交易</p>
                         </fieldset>
-                        {/* 交易日期 */}
-                        <fieldset className="fieldset">
-                            <legend className="fieldset-legend">
-                                交易日期
-                            </legend>
-                            <label className="input validator w-full">
-                                <CalendarIcon className="h-5 w-5 text-gray-500" />
-                                <input
-                                    type="date"
-                                    className="grow"
-                                    value={formData.date}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "date",
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={loading}
-                                    max={new Date().toISOString().split("T")[0]}
-                                />
-                            </label>
-                            <p className="label">請選擇交易發生的日期</p>
-                        </fieldset>
-                        {/* 幣別與匯率 */}
-                        <fieldset className="fieldset">
-                            <legend className="fieldset-legend">
-                                幣別與匯率
-                            </legend>
-                            <div className="flex gap-2 items-center">
-                                <select
-                                    className="select select-bordered"
-                                    value={formData.currency}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "currency",
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={loading}
-                                >
-                                    {CURRENCY_OPTIONS.map((opt) => (
-                                        <option
-                                            key={opt.value}
-                                            value={opt.value}
-                                        >
-                                            {opt.label}
-                                        </option>
-                                    ))}
-                                </select>
-                                <input
-                                    type="number"
-                                    className="input input-bordered w-32"
-                                    step="0.000001"
-                                    min="0"
-                                    placeholder="匯率"
-                                    value={formData.exchangeRate}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "exchangeRate",
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={loading}
-                                />
-                                <input
-                                    type="text"
-                                    className="input input-bordered w-32"
-                                    placeholder="來源 (如 manual, yahoo)"
-                                    value={formData.exchangeRateSource}
-                                    onChange={(e) =>
-                                        handleInputChange(
-                                            "exchangeRateSource",
-                                            e.target.value,
-                                        )
-                                    }
-                                    disabled={loading}
-                                />
+
+                        {/* 進階選項 */}
+                        <div className="collapse collapse-arrow border border-base-300 bg-base-100">
+                            <input type="checkbox" checked={showAdvanced} onChange={() => setShowAdvanced(!showAdvanced)} />
+                            <div className="collapse-title text-md font-medium">
+                                進階選項 (幣別與匯率)
                             </div>
-                            <p className="label">選擇幣別、填寫匯率與來源</p>
-                        </fieldset>
+                            <div className="collapse-content">
+                                <fieldset className="fieldset">
+                                    <legend className="fieldset-legend">
+                                        幣別與匯率
+                                    </legend>
+                                    <div className="flex flex-wrap gap-2 items-center">
+                                        <select
+                                            className="select select-bordered"
+                                            value={formData.currency}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "currency",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={loading}
+                                        >
+                                            {CURRENCY_OPTIONS.map((opt) => (
+                                                <option
+                                                    key={opt.value}
+                                                    value={opt.value}
+                                                >
+                                                    {opt.label}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <input
+                                            type="number"
+                                            className="input input-bordered w-32"
+                                            step="0.000001"
+                                            min="0"
+                                            placeholder="匯率"
+                                            value={formData.exchangeRate}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "exchangeRate",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={loading || formData.currency === wallet?.currency}
+                                        />
+                                        <input
+                                            type="text"
+                                            className="input input-bordered w-32"
+                                            placeholder="來源 (例: manual)"
+                                            value={formData.exchangeRateSource}
+                                            onChange={(e) =>
+                                                handleInputChange(
+                                                    "exchangeRateSource",
+                                                    e.target.value,
+                                                )
+                                            }
+                                            disabled={loading || formData.currency === wallet?.currency}
+                                        />
+                                    </div>
+                                    <p className="label">預設為主幣別，若需使用外幣請修改</p>
+                                </fieldset>
+                            </div>
+                        </div>
+
                         {/* 預覽 */}
                         <TransactionPreview
                             type={formData.type}
