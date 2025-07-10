@@ -1,6 +1,15 @@
 import ApiService from '../../../shared/services/ApiService';
+import axios from 'axios';
 
 class AuthService {
+    // 創建專門用於認證檢查的 axios 實例，不包含自動重導向攔截器
+    static authInstance = axios.create({
+        baseURL: ApiService.baseURL,
+        timeout: 10000,
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
 
     static handleError(error) {
         if (error.code === 'ECONNABORTED') {
@@ -104,7 +113,16 @@ class AuthService {
      */
     static async checkToken() {
         try {
-            await ApiService.axiosInstance.get('/auth/verifyToken');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                return { success: false, error: '未找到認證 Token' };
+            }
+            
+            await this.authInstance.get('/auth/verifyToken', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             return { success: true };
         } catch (error) {
             console.error('驗證 Token 時發生錯誤:', error);
