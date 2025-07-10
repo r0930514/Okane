@@ -1,11 +1,23 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsEnum, IsDateString, MaxLength, Min } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  IsDateString,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TransactionType, TransactionSource } from '../../../entities/transaction.entity';
+import {
+  TransactionType,
+  TransactionSource,
+} from '../../../entities/transaction.entity';
 
 export class CreateTransactionDto {
   @ApiProperty({
     description: '交易金額',
-    example: 100.50,
+    example: 100.5,
     minimum: 0.01,
   })
   @IsNumber({ maxDecimalPlaces: 2 })
@@ -72,4 +84,28 @@ export class CreateTransactionDto {
   @IsOptional()
   @IsString()
   externalTransactionId?: string;
+
+  @ApiPropertyOptional({
+    description: '交易貨幣（如 TWD, USD, JPY）',
+    example: 'TWD',
+  })
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @ApiPropertyOptional({
+    description: '交易匯率（交易貨幣兌錢包主貨幣）',
+    example: 32.5,
+  })
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 6 })
+  exchangeRate?: number;
+
+  @ApiPropertyOptional({
+    description: '匯率來源（如 yahoo, google, twcb, manual）',
+    example: 'manual',
+  })
+  @IsOptional()
+  @IsString()
+  exchangeRateSource?: string;
 }

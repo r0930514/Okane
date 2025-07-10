@@ -7,8 +7,8 @@ export const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
         style: 'currency',
         currency: 'TWD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
     }).format(amount || 0);
 };
 
@@ -55,7 +55,7 @@ export const getTransactionType = (transaction) => {
  * @returns {string} 交易日期
  */
 export const getTransactionDate = (transaction) => {
-    return transaction.createdAt || transaction.date || transaction.transactionDate;
+    return transaction.date || transaction.transactionDate;
 };
 
 /**
@@ -65,4 +65,34 @@ export const getTransactionDate = (transaction) => {
  */
 export const getTransactionDescription = (transaction) => {
     return transaction.description || transaction.note || '無描述';
+};
+
+/**
+ * 格式化換算後的金額顯示
+ * @param {number} amount - 原始金額
+ * @param {number} rate - 匯率
+ * @param {string} from - 主幣別
+ * @param {string} to - 目標幣別
+ * @returns {string} 例如：1,000 TWD ≈ 32.00 USD
+ */
+export const formatConvertedCurrency = (amount, rate, from, to) => {
+    const fromStr = (amount || 0).toLocaleString();
+    const converted = ((amount || 0) * (rate || 1)).toLocaleString(undefined, { maximumFractionDigits: 2 });
+    return `${fromStr} ${from} ≈ ${converted} ${to}`;
+};
+
+/**
+ * 計算平均成本
+ * @param {array} transactions - 交易陣列
+ * @param {string} targetCurrency - 目標幣別（如 USD）
+ * @returns {number} 平均成本（主幣別/目標幣別）
+ */
+export const calcAverageCost = (transactions, targetCurrency) => {
+    if (!Array.isArray(transactions) || !targetCurrency) return 0;
+    const buyTxs = transactions.filter(
+        tx => tx.type === 'income' && tx.currency === targetCurrency && tx.amount > 0 && tx.amountInWalletCurrency > 0
+    );
+    const totalBase = buyTxs.reduce((sum, tx) => sum + Number(tx.amountInWalletCurrency), 0);
+    const totalForeign = buyTxs.reduce((sum, tx) => sum + Number(tx.amount), 0);
+    return totalForeign > 0 ? totalBase / totalForeign : 0;
 };

@@ -1,25 +1,6 @@
-import axios from 'axios';
-import ConfigService from './ConfigService';
+import ApiService from './ApiService';
 
 class WalletService {
-    static walletInstance = axios.create({
-        baseURL: `${ConfigService.baseURL}wallets/`,
-        timeout: 10000,
-    });
-
-    static {
-        // 設置 request interceptor 來添加 Authorization header
-        this.walletInstance.interceptors.request.use(
-            (config) => {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
-    }
 
     static handleError(error) {
         console.error('WalletService Error:', error);
@@ -55,7 +36,7 @@ class WalletService {
      */
     static async createWallet(walletData) {
         try {
-            const res = await this.walletInstance.post('', walletData);
+            const res = await ApiService.axiosInstance.post('/wallets', walletData);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -68,7 +49,7 @@ class WalletService {
      */
     static async getAllWallets() {
         try {
-            const res = await this.walletInstance.get('');
+            const res = await ApiService.axiosInstance.get('/wallets');
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -81,7 +62,7 @@ class WalletService {
      */
     static async getAllWalletsWithBalance() {
         try {
-            const res = await this.walletInstance.get('with-balance');
+            const res = await ApiService.axiosInstance.get('/wallets/with-balance');
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -97,7 +78,7 @@ class WalletService {
      */
     static async getWallet(id, page = 1, limit = 20) {
         try {
-            const res = await this.walletInstance.get(`${id}`, {
+            const res = await ApiService.axiosInstance.get(`/wallets/${id}`, {
                 params: { page, limit }
             });
             return { success: true, data: res.data };
@@ -114,7 +95,7 @@ class WalletService {
      */
     static async updateWallet(id, updateData) {
         try {
-            const res = await this.walletInstance.patch(`${id}`, updateData);
+            const res = await ApiService.axiosInstance.patch(`/wallets/${id}`, updateData);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -128,7 +109,7 @@ class WalletService {
      */
     static async deleteWallet(id) {
         try {
-            const res = await this.walletInstance.delete(`${id}`);
+            const res = await ApiService.axiosInstance.delete(`/wallets/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -142,7 +123,7 @@ class WalletService {
      */
     static async getWalletBalance(id) {
         try {
-            const res = await this.walletInstance.get(`${id}/balance`);
+            const res = await ApiService.axiosInstance.get(`/wallets/${id}/balance`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);

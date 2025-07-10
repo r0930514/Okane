@@ -1,25 +1,6 @@
-import axios from 'axios';
-import ConfigService from './ConfigService';
+import ApiService from './ApiService';
 
 class WalletConfigService {
-    static configInstance = axios.create({
-        baseURL: `${ConfigService.baseURL}wallet-configs/`,
-        timeout: 10000,
-    });
-
-    static {
-        // 設置 request interceptor 來添加 Authorization header
-        this.configInstance.interceptors.request.use(
-            (config) => {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
-    }
 
     static handleError(error) {
         console.error('WalletConfigService Error:', error);
@@ -53,7 +34,7 @@ class WalletConfigService {
      */
     static async createConfig(configData) {
         try {
-            const res = await this.configInstance.post('', configData);
+            const res = await ApiService.axiosInstance.post('/wallet-configs', configData);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -66,7 +47,7 @@ class WalletConfigService {
      */
     static async getAllConfigs() {
         try {
-            const res = await this.configInstance.get('');
+            const res = await ApiService.axiosInstance.get('/wallet-configs');
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -80,7 +61,7 @@ class WalletConfigService {
      */
     static async getConfig(id) {
         try {
-            const res = await this.configInstance.get(`${id}`);
+            const res = await ApiService.axiosInstance.get(`/wallet-configs/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -95,7 +76,7 @@ class WalletConfigService {
      */
     static async updateConfig(id, updateData) {
         try {
-            const res = await this.configInstance.patch(`${id}`, updateData);
+            const res = await ApiService.axiosInstance.patch(`/wallet-configs/${id}`, updateData);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -109,7 +90,7 @@ class WalletConfigService {
      */
     static async deleteConfig(id) {
         try {
-            const res = await this.configInstance.delete(`${id}`);
+            const res = await ApiService.axiosInstance.delete(`/wallet-configs/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);

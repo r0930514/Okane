@@ -20,7 +20,6 @@ export default function SideBar() {
         if (path) {
             navigate(path)
         }
-        console.log(`切換到頁面: ${itemText} (${itemId})`)
     }
 
     const activeItem = getActiveItem()

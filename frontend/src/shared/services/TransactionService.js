@@ -1,25 +1,6 @@
-import axios from 'axios';
-import ConfigService from './ConfigService';
+import ApiService from './ApiService';
 
 class TransactionService {
-    static transactionInstance = axios.create({
-        baseURL: `${ConfigService.baseURL}`,
-        timeout: 10000,
-    });
-
-    static {
-        // 設置 request interceptor 來添加 Authorization header
-        this.transactionInstance.interceptors.request.use(
-            (config) => {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
-    }
 
     static handleError(error) {
         console.error('TransactionService Error:', error);
@@ -56,8 +37,8 @@ class TransactionService {
      */
     static async createTransaction(walletId, transactionData) {
         try {
-            const res = await this.transactionInstance.post(
-                `wallets/${walletId}/transactions`, 
+            const res = await ApiService.axiosInstance.post(
+                `/wallets/${walletId}/transactions`, 
                 transactionData
             );
             return { success: true, data: res.data };
@@ -75,8 +56,8 @@ class TransactionService {
      */
     static async getTransactionsByWallet(walletId, page = 1, limit = 20) {
         try {
-            const res = await this.transactionInstance.get(
-                `wallets/${walletId}/transactions`,
+            const res = await ApiService.axiosInstance.get(
+                `/wallets/${walletId}/transactions`,
                 { params: { page, limit } }
             );
             return { success: true, data: res.data };
@@ -98,8 +79,8 @@ class TransactionService {
             if (startDate) params.startDate = startDate;
             if (endDate) params.endDate = endDate;
 
-            const res = await this.transactionInstance.get(
-                `wallets/${walletId}/transactions/categories`,
+            const res = await ApiService.axiosInstance.get(
+                `/wallets/${walletId}/transactions/categories`,
                 { params }
             );
             return { success: true, data: res.data };
@@ -115,7 +96,7 @@ class TransactionService {
      */
     static async getTransaction(id) {
         try {
-            const res = await this.transactionInstance.get(`transactions/${id}`);
+            const res = await ApiService.axiosInstance.get(`/transactions/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -130,8 +111,8 @@ class TransactionService {
      */
     static async updateTransaction(id, updateData) {
         try {
-            const res = await this.transactionInstance.patch(
-                `transactions/${id}`, 
+            const res = await ApiService.axiosInstance.patch(
+                `/transactions/${id}`, 
                 updateData
             );
             return { success: true, data: res.data };
@@ -147,7 +128,7 @@ class TransactionService {
      */
     static async deleteTransaction(id) {
         try {
-            const res = await this.transactionInstance.delete(`transactions/${id}`);
+            const res = await ApiService.axiosInstance.delete(`/transactions/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);

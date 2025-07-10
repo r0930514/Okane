@@ -1,6 +1,17 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber, IsEnum, MaxLength, Min } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+  MaxLength,
+  Min,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { WalletType, WalletOperationMode } from '../../../entities/wallet.entity';
+import {
+  WalletType,
+  WalletOperationMode,
+} from '../../../entities/wallet.entity';
 
 export class CreateWalletDto {
   @ApiProperty({
@@ -44,7 +55,7 @@ export class CreateWalletDto {
 
   @ApiPropertyOptional({
     description: '初始餘額',
-    example: 1000.00,
+    example: 1000.0,
     minimum: 0,
   })
   @IsOptional()
@@ -68,4 +79,20 @@ export class CreateWalletDto {
   @IsOptional()
   @IsEnum(WalletOperationMode)
   operationMode?: WalletOperationMode;
+
+  @ApiPropertyOptional({
+    description: '錢包主幣別（如 TWD, USD, JPY）',
+    example: 'TWD',
+  })
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @ApiPropertyOptional({
+    description: '錢包次要幣別（常用對照幣別，如 USD, JPY, EUR）',
+    example: 'USD',
+  })
+  @IsOptional()
+  @IsString()
+  secondaryCurrency?: string;
 }

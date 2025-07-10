@@ -34,7 +34,7 @@ export const useWalletStats = (wallet, transactions) => {
                 return dateB - dateA;
             });
 
-        // 使用後端計算好的餘額，不需要重新計算
+        // 餘額直接取用後端計算結果
         const currentBalance = wallet.currentBalance || wallet.balance || 0;
 
         return {
@@ -42,7 +42,8 @@ export const useWalletStats = (wallet, transactions) => {
             expense,
             currentBalance,
             allTransactions,
-            transactionCount: transactions.length
+            transactionCount: transactions.length,
+            currency: wallet.currency || 'TWD',
         };
     }, [wallet, transactions]);
 

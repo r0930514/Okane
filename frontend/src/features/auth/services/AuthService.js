@@ -1,10 +1,14 @@
+import ApiService from '../../../shared/services/ApiService';
 import axios from 'axios';
-import ConfigService from '../../../shared/services/ConfigService';
 
 class AuthService {
+    // 創建專門用於認證檢查的 axios 實例，不包含自動重導向攔截器
     static authInstance = axios.create({
-        baseURL: `${ConfigService.baseURL}auth/`,
-        timeout: 10000, // 10 seconds timeout
+        baseURL: ApiService.baseURL,
+        timeout: 10000,
+        headers: {
+            'Content-Type': 'application/json',
+        }
     });
 
     static handleError(error) {
@@ -35,7 +39,7 @@ class AuthService {
      */
     static async verifyEmail(email) {
         try {
-            const res = await this.authInstance.post('verify-email', { email });
+            const res = await ApiService.axiosInstance.post('/auth/verify-email', { email });
             return { 
                 success: true, 
                 exists: res.data.exists 
@@ -60,7 +64,7 @@ class AuthService {
      */
     static async signin(email, password) {
         try {
-            const res = await this.authInstance.post('signin', {
+            const res = await ApiService.axiosInstance.post('/auth/signin', {
                 email: email,
                 password: password
             });
@@ -87,7 +91,7 @@ class AuthService {
      */
     static async signup(email, password, username) {
         try {
-            const res = await this.authInstance.post('signup', {
+            const res = await ApiService.axiosInstance.post('/auth/signup', {
                 email: email,
                 username: username,
                 password: password
@@ -109,9 +113,14 @@ class AuthService {
      */
     static async checkToken() {
         try {
-            await this.authInstance.get('verifyToken', {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                return { success: false, error: '未找到認證 Token' };
+            }
+            
+            await this.authInstance.get('/auth/verifyToken', {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                    Authorization: `Bearer ${token}`
                 }
             });
             return { success: true };

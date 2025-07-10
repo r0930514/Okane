@@ -72,3 +72,12 @@ export const DEFAULT_CATEGORIES = {
         "其他支出",
     ],
 };
+
+export const CURRENCY_OPTIONS = [
+    { value: "TWD", label: "新台幣 (TWD)" },
+    { value: "USD", label: "美元 (USD)" },
+    { value: "JPY", label: "日圓 (JPY)" },
+    { value: "EUR", label: "歐元 (EUR)" },
+    { value: "CNY", label: "人民幣 (CNY)" },
+    // 可依需求擴充
+];

@@ -1,25 +1,6 @@
-import axios from 'axios';
-import ConfigService from './ConfigService';
+import ApiService from './ApiService';
 
 class WalletModuleService {
-    static moduleInstance = axios.create({
-        baseURL: `${ConfigService.baseURL}wallet-modules/`,
-        timeout: 10000,
-    });
-
-    static {
-        // 設置 request interceptor 來添加 Authorization header
-        this.moduleInstance.interceptors.request.use(
-            (config) => {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
-    }
 
     static handleError(error) {
         console.error('WalletModuleService Error:', error);
@@ -53,7 +34,7 @@ class WalletModuleService {
      */
     static async createModule(moduleData) {
         try {
-            const res = await this.moduleInstance.post('', moduleData);
+            const res = await ApiService.axiosInstance.post('/wallet-modules', moduleData);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -66,7 +47,7 @@ class WalletModuleService {
      */
     static async getAllModules() {
         try {
-            const res = await this.moduleInstance.get('');
+            const res = await ApiService.axiosInstance.get('/wallet-modules');
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -80,7 +61,7 @@ class WalletModuleService {
      */
     static async getModule(id) {
         try {
-            const res = await this.moduleInstance.get(`${id}`);
+            const res = await ApiService.axiosInstance.get(`/wallet-modules/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -95,7 +76,7 @@ class WalletModuleService {
      */
     static async updateModule(id, updateData) {
         try {
-            const res = await this.moduleInstance.patch(`${id}`, updateData);
+            const res = await ApiService.axiosInstance.patch(`/wallet-modules/${id}`, updateData);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -109,7 +90,7 @@ class WalletModuleService {
      */
     static async deleteModule(id) {
         try {
-            const res = await this.moduleInstance.delete(`${id}`);
+            const res = await ApiService.axiosInstance.delete(`/wallet-modules/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);

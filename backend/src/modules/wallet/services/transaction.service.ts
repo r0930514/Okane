@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Transaction, TransactionType } from '../../../entities/transaction.entity';
+import {
+  Transaction,
+  TransactionType,
+} from '../../../entities/transaction.entity';
 import { Wallet } from '../../../entities/wallet.entity';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
@@ -31,16 +38,34 @@ export class TransactionService {
 
     // 計算交易後餘額
     const currentBalance = await this.getWalletBalance(walletId);
-    const balanceChange = createTransactionDto.type === TransactionType.Income 
-      ? createTransactionDto.amount 
-      : -createTransactionDto.amount;
-    
+    const balanceChange =
+      createTransactionDto.type === TransactionType.Income
+        ? createTransactionDto.amount
+        : -createTransactionDto.amount;
+
     // 確保數值計算的精度，避免浮點數問題
     const balanceAfter = Number((currentBalance + balanceChange).toFixed(2));
 
+    // 幣別與匯率處理
+    const transactionCurrency =
+      createTransactionDto.currency || wallet.currency || 'TWD';
+    const exchangeRate = createTransactionDto.exchangeRate || 1;
+    const exchangeRateSource =
+      createTransactionDto.exchangeRateSource || 'manual';
+    // 換算後金額（以錢包主貨幣表示）
+    const amountInWalletCurrency = Number(
+      (createTransactionDto.amount * exchangeRate).toFixed(2),
+    );
+
     const transaction = this.transactionRepository.create({
       ...createTransactionDto,
-      date: createTransactionDto.date ? new Date(createTransactionDto.date) : new Date(),
+      currency: transactionCurrency,
+      exchangeRate,
+      exchangeRateSource,
+      amountInWalletCurrency,
+      date: createTransactionDto.date
+        ? new Date(createTransactionDto.date)
+        : new Date(),
       balanceAfter,
       wallet: { id: walletId },
     });
@@ -68,12 +93,14 @@ export class TransactionService {
       throw new NotFoundException(`錢包 ID ${walletId} 不存在或無權限存取`);
     }
 
-    const [transactions, total] = await this.transactionRepository.findAndCount({
-      where: { wallet: { id: walletId } },
-      order: { date: 'DESC', createdAt: 'DESC' },
-      take: limit,
-      skip: (page - 1) * limit,
-    });
+    const [transactions, total] = await this.transactionRepository.findAndCount(
+      {
+        where: { wallet: { id: walletId } },
+        order: { date: 'DESC', createdAt: 'DESC' },
+        take: limit,
+        skip: (page - 1) * limit,
+      },
+    );
 
     return {
       transactions,
@@ -106,21 +133,55 @@ export class TransactionService {
     updateTransactionDto: UpdateTransactionDto,
   ): Promise<Transaction> {
     const transaction = await this.findOne(id, userId);
-    
+
     // 如果金額或類型有變化，需要重新計算餘額
-    if (updateTransactionDto.amount !== undefined || updateTransactionDto.type !== undefined) {
+    if (
+      updateTransactionDto.amount !== undefined ||
+      updateTransactionDto.type !== undefined
+    ) {
       const walletId = transaction.wallet.id;
-      
+
       // 移除舊交易的影響
       const oldBalance = await this.getWalletBalanceExcluding(walletId, id);
-      
+
       // 計算新的餘額變化
-      const newAmount = updateTransactionDto.amount ?? parseFloat(transaction.amount.toString());
+      const newAmount =
+        updateTransactionDto.amount ??
+        parseFloat(transaction.amount.toString());
       const newType = updateTransactionDto.type ?? transaction.type;
-      const balanceChange = newType === TransactionType.Income ? newAmount : -newAmount;
-      
+      const balanceChange =
+        newType === TransactionType.Income ? newAmount : -newAmount;
+
       // 確保數值計算的精度
-      transaction.balanceAfter = Number((oldBalance + balanceChange).toFixed(2));
+      transaction.balanceAfter = Number(
+        (oldBalance + balanceChange).toFixed(2),
+      );
+    }
+
+    // 幣別與匯率處理
+    if (updateTransactionDto.currency !== undefined) {
+      transaction.currency = updateTransactionDto.currency;
+    }
+    if (updateTransactionDto.exchangeRate !== undefined) {
+      transaction.exchangeRate = updateTransactionDto.exchangeRate;
+    }
+    if (updateTransactionDto.exchangeRateSource !== undefined) {
+      transaction.exchangeRateSource = updateTransactionDto.exchangeRateSource;
+    }
+    // 若有金額或匯率或幣別變動，重新計算換算金額
+    if (
+      updateTransactionDto.amount !== undefined ||
+      updateTransactionDto.exchangeRate !== undefined ||
+      updateTransactionDto.currency !== undefined
+    ) {
+      const amount =
+        updateTransactionDto.amount ??
+        parseFloat(transaction.amount.toString());
+      const exchangeRate =
+        updateTransactionDto.exchangeRate ?? transaction.exchangeRate ?? 1;
+      transaction.amountInWalletCurrency = Number(
+        (amount * exchangeRate).toFixed(2),
+      );
     }
 
     if (updateTransactionDto.date) {
@@ -143,7 +204,7 @@ export class TransactionService {
     if (updateTransactionDto.transactionId !== undefined) {
       transaction.transactionId = updateTransactionDto.transactionId;
     }
-    
+
     return await this.transactionRepository.save(transaction);
   }
 
@@ -163,7 +224,10 @@ export class TransactionService {
 
     const result = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE -transaction.amount END)', 'netAmount')
+      .select(
+        'SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE -transaction.amount END)',
+        'netAmount',
+      )
       .where('transaction.walletId = :walletId', { walletId })
       .setParameter('income', TransactionType.Income)
       .getRawOne();
@@ -171,11 +235,14 @@ export class TransactionService {
     // 確保數值類型轉換正確
     const netAmount = parseFloat(result.netAmount) || 0;
     const initialBalance = parseFloat(wallet.initialBalance.toString()) || 0;
-    
+
     return Number((initialBalance + netAmount).toFixed(2));
   }
 
-  private async getWalletBalanceExcluding(walletId: number, excludeTransactionId: number): Promise<number> {
+  private async getWalletBalanceExcluding(
+    walletId: number,
+    excludeTransactionId: number,
+  ): Promise<number> {
     const wallet = await this.walletRepository.findOne({
       where: { id: walletId },
     });
@@ -186,16 +253,21 @@ export class TransactionService {
 
     const result = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE -transaction.amount END)', 'netAmount')
+      .select(
+        'SUM(CASE WHEN transaction.type = :income THEN transaction.amount ELSE -transaction.amount END)',
+        'netAmount',
+      )
       .where('transaction.walletId = :walletId', { walletId })
-      .andWhere('transaction.id != :excludeId', { excludeId: excludeTransactionId })
+      .andWhere('transaction.id != :excludeId', {
+        excludeId: excludeTransactionId,
+      })
       .setParameter('income', TransactionType.Income)
       .getRawOne();
 
     // 確保數值類型轉換正確
     const netAmount = parseFloat(result.netAmount) || 0;
     const initialBalance = parseFloat(wallet.initialBalance.toString()) || 0;
-    
+
     return Number((initialBalance + netAmount).toFixed(2));
   }
 
@@ -234,7 +306,7 @@ export class TransactionService {
 
     const results = await query.getRawMany();
 
-    return results.map(result => ({
+    return results.map((result) => ({
       category: result.category,
       totalAmount: parseFloat(result.totalAmount),
       count: parseInt(result.count),

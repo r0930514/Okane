@@ -1,6 +1,7 @@
 import PropTypes from "prop-types"
+import { UserConfigService } from "../../../../shared"
 
-export default function WalletListCard({ name, balance, color = "#10b981", onClick }) {
+export default function WalletListCard({ name, balance, color = "#10b981", onClick, currency = "TWD", primaryCurrency = "TWD", convertedBalance = null }) {
     const cardStyle = {
         backgroundColor: `${color}20`, // 添加透明度
         borderColor: `${color}40`,
@@ -18,7 +19,20 @@ export default function WalletListCard({ name, balance, color = "#10b981", onCli
                         {name}
                     </div>
                     <div className="text-gray-900 text-2xl font-bold">
-                        ${(balance || 0).toLocaleString()}
+                        {currency === primaryCurrency ? (
+                            // 與主貨幣相同：顯示主貨幣餘額
+                            UserConfigService.formatCurrency(balance || 0, primaryCurrency)
+                        ) : (
+                            // 與主貨幣不同：顯示主貨幣餘額並在旁邊顯示原貨幣金額
+                            <div className="flex flex-col">
+                                <div className="text-2xl font-bold">
+                                    {UserConfigService.formatCurrency(convertedBalance || 0, primaryCurrency)}
+                                </div>
+                                <div className="text-sm text-gray-500 font-normal">
+                                    {UserConfigService.formatCurrency(balance || 0, currency)}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -31,4 +45,7 @@ WalletListCard.propTypes = {
     name: PropTypes.string.isRequired,
     balance: PropTypes.number,
     onClick: PropTypes.func,
+    currency: PropTypes.string, // 錢包的貨幣
+    primaryCurrency: PropTypes.string, // 主貨幣
+    convertedBalance: PropTypes.number, // 轉換後的餘額（主貨幣）
 }

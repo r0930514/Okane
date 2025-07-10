@@ -61,8 +61,18 @@ export class Wallet {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updatedAt: Date;
+
+  @Column({ default: 'TWD' })
+  currency: string;
+
+  @Column({ default: '' })
+  secondaryCurrency: string;
 
   @ManyToOne(() => User, (user) => user.wallets)
   user: User;

@@ -19,6 +19,23 @@ export class User {
     salt: string;
   };
 
+  @Column({ length: 10, default: 'TWD' })
+  primaryCurrency: string;
+
+  @Column('jsonb', { nullable: true })
+  preferences: {
+    language?: string;
+    timezone?: string;
+    dateFormat?: string;
+    numberFormat?: string;
+    theme?: string;
+    notifications?: {
+      email?: boolean;
+      push?: boolean;
+      sms?: boolean;
+    };
+  };
+
   @OneToMany(() => Wallet, (wallet) => wallet.user)
   wallets: Wallet[];
 
