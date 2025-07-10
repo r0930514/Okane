@@ -1,11 +1,6 @@
-import axios from 'axios';
-import ConfigService from '../../../shared/services/ConfigService';
+import ApiService from '../../../shared/services/ApiService';
 
 class AuthService {
-    static authInstance = axios.create({
-        baseURL: `${ConfigService.baseURL}auth/`,
-        timeout: 10000, // 10 seconds timeout
-    });
 
     static handleError(error) {
         if (error.code === 'ECONNABORTED') {
@@ -35,7 +30,7 @@ class AuthService {
      */
     static async verifyEmail(email) {
         try {
-            const res = await this.authInstance.post('verify-email', { email });
+            const res = await ApiService.axiosInstance.post('/auth/verify-email', { email });
             return { 
                 success: true, 
                 exists: res.data.exists 
@@ -60,7 +55,7 @@ class AuthService {
      */
     static async signin(email, password) {
         try {
-            const res = await this.authInstance.post('signin', {
+            const res = await ApiService.axiosInstance.post('/auth/signin', {
                 email: email,
                 password: password
             });
@@ -87,7 +82,7 @@ class AuthService {
      */
     static async signup(email, password, username) {
         try {
-            const res = await this.authInstance.post('signup', {
+            const res = await ApiService.axiosInstance.post('/auth/signup', {
                 email: email,
                 username: username,
                 password: password
@@ -109,11 +104,7 @@ class AuthService {
      */
     static async checkToken() {
         try {
-            await this.authInstance.get('verifyToken', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            });
+            await ApiService.axiosInstance.get('/auth/verifyToken');
             return { success: true };
         } catch (error) {
             console.error('驗證 Token 時發生錯誤:', error);
