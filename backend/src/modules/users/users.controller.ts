@@ -19,7 +19,7 @@ import {
 import { UpdatePrimaryCurrencyDto } from './dto/update-primary-currency.dto';
 import { UpdateUserPreferencesDto } from './dto/update-user-preferences.dto';
 
-@ApiTags('Users')
+@ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()

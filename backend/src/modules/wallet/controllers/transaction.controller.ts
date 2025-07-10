@@ -58,7 +58,12 @@ export class TransactionController {
   @ApiOperation({ summary: '取得錢包的交易記錄' })
   @ApiParam({ name: 'walletId', description: '錢包 ID' })
   @ApiQuery({ name: 'page', description: '頁數', required: false, example: 1 })
-  @ApiQuery({ name: 'limit', description: '每頁筆數', required: false, example: 20 })
+  @ApiQuery({
+    name: 'limit',
+    description: '每頁筆數',
+    required: false,
+    example: 20,
+  })
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
@@ -84,8 +89,18 @@ export class TransactionController {
 
   @ApiOperation({ summary: '取得錢包的分類統計' })
   @ApiParam({ name: 'walletId', description: '錢包 ID' })
-  @ApiQuery({ name: 'startDate', description: '開始日期', required: false, example: '2024-01-01' })
-  @ApiQuery({ name: 'endDate', description: '結束日期', required: false, example: '2024-12-31' })
+  @ApiQuery({
+    name: 'startDate',
+    description: '開始日期',
+    required: false,
+    example: '2024-01-01',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    description: '結束日期',
+    required: false,
+    example: '2024-12-31',
+  })
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
@@ -96,7 +111,7 @@ export class TransactionController {
         type: 'object',
         properties: {
           category: { type: 'string', example: '餐飲' },
-          totalAmount: { type: 'number', example: 1200.50 },
+          totalAmount: { type: 'number', example: 1200.5 },
           count: { type: 'number', example: 15 },
         },
       },
@@ -114,7 +129,7 @@ export class TransactionController {
   ) {
     const start = startDate ? new Date(startDate) : undefined;
     const end = endDate ? new Date(endDate) : undefined;
-    
+
     return this.transactionService.getTransactionsByCategory(
       walletId,
       req.user.userId,
@@ -141,10 +156,7 @@ export class SingleTransactionController {
   @ApiResponse({ status: 404, description: '交易記錄不存在' })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(
-    @Request() req: any,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
+  findOne(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
     return this.transactionService.findOne(id, req.user.userId);
   }
 
@@ -167,7 +179,11 @@ export class SingleTransactionController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
   ) {
-    return this.transactionService.update(id, req.user.userId, updateTransactionDto);
+    return this.transactionService.update(
+      id,
+      req.user.userId,
+      updateTransactionDto,
+    );
   }
 
   @ApiOperation({ summary: '刪除交易記錄' })
