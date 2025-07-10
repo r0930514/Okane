@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { CalendarIcon, TrashIcon, CaretDown, CaretUp } from "@phosphor-icons/react";
+import { CalendarIcon, TrashIcon } from "@phosphor-icons/react";
 import { useTransactions } from "../../../../hooks/useTransactions";
 import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import CategorySelector from "../shared/CategorySelector";

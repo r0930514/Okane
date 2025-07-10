@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API 測試</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .result { background: #f5f5f5; padding: 10px; margin-top: 10px; border-radius: 3px; }
+        button { margin: 5px; padding: 8px 15px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Okane API 測試</h1>
+    
+    <div class="test-section">
+        <h3>用戶偏好設定測試</h3>
+        <button onclick="testGetUserPreferences()">取得用戶偏好設定</button>
+        <button onclick="testUpdatePrimaryCurrency()">更新主貨幣為 USD</button>
+        <button onclick="testUpdateUserPreferences()">更新偏好設定</button>
+        <div id="userPreferencesResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>匯率服務測試</h3>
+        <button onclick="testInitializeFakeData()">初始化假資料</button>
+        <button onclick="testGetLatestRate()">取得 USD/TWD 匯率</button>
+        <button onclick="testBatchConvert()">批次轉換測試</button>
+        <div id="exchangeRateResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        let token = null;
+
+        // 從 localStorage 取得 token（假設用戶已登入）
+        token = localStorage.getItem('token');
+        if (!token) {
+            document.body.innerHTML = '<h2 style="color: red;">請先登入系統！</h2>';
+        }
+
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, options);
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function displayResult(elementId, result) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="${result.success ? 'success' : 'error'}">
+                    <strong>${result.success ? '成功' : '失敗'}:</strong>
+                    <pre>${JSON.stringify(result, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        // 用戶偏好設定測試
+        async function testGetUserPreferences() {
+            const result = await apiCall('/users/preferences');
+            displayResult('userPreferencesResult', result);
+        }
+
+        async function testUpdatePrimaryCurrency() {
+            const result = await apiCall('/users/primary-currency', 'PATCH', {
+                primaryCurrency: 'USD'
+            });
+            displayResult('userPreferencesResult', result);
+        }
+
+        async function testUpdateUserPreferences() {
+            const result = await apiCall('/users/preferences', 'PATCH', {
+                preferences: {
+                    language: 'en-US',
+                    theme: 'dark',
+                    notifications: {
+                        email: false,
+                        push: true
+                    }
+                }
+            });
+            displayResult('userPreferencesResult', result);
+        }
+
+        // 匯率服務測試
+        async function testInitializeFakeData() {
+            const result = await apiCall('/exchange-rates/initialize-fake-data', 'POST');
+            displayResult('exchangeRateResult', result);
+        }
+
+        async function testGetLatestRate() {
+            const result = await apiCall('/exchange-rates/latest?from=USD&to=TWD');
+            displayResult('exchangeRateResult', result);
+        }
+
+        async function testBatchConvert() {
+            const result = await apiCall('/exchange-rates/batch-convert', 'POST', {
+                amounts: [
+                    { amount: 100, currency: 'USD' },
+                    { amount: 50000, currency: 'TWD' },
+                    { amount: 0.01, currency: 'BTC' }
+                ],
+                targetCurrency: 'TWD'
+            });
+            displayResult('exchangeRateResult', result);
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { TrendUp, TrendDown, Wallet, Receipt } from '@phosphor-icons/react';
+import { TrendUp, TrendDown, Wallet, Receipt, CurrencyDollar } from '@phosphor-icons/react';
+import { ExchangeRateService, UserService, UserConfigService } from '../../../../shared';
 
 export default function StatsOverview({ wallets }) {
     const [stats, setStats] = useState({
@@ -11,6 +12,27 @@ export default function StatsOverview({ wallets }) {
         categoryStats: []
     });
     const [loading, setLoading] = useState(true);
+    const [primaryCurrency, setPrimaryCurrency] = useState('TWD');
+    const [showCurrencySelector, setShowCurrencySelector] = useState(false);
+    
+    // 支援的貨幣列表
+    const supportedCurrencies = UserConfigService.getSupportedCurrencies();
+
+    // 載入用戶主貨幣設定
+    useEffect(() => {
+        const loadUserPreferences = async () => {
+            try {
+                const preferences = await UserService.getUserPreferences();
+                if (preferences.success && preferences.data?.primaryCurrency) {
+                    setPrimaryCurrency(preferences.data.primaryCurrency);
+                }
+            } catch (error) {
+                console.log('無法載入用戶偏好設定，使用預設值');
+            }
+        };
+        
+        loadUserPreferences();
+    }, []);
 
     useEffect(() => {
         const calculateStats = async () => {
@@ -21,16 +43,43 @@ export default function StatsOverview({ wallets }) {
             
             setLoading(true);
             try {
-                const totalBalance = wallets.reduce((sum, wallet) => sum + (wallet.balance || wallet.currentBalance || 0), 0);
-                
-                // 計算總資產和總負債
-                const totalAssets = wallets
-                    .filter(wallet => (wallet.balance || wallet.currentBalance || 0) > 0)
-                    .reduce((sum, wallet) => sum + (wallet.balance || wallet.currentBalance || 0), 0);
-                
-                const totalLiabilities = Math.abs(wallets
-                    .filter(wallet => (wallet.balance || wallet.currentBalance || 0) < 0)
-                    .reduce((sum, wallet) => sum + (wallet.balance || wallet.currentBalance || 0), 0));
+                // 準備多幣別餘額轉換
+                const walletAmounts = wallets.map(wallet => ({
+                    amount: wallet.balance || wallet.initialBalance || 0,
+                    currency: wallet.currency || 'TWD'
+                }));
+
+                // 使用批次轉換API計算主貨幣總額
+                const conversionResult = await ExchangeRateService.batchConvertToTargetCurrency(
+                    walletAmounts,
+                    primaryCurrency
+                );
+
+                let totalBalance = 0;
+                let totalAssets = 0;
+                let totalLiabilities = 0;
+
+                if (conversionResult.success) {
+                    totalBalance = conversionResult.data.totalAmount;
+                    
+                    // 分別計算資產和負債
+                    conversionResult.data.conversions.forEach(conversion => {
+                        if (conversion.convertedAmount > 0) {
+                            totalAssets += conversion.convertedAmount;
+                        } else {
+                            totalLiabilities += Math.abs(conversion.convertedAmount);
+                        }
+                    });
+                } else {
+                    // 如果API失敗，使用簡單加總作為備用
+                    totalBalance = wallets.reduce((sum, wallet) => sum + (wallet.balance || wallet.initialBalance || 0), 0);
+                    totalAssets = wallets
+                        .filter(wallet => (wallet.balance || wallet.initialBalance || 0) > 0)
+                        .reduce((sum, wallet) => sum + (wallet.balance || wallet.initialBalance || 0), 0);
+                    totalLiabilities = Math.abs(wallets
+                        .filter(wallet => (wallet.balance || wallet.initialBalance || 0) < 0)
+                        .reduce((sum, wallet) => sum + (wallet.balance || wallet.initialBalance || 0), 0));
+                }
                 
                 setStats({
                     totalBalance,
@@ -41,21 +90,38 @@ export default function StatsOverview({ wallets }) {
                 });
             } catch (error) {
                 console.error('計算統計時發生錯誤:', error);
+                // 使用備用計算方式
+                const totalBalance = wallets.reduce((sum, wallet) => sum + (wallet.balance || wallet.initialBalance || 0), 0);
+                const totalAssets = wallets
+                    .filter(wallet => (wallet.balance || wallet.initialBalance || 0) > 0)
+                    .reduce((sum, wallet) => sum + (wallet.balance || wallet.initialBalance || 0), 0);
+                const totalLiabilities = Math.abs(wallets
+                    .filter(wallet => (wallet.balance || wallet.initialBalance || 0) < 0)
+                    .reduce((sum, wallet) => sum + (wallet.balance || wallet.initialBalance || 0), 0));
+                
+                setStats({
+                    totalBalance,
+                    totalAssets,
+                    totalLiabilities,
+                    transactionCount: 0,
+                    categoryStats: []
+                });
             } finally {
                 setLoading(false);
             }
         };
 
         calculateStats();
-    }, [wallets]);
+    }, [wallets, primaryCurrency]);
 
     const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('zh-TW', {
-            style: 'currency',
-            currency: 'TWD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(amount).replace('NT$', '$');
+        return UserConfigService.formatCurrency(amount, primaryCurrency);
+    };
+
+    // 處理主貨幣切換
+    const handleCurrencyChange = (newCurrency) => {
+        setPrimaryCurrency(newCurrency);
+        setShowCurrencySelector(false);
     };
 
     if (loading) {
@@ -95,7 +161,41 @@ export default function StatsOverview({ wallets }) {
 
     return (
         <div className="px-6 py-3">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">財務概覽</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">財務概覽</h2>
+                
+                {/* 主貨幣切換按鈕 */}
+                <div className="relative">
+                    <button
+                        className="btn btn-sm btn-outline flex items-center gap-2"
+                        onClick={() => setShowCurrencySelector(!showCurrencySelector)}
+                    >
+                        <CurrencyDollar size={16} />
+                        {supportedCurrencies.find(c => c.code === primaryCurrency)?.name || primaryCurrency}
+                    </button>
+                    
+                    {showCurrencySelector && (
+                        <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <div className="py-2">
+                                {supportedCurrencies.map(currency => (
+                                    <button
+                                        key={currency.code}
+                                        className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${
+                                            currency.code === primaryCurrency ? 'bg-blue-50 text-blue-600' : ''
+                                        }`}
+                                        onClick={() => handleCurrencyChange(currency.code)}
+                                    >
+                                        <span className="flex items-center justify-between">
+                                            <span>{currency.name}</span>
+                                            <span className="text-sm text-gray-500">{currency.symbol}</span>
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 <StatCard
