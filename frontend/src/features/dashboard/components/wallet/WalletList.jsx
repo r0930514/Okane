@@ -1,9 +1,10 @@
 import { CaretRight, Plus } from "@phosphor-icons/react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import WalletListCard from "./WalletListCard";
 import WalletDetailModal from "./WalletDetailModal/index";
 import { useWallets } from "../../hooks/useWallets.js";
+import { ExchangeRateService, UserService } from "../../../../shared";
 
 export default function WalletList() {
     const { wallets, loading, error, refetch } = useWallets();
@@ -11,6 +12,11 @@ export default function WalletList() {
     // Modal 狀態管理
     const [selectedWallet, setSelectedWallet] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    // 主貨幣狀態
+    const [primaryCurrency, setPrimaryCurrency] = useState('TWD');
+    const [convertedWallets, setConvertedWallets] = useState([]);
+    const [isConverting, setIsConverting] = useState(false);
 
     // 分類類型對應的中文名稱
     const categoryNames = {
@@ -27,8 +33,9 @@ export default function WalletList() {
     // 動態根據錢包類型分組，只包含有錢包的分類
     const groupedWallets = useMemo(() => {
         const groups = {};
+        const walletsToUse = convertedWallets.length > 0 ? convertedWallets : wallets;
 
-        wallets.forEach((wallet) => {
+        walletsToUse.forEach((wallet) => {
             const walletType = wallet.walletType || "manual"; // 預設為 manual
 
             if (!groups[walletType]) {
@@ -39,10 +46,72 @@ export default function WalletList() {
         });
 
         return groups;
-    }, [wallets]);
+    }, [wallets, convertedWallets]);
 
     // 取得有錢包的分類列表
     const availableCategories = Object.keys(groupedWallets);
+    
+    // 載入用戶主貨幣設定
+    useEffect(() => {
+        const loadUserPreferences = async () => {
+            try {
+                const preferences = await UserService.getUserPreferences();
+                if (preferences.success && preferences.data?.primaryCurrency) {
+                    setPrimaryCurrency(preferences.data.primaryCurrency);
+                }
+            } catch (error) {
+                console.log('無法載入用戶偏好設定，使用預設值');
+            }
+        };
+        
+        loadUserPreferences();
+    }, []);
+    
+    // 進行貨幣轉換
+    useEffect(() => {
+        const convertWalletBalances = async () => {
+            if (!wallets.length || !primaryCurrency) return;
+            
+            setIsConverting(true);
+            try {
+                const walletAmounts = wallets.map(wallet => ({
+                    amount: wallet.balance || wallet.initialBalance || 0,
+                    currency: wallet.currency || 'TWD',
+                    walletId: wallet.id
+                }));
+                
+                const conversionResult = await ExchangeRateService.batchConvertToTargetCurrency(
+                    walletAmounts,
+                    primaryCurrency
+                );
+                
+                if (conversionResult.success) {
+                    const walletsWithConversion = wallets.map(wallet => {
+                        const conversion = conversionResult.data.conversions.find(
+                            c => c.originalCurrency === (wallet.currency || 'TWD') &&
+                                 c.originalAmount === (wallet.balance || wallet.initialBalance || 0)
+                        );
+                        
+                        return {
+                            ...wallet,
+                            convertedBalance: conversion?.convertedAmount || (wallet.balance || wallet.initialBalance || 0)
+                        };
+                    });
+                    
+                    setConvertedWallets(walletsWithConversion);
+                } else {
+                    setConvertedWallets(wallets);
+                }
+            } catch (error) {
+                console.error('貨幣轉換失敗:', error);
+                setConvertedWallets(wallets);
+            } finally {
+                setIsConverting(false);
+            }
+        };
+        
+        convertWalletBalances();
+    }, [wallets, primaryCurrency]);
 
     const handleWalletClick = (wallet) => {
         setSelectedWallet(wallet);
@@ -60,7 +129,7 @@ export default function WalletList() {
         // 這裡之後可以打開新增錢包的模態框
     };
 
-    if (loading) {
+    if (loading || isConverting) {
         return (
             <div className="flex justify-center items-center py-8">
                 <span className="loading loading-spinner loading-lg"></span>
@@ -101,6 +170,9 @@ export default function WalletList() {
                         balance={wallet.balance || wallet.currentBalance || 0}
                         color={wallet.walletColor || "#10b981"}
                         onClick={() => handleWalletClick(wallet)}
+                        currency={wallet.currency || 'TWD'}
+                        primaryCurrency={primaryCurrency}
+                        convertedBalance={wallet.convertedBalance}
                     />
                 ))}
             </div>

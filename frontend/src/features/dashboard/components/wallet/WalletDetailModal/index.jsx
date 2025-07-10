@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTransactions } from "../../../hooks/useTransactions";
 import { useWallets } from "../../../hooks/useWallets";
 import { useWalletStats } from "../../../hooks/useWalletStats";
@@ -7,6 +7,7 @@ import {
     formatCurrency,
     formatConvertedCurrency,
 } from "../../../../../shared/utils/formatUtils";
+import { UserService, UserConfigService, ExchangeRateService } from "../../../../../shared";
 import { TAB_TYPES, VIEW_MODES } from "../../../constants/walletConstants";
 import WalletHeader from "./shared/WalletHeader";
 import TransactionsTab from "./tabs/TransactionsTab";
@@ -22,6 +23,8 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
     const [activeTab, setActiveTab] = useState(TAB_TYPES.TRANSACTIONS);
     const [viewMode, setViewMode] = useState(VIEW_MODES.DEFAULT);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [primaryCurrency, setPrimaryCurrency] = useState('TWD');
+    const [convertedBalance, setConvertedBalance] = useState(null);
 
     // 使用 useWallets hook 取得錢包資料
     const {
@@ -40,6 +43,48 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
         to: wallet?.secondaryCurrency,
         amount: walletStats?.currentBalance || 0,
     });
+    
+    // 載入用戶主貨幣設定
+    useEffect(() => {
+        const loadUserPreferences = async () => {
+            try {
+                const preferences = await UserService.getUserPreferences();
+                if (preferences.success && preferences.data?.primaryCurrency) {
+                    setPrimaryCurrency(preferences.data.primaryCurrency);
+                }
+            } catch (error) {
+                console.log('無法載入用戶偏好設定，使用預設值');
+            }
+        };
+        
+        loadUserPreferences();
+    }, []);
+    
+    // 進行貨幣轉換
+    useEffect(() => {
+        const convertBalance = async () => {
+            if (!wallet?.currency || !walletStats?.currentBalance) return;
+            
+            try {
+                const result = await ExchangeRateService.convertAmount(
+                    walletStats.currentBalance,
+                    wallet.currency,
+                    primaryCurrency
+                );
+                
+                if (result.success) {
+                    setConvertedBalance(result.data.convertedAmount);
+                } else {
+                    setConvertedBalance(walletStats.currentBalance);
+                }
+            } catch (error) {
+                console.error('轉換失敗:', error);
+                setConvertedBalance(walletStats.currentBalance);
+            }
+        };
+        
+        convertBalance();
+    }, [wallet?.currency, walletStats?.currentBalance, primaryCurrency]);
 
     // 使用 useCallback 避免不必要的重新渲染
     const handleTabChange = useCallback((tab) => {
@@ -148,11 +193,31 @@ export default function WalletDetailModal({ walletId, isOpen, onClose }) {
                             <>
                                 {/* 餘額顯示 - 響應式字體大小 */}
                                 <div className="text-center lg:text-end mb-4 lg:mb-6">
-                                    <div className="text-2xl lg:text-3xl font-bold">
-                                        {formatCurrency(
-                                            walletStats?.currentBalance || 0,
-                                        )}
-                                    </div>
+                                    {wallet.currency === primaryCurrency ? (
+                                        // 與主貨幣相同：顯示主貨幣餘額
+                                        <div className="text-2xl lg:text-3xl font-bold">
+                                            {UserConfigService.formatCurrency(
+                                                walletStats?.currentBalance || 0,
+                                                primaryCurrency
+                                            )}
+                                        </div>
+                                    ) : (
+                                        // 與主貨幣不同：顯示主貨幣餘額並在下方顯示原貨幣金額
+                                        <div>
+                                            <div className="text-2xl lg:text-3xl font-bold">
+                                                {UserConfigService.formatCurrency(
+                                                    convertedBalance || walletStats?.currentBalance || 0,
+                                                    primaryCurrency
+                                                )}
+                                            </div>
+                                            <div className="text-sm text-base-content/60 mt-1">
+                                                {UserConfigService.formatCurrency(
+                                                    walletStats?.currentBalance || 0,
+                                                    wallet.currency || 'TWD'
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                     {/* 換算結果顯示 */}
                                     {wallet.secondaryCurrency &&
                                         wallet.secondaryCurrency !== "" && (
