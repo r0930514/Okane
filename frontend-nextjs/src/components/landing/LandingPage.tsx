@@ -4,17 +4,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import {
-    CurrencyDollar,
-    Users,
-    CurrencyCircleDollar,
-    Plug,
-    ChartPie,
-    TrendUp,
-    PencilSimple,
-    ClipboardText,
-    Lock,
-    List,
-} from "@phosphor-icons/react";
+    CurrencyDollarIcon,
+    UsersIcon,
+    CurrencyCircleDollarIcon,
+    PlugIcon,
+    ChartPieIcon,
+    TrendUpIcon,
+    PencilSimpleIcon,
+    ClipboardTextIcon,
+    LockIcon,
+    ListIcon,
+} from "@phosphor-icons/react/dist/ssr"; // Importing icons from @phosphor-icons/react/dist/ssr for server-side rendering
 import FeatureCard from "./components/FeatureCard";
 import FAQSection from "./components/FAQSection";
 import TestimonialsSection from "./components/TestimonialsSection";
@@ -37,55 +37,55 @@ function LandingPage() {
     
     const features = [
         {
-            icon: CurrencyDollar,
+            icon: CurrencyDollarIcon,
             title: "多種資產類型",
             description: "支持現金、加密貨幣、股票等多種資產類型管理",
             iconColor: "text-blue-600"
         },
         {
-            icon: ChartPie,
+            icon: ChartPieIcon,
             title: "智慧分類",
             description: "自動分類管理，讓您的資產組織更有條理",
             iconColor: "text-indigo-600"
         },
         {
-            icon: TrendUp,
+            icon: TrendUpIcon,
             title: "資產總值計算",
             description: "即時計算資產總值，掌握財務狀況",
             iconColor: "text-emerald-600"
         },
         {
-            icon: Plug,
+            icon: PlugIcon,
             title: "智慧錢包",
             description: "自動更新資產資訊，並且有多個不同模組可供選擇",
             iconColor: "text-orange-600"
         },
         {
-            icon: Users,
+            icon: UsersIcon,
             title: "朋友分帳",
             description: "與朋友輕鬆分帳，再也不擔心出去玩算錢的麻煩",
             iconColor: "text-green-600"
         },
         {
-            icon: CurrencyCircleDollar,
+            icon: CurrencyCircleDollarIcon,
             title: "自訂匯率轉換",
             description: "選擇不同供應商的匯率，獲得最精準的資產價值計算",
             iconColor: "text-purple-600"
         },
         {
-            icon: PencilSimple,
+            icon: PencilSimpleIcon,
             title: "靈活管理",
             description: "輕鬆新增、編輯和刪除資產，操作簡單直觀",
             iconColor: "text-amber-600"
         },
         {
-            icon: ClipboardText,
+            icon: ClipboardTextIcon,
             title: "專業報告",
             description: "生成詳細報告，分析資產分佈和變化趨勢",
             iconColor: "text-teal-600"
         },
         {
-            icon: Lock,
+            icon: LockIcon,
             title: "安全可靠",
             description: "採用安全的身份驗證，保護您的財務隱私",
             iconColor: "text-red-600"
@@ -135,7 +135,7 @@ function LandingPage() {
                                 }>
                             {/* Dropdown Toggle Button */}
                             <div tabIndex={0} role="button" className="btn btn-ghost btn-sm">
-                                <List className="w-5 h-5" size={24}/>
+                                <ListIcon className="w-5 h-5" size={24}/>
                             </div>
                             {/* Dropdown Menu */}
                             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-1 p-2 shadow-sm bg-base-100 rounded-box w-52">
