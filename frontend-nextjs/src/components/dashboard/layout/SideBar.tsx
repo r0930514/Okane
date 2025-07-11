@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import SideBarItem from "./SideBarItem";
-import { NAVIGATION_GROUPS, NAVIGATION_ITEMS, DEFAULT_ACTIVE_ITEM, NavigationItem, NavigationGroup } from "../../constants/navigation";
+import { NAVIGATION_GROUPS, NAVIGATION_ITEMS, DEFAULT_ACTIVE_ITEM, NavigationItem, NavigationGroup } from "@/app/dashboard/constants/navigation";
 
 export default function SideBar() {
     const router = useRouter();
