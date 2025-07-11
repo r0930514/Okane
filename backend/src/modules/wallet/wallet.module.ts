@@ -11,10 +11,15 @@ import { TransactionService } from './services/transaction.service';
 import { WalletModuleController } from './controllers/wallet-module.controller';
 import { WalletConfigController } from './controllers/wallet-config.controller';
 import { WalletController } from './controllers/wallet.controller';
-import { TransactionController, SingleTransactionController } from './controllers/transaction.controller';
+import {
+  TransactionController,
+  SingleTransactionController,
+} from './controllers/transaction.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([WalletEntity, WalletConfig, Wallet, Transaction])],
+  imports: [
+    TypeOrmModule.forFeature([WalletEntity, WalletConfig, Wallet, Transaction]),
+  ],
   controllers: [
     WalletModuleController,
     WalletConfigController,

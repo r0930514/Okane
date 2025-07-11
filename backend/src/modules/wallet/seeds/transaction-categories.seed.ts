@@ -34,10 +34,12 @@ export const defaultTransactionCategories = [
 
 export const getDefaultCategories = (type?: 'income' | 'expense'): string[] => {
   if (type) {
-    const categoryGroup = defaultTransactionCategories.find(group => group.type === type);
+    const categoryGroup = defaultTransactionCategories.find(
+      (group) => group.type === type,
+    );
     return categoryGroup ? categoryGroup.categories : [];
   }
-  
+
   // 返回所有分類
   return defaultTransactionCategories.reduce((all, group) => {
     return [...all, ...group.categories];
