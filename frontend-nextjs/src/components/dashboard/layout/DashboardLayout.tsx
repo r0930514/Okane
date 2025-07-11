@@ -22,8 +22,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </div>
                 
                 {/* Main content - 可捲動區域 */}
-                <main className="flex-1 overflow-y-auto">
-                    {children}
+                <main className="flex-1 overflow-y-auto bg-gray-50">
+                    <div className="p-4">
+                        {children}
+                    </div>
                 </main>
             </div>
 

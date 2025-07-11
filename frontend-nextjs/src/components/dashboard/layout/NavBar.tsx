@@ -31,58 +31,78 @@ export default function NavBar({ username = "User" }: NavBarProps) {
     };
 
     return (
-        <nav className="navbar w-full shadow-xs bg-base-100 border-b border-base-200">
-            <div className="flex-none">
-                <label htmlFor="drawer" className="btn btn-square btn-ghost drawer-button lg:hidden">
-                    <ListIcon size={24} />
-                </label>
-            </div>
-            <div className="flex-1">
-                <a className="btn btn-ghost text-xl gap-0 font-bold hidden lg:flex">
-                    {/* <span className="text-blue-600">O</span>kane */}
-                </a>
-            </div>
-            <div className="flex-none pr-2 gap-2">
-                {/* 用戶下拉菜單 */}
-                <div className="dropdown dropdown-end">
-                    <div tabIndex={0} role="button" className="btn btn-ghost gap-2">
-                        <UserCircleIcon size={24} />
-                        <span className="hidden lg:flex">{username}</span>
+        <nav className="bg-white border-b border-gray-200 px-4 py-3">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                    <label htmlFor="drawer" className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md lg:hidden transition-colors duration-200">
+                        <ListIcon size={20} />
+                    </label>
+                    <div className="flex items-center ml-2 lg:hidden">
+                        <div className="w-6 h-6 rounded flex items-center justify-center">
+                            <span className="text-blue-600 font-bold">O</span>
+                        </div>
+                        <span className="font-semibold text-gray-800">kane</span>
                     </div>
-                    <ul tabIndex={0} className="dropdown-content z-1 menu p-2 shadow-sm bg-base-100 rounded-box w-52">
-                        <li>
-                            <button onClick={handleLogout} className="flex items-center gap-2 text-error">
-                                <SignOutIcon size={20} />
-                                登出
-                            </button>
-                        </li>
-                    </ul>
                 </div>
-                
-                {/* 刷新按鈕 */}
-                <button 
-                    className={`btn btn-ghost btn-square`}
-                    onClick={handleRefresh}
-                    title="更新數據"
-                >
-                    {isRefreshing ? (
-                        <div className="loading loading-sm"></div>
-                    ) : (
-                        <ArrowsClockwiseIcon
-                            size={24} 
-                            className={isRefreshing ? 'animate-spin' : ''} 
-                        />
-                    )}
-                </button>
-                
-                {/* 新增按鈕 */}
-                <button 
-                    className="btn btn-ghost btn-square"
-                    onClick={handleAddNew}
-                    title="新增資產"
-                >
-                    <PlusIcon size={24} />
-                </button>
+                <div className="flex items-center gap-2">
+                    {/* 刷新按鈕 */}
+                    <button 
+                        className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors duration-200"
+                        onClick={handleRefresh}
+                        title="更新數據"
+                        disabled={isRefreshing}
+                    >
+                        {isRefreshing ? (
+                            <div className="animate-spin w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full"></div>
+                        ) : (
+                            <ArrowsClockwiseIcon size={18} />
+                        )}
+                    </button>
+                    
+                    {/* 新增按鈕 */}
+                    <button 
+                        className="px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
+                        onClick={handleAddNew}
+                        title="新增資產"
+                    >
+                        <PlusIcon size={16} className="inline mr-1" />
+                        新增
+                    </button>
+
+                    {/* 用戶下拉菜單 */}
+                    <div className="dropdown dropdown-end ml-2">
+                        <div tabIndex={0} role="button" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md transition-colors duration-200">
+                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                <span className="text-sm font-medium text-gray-600">
+                                    {username.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
+                            <span className="hidden lg:block text-sm font-medium text-gray-700">{username}</span>
+                        </div>
+                        <ul tabIndex={0} className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-lg w-48 border border-gray-200">
+                            <li className="mb-2">
+                                <div className="flex items-center gap-3 p-2 rounded-md bg-gray-50">
+                                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                        <span className="text-sm font-medium text-gray-600">
+                                            {username.charAt(0).toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-medium text-gray-800">{username}</span>
+                                        <span className="text-xs text-gray-500">user@example.com</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <div className="border-t border-gray-100 my-1"></div>
+                            <li>
+                                <button onClick={handleLogout} className="flex items-center gap-2 p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors duration-200 w-full text-left">
+                                    <SignOutIcon size={16} />
+                                    <span className="text-sm">登出</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </nav>
     );
