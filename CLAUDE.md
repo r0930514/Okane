@@ -21,6 +21,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm run preview` - Preview production build
 - `pnpm run lint` - Run ESLint
 
+### Frontend (Next.js)
+- `cd frontend-nextjs && pnpm install` - Install dependencies
+- `pnpm run dev` - Run development server
+- `pnpm run build` - Build for production
+- `pnpm run start` - Start production server
+- `pnpm run lint` - Run ESLint
+
 ### Database Migrations
 - `npm run migration:generate` - Generate migration from entity changes
 - `npm run migration:run` - Apply pending migrations
@@ -34,7 +41,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Architecture Overview
 
 ### Core System Structure
-Okane is a multi-currency asset management system with a **NestJS backend** and **React frontend**. The system handles:
+Okane is a multi-currency asset management system with a **NestJS backend** and dual frontend options: **React (Vite)** and **Next.js**. The system handles:
 - Multi-currency wallet management
 - Real-time exchange rate conversion
 - Transaction tracking with cost basis calculations
@@ -50,7 +57,9 @@ Okane is a multi-currency asset management system with a **NestJS backend** and 
 - **Entities**: User, Wallet, Transaction, WalletModule, WalletConfig
 - **API Documentation**: Swagger available at `/docs` endpoint
 
-### Frontend Architecture (React)
+### Frontend Architecture
+
+#### React (Vite) Frontend
 - **Feature-Based Structure**: Organized by domain features
 - **Main Features**:
   - `auth` - Login/registration pages and authentication logic
@@ -59,6 +68,16 @@ Okane is a multi-currency asset management system with a **NestJS backend** and 
 - **Routing**: React Router with protected routes
 - **State Management**: Uses React hooks and context
 - **UI Framework**: TailwindCSS with DaisyUI components
+
+#### Next.js Frontend
+- **App Router Structure**: Uses Next.js 13+ app directory
+- **Main Features**:
+  - `(auth)` - Authentication pages with route groups
+  - Landing page as root
+- **Routing**: Next.js App Router with middleware
+- **State Management**: React hooks and context
+- **UI Framework**: TailwindCSS
+- **Services**: Centralized API service layer
 
 ### Database Schema
 - **Users**: Authentication and profile data
@@ -102,3 +121,8 @@ Okane is a multi-currency asset management system with a **NestJS backend** and 
 
 ## 回覆語言規定
 - 請使用繁體中文回答 - 請必須使用繁體中文進行回覆
+
+## Git 提交規定
+- 每完成一個功能段落或重要步驟後必須進行 git commit
+- 確保每次提交都包含完整且可運行的程式碼
+- 提交訊息要清楚描述所完成的功能或修正
