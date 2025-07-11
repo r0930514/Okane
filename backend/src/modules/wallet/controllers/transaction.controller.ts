@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseIntPipe,
   UseGuards,
   Request,
   Query,
@@ -17,188 +16,127 @@ import {
   ApiResponse,
   ApiBearerAuth,
   ApiParam,
-  ApiBody,
   ApiQuery,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../auth/stratgies/jwt-auth.guard';
 import { TransactionService } from '../services/transaction.service';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
-import { JwtAuthGuard } from '../../auth/stratgies/jwt-auth.guard';
+import { CreateTransferDto } from '../dto/create-transfer.dto';
+import { Transaction } from '../../../entities/transaction.entity';
 
-@ApiTags('transactions')
-@Controller('wallets/:walletId/transactions')
+@ApiTags('交易管理')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('transactions')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @ApiOperation({ summary: '新增交易記錄' })
-  @ApiParam({ name: 'walletId', description: '錢包 ID' })
-  @ApiBody({ type: CreateTransactionDto })
-  @ApiBearerAuth('access-token')
-  @ApiResponse({
-    status: 201,
-    description: '交易記錄建立成功',
-  })
-  @ApiResponse({ status: 400, description: '請求資料格式錯誤' })
-  @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 404, description: '錢包不存在或無權限存取' })
-  @UseGuards(JwtAuthGuard)
   @Post()
+  @ApiOperation({ summary: '建立新交易' })
+  @ApiResponse({ status: 201, description: '交易建立成功', type: Transaction })
+  @ApiResponse({ status: 401, description: '未授權' })
+  @ApiResponse({ status: 404, description: '錢包不存在' })
   create(
-    @Request() req: any,
-    @Param('walletId', ParseIntPipe) walletId: number,
     @Body() createTransactionDto: CreateTransactionDto,
+    @Request() req: any,
   ) {
-    return this.transactionService.create(
-      walletId,
-      req.user.userId,
-      createTransactionDto,
+    return this.transactionService.create(createTransactionDto, req.user.id);
+  }
+
+  @Post('transfer')
+  @ApiOperation({ summary: '建立轉帳交易' })
+  @ApiResponse({ status: 201, description: '轉帳建立成功' })
+  @ApiResponse({ status: 401, description: '未授權' })
+  @ApiResponse({ status: 404, description: '錢包不存在' })
+  @ApiResponse({ status: 400, description: '不能轉帳到同一個錢包' })
+  createTransfer(
+    @Body() createTransferDto: CreateTransferDto,
+    @Request() req: any,
+  ) {
+    return this.transactionService.createTransfer(
+      createTransferDto.fromWalletId,
+      createTransferDto.toWalletId,
+      createTransferDto.amount,
+      createTransferDto.description,
+      req.user.id,
+      createTransferDto.metadata,
     );
   }
 
-  @ApiOperation({ summary: '取得錢包的交易記錄' })
-  @ApiParam({ name: 'walletId', description: '錢包 ID' })
-  @ApiQuery({ name: 'page', description: '頁數', required: false, example: 1 })
-  @ApiQuery({
-    name: 'limit',
-    description: '每頁筆數',
-    required: false,
-    example: 20,
-  })
-  @ApiBearerAuth('access-token')
-  @ApiResponse({
-    status: 200,
-    description: '成功取得交易記錄列表',
-  })
-  @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 404, description: '錢包不存在或無權限存取' })
-  @UseGuards(JwtAuthGuard)
   @Get()
-  findAllByWallet(
-    @Request() req: any,
-    @Param('walletId', ParseIntPipe) walletId: number,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-  ) {
-    return this.transactionService.findAllByWallet(
-      walletId,
-      req.user.userId,
-      page || 1,
-      limit || 20,
-    );
-  }
-
-  @ApiOperation({ summary: '取得錢包的分類統計' })
-  @ApiParam({ name: 'walletId', description: '錢包 ID' })
+  @ApiOperation({ summary: '取得交易列表' })
   @ApiQuery({
-    name: 'startDate',
-    description: '開始日期',
+    name: 'walletId',
     required: false,
-    example: '2024-01-01',
+    description: '錢包識別碼篩選',
   })
-  @ApiQuery({
-    name: 'endDate',
-    description: '結束日期',
-    required: false,
-    example: '2024-12-31',
-  })
-  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
-    description: '成功取得分類統計',
-    schema: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          category: { type: 'string', example: '餐飲' },
-          totalAmount: { type: 'number', example: 1200.5 },
-          count: { type: 'number', example: 15 },
-        },
-      },
-    },
+    description: '成功取得交易列表',
+    type: [Transaction],
   })
   @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 404, description: '錢包不存在或無權限存取' })
-  @UseGuards(JwtAuthGuard)
-  @Get('categories')
-  getTransactionsByCategory(
-    @Request() req: any,
-    @Param('walletId', ParseIntPipe) walletId: number,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
-  ) {
-    const start = startDate ? new Date(startDate) : undefined;
-    const end = endDate ? new Date(endDate) : undefined;
+  findAll(@Request() req: any, @Query('walletId') walletId?: string) {
+    return this.transactionService.findAll(req.user.id, walletId);
+  }
 
+  @Get('category/:category')
+  @ApiOperation({ summary: '根據分類取得交易' })
+  @ApiParam({ name: 'category', description: '交易分類' })
+  @ApiResponse({
+    status: 200,
+    description: '成功取得分類交易',
+    type: [Transaction],
+  })
+  @ApiResponse({ status: 401, description: '未授權' })
+  findByCategory(@Param('category') category: string, @Request() req: any) {
     return this.transactionService.getTransactionsByCategory(
-      walletId,
-      req.user.userId,
-      start,
-      end,
+      req.user.id,
+      category,
     );
   }
-}
 
-@ApiTags('transactions')
-@Controller('transactions')
-export class SingleTransactionController {
-  constructor(private readonly transactionService: TransactionService) {}
-
-  @ApiOperation({ summary: '取得特定交易記錄' })
-  @ApiParam({ name: 'id', description: '交易記錄 ID' })
-  @ApiBearerAuth('access-token')
+  @Get(':id')
+  @ApiOperation({ summary: '取得特定交易詳細資訊' })
+  @ApiParam({ name: 'id', description: '交易識別碼' })
   @ApiResponse({
     status: 200,
-    description: '成功取得交易記錄詳細資訊',
+    description: '成功取得交易資訊',
+    type: Transaction,
   })
   @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 403, description: '無權限存取此交易記錄' })
-  @ApiResponse({ status: 404, description: '交易記錄不存在' })
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOne(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
-    return this.transactionService.findOne(id, req.user.userId);
+  @ApiResponse({ status: 404, description: '交易不存在' })
+  findOne(@Param('id') id: string, @Request() req: any) {
+    return this.transactionService.findOne(id, req.user.id);
   }
 
-  @ApiOperation({ summary: '更新交易記錄' })
-  @ApiParam({ name: 'id', description: '交易記錄 ID' })
-  @ApiBody({ type: UpdateTransactionDto })
-  @ApiBearerAuth('access-token')
-  @ApiResponse({
-    status: 200,
-    description: '交易記錄更新成功',
-  })
-  @ApiResponse({ status: 400, description: '請求資料格式錯誤' })
-  @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 403, description: '無權限存取此交易記錄' })
-  @ApiResponse({ status: 404, description: '交易記錄不存在' })
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
+  @ApiOperation({ summary: '更新交易資訊' })
+  @ApiParam({ name: 'id', description: '交易識別碼' })
+  @ApiResponse({ status: 200, description: '交易更新成功', type: Transaction })
+  @ApiResponse({ status: 401, description: '未授權' })
+  @ApiResponse({ status: 404, description: '交易不存在' })
+  @ApiResponse({ status: 400, description: '不能直接更新轉帳交易金額' })
   update(
-    @Request() req: any,
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
+    @Request() req: any,
   ) {
     return this.transactionService.update(
       id,
-      req.user.userId,
       updateTransactionDto,
+      req.user.id,
     );
   }
 
-  @ApiOperation({ summary: '刪除交易記錄' })
-  @ApiParam({ name: 'id', description: '交易記錄 ID' })
-  @ApiBearerAuth('access-token')
-  @ApiResponse({
-    status: 200,
-    description: '交易記錄刪除成功',
-  })
-  @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 403, description: '無權限存取此交易記錄' })
-  @ApiResponse({ status: 404, description: '交易記錄不存在' })
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Request() req: any, @Param('id', ParseIntPipe) id: number) {
-    return this.transactionService.remove(id, req.user.userId);
+  @ApiOperation({ summary: '刪除交易' })
+  @ApiParam({ name: 'id', description: '交易識別碼' })
+  @ApiResponse({ status: 204, description: '交易刪除成功' })
+  @ApiResponse({ status: 401, description: '未授權' })
+  @ApiResponse({ status: 404, description: '交易不存在' })
+  remove(@Param('id') id: string, @Request() req: any) {
+    return this.transactionService.remove(id, req.user.id);
   }
 }

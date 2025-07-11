@@ -11,7 +11,7 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  
+
   async create(user: UserCreateDto) {
     const { username, email } = user;
     const password = CommonUtility.encryptBySalt(user.password);
@@ -27,11 +27,11 @@ export class UsersService {
     return this.userRepository.findOne({ where: { email } });
   }
 
-  async findById(id: number) {
+  async findById(id: string) {
     return this.userRepository.findOne({ where: { id } });
   }
 
-  async updatePrimaryCurrency(userId: number, primaryCurrency: string) {
+  async updatePrimaryCurrency(userId: string, primaryCurrency: string) {
     const user = await this.findById(userId);
     if (!user) {
       throw new Error('用戶不存在');
@@ -41,7 +41,7 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async updateUserPreferences(userId: number, preferences: any) {
+  async updateUserPreferences(userId: string, preferences: any) {
     const user = await this.findById(userId);
     if (!user) {
       throw new Error('用戶不存在');

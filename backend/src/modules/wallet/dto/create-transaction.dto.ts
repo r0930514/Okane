@@ -1,37 +1,44 @@
 import {
   IsString,
-  IsNotEmpty,
-  IsOptional,
   IsNumber,
+  IsOptional,
   IsEnum,
+  IsObject,
   IsDateString,
-  MaxLength,
-  Min,
+  IsUUID,
 } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  TransactionType,
-  TransactionSource,
-} from '../../../entities/transaction.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { TransactionType } from '../../../entities/transaction.entity';
 
 export class CreateTransactionDto {
   @ApiProperty({
-    description: '交易金額',
-    example: 100.5,
-    minimum: 0.01,
+    description: '錢包識別碼',
+    example: '550e8400-e29b-41d4-a716-446655440000',
   })
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0.01)
+  @IsUUID()
+  walletId: string;
+
+  @ApiProperty({
+    description: '交易發生日期時間',
+    example: '2024-01-15T10:30:00Z',
+    required: false,
+  })
+  @IsOptional()
+  @IsDateString()
+  date?: Date;
+
+  @ApiProperty({
+    description: '交易金額',
+    example: 1500.5,
+  })
+  @IsNumber()
   amount: number;
 
   @ApiProperty({
-    description: '交易描述',
+    description: '交易描述或備註',
     example: '午餐費用',
-    maxLength: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
   description: string;
 
   @ApiProperty({
@@ -42,70 +49,69 @@ export class CreateTransactionDto {
   @IsEnum(TransactionType)
   type: TransactionType;
 
-  @ApiPropertyOptional({
-    description: '交易分類',
+  @ApiProperty({
+    description: '交易分類標籤',
     example: '餐飲',
-    maxLength: 50,
+    required: false,
   })
   @IsOptional()
   @IsString()
-  @MaxLength(50)
   category?: string;
 
-  @ApiPropertyOptional({
-    description: '交易日期（ISO 8601 格式）',
-    example: '2024-01-15T10:30:00Z',
-  })
-  @IsOptional()
-  @IsDateString()
-  date?: string;
-
-  @ApiPropertyOptional({
-    description: '外部交易 ID',
-    example: 'TXN-12345',
-  })
-  @IsOptional()
-  @IsNumber()
-  transactionId?: number;
-
-  @ApiPropertyOptional({
-    description: '交易來源',
-    enum: TransactionSource,
-    example: TransactionSource.Manual,
-  })
-  @IsOptional()
-  @IsEnum(TransactionSource)
-  source?: TransactionSource;
-
-  @ApiPropertyOptional({
-    description: '外部系統交易ID（用於同步對帳）',
-    example: 'EXT-12345',
+  @ApiProperty({
+    description: '相關資產標識',
+    example: 'AAPL',
+    required: false,
   })
   @IsOptional()
   @IsString()
-  externalTransactionId?: string;
+  relatedAsset?: string;
 
-  @ApiPropertyOptional({
-    description: '交易貨幣（如 TWD, USD, JPY）',
-    example: 'TWD',
+  @ApiProperty({
+    description: '交易類型特定的額外資料',
+    example: {
+      stockSymbol: 'AAPL',
+      shares: 10,
+      pricePerShare: 150.25,
+    },
+    required: false,
   })
   @IsOptional()
-  @IsString()
-  currency?: string;
+  @IsObject()
+  metadata?: {
+    stockSymbol?: string;
+    shares?: number;
+    pricePerShare?: number;
+    exchangeRate?: number;
+    cryptoPair?: string;
+    fees?: number;
+    brokerOrderId?: string;
+    transferDirection?: 'in' | 'out';
+    originalAmount?: number;
+    originalCurrency?: string;
+    convertedAmount?: number;
+    convertedCurrency?: string;
+    transferFee?: number;
+    transferMethod?: string;
+    customerName?: string;
+    customerContact?: string;
+    invoiceNumber?: string;
+    dueDate?: string;
+    creditTerms?: string;
+    status?: 'pending' | 'partial' | 'paid' | 'overdue' | 'bad_debt';
+    paymentMethod?: string;
+    collectedAmount?: number;
+    remainingAmount?: number;
+    overdaysDays?: number;
+    [key: string]: any;
+  };
 
-  @ApiPropertyOptional({
-    description: '交易匯率（交易貨幣兌錢包主貨幣）',
-    example: 32.5,
+  @ApiProperty({
+    description: '相關錢包識別碼（轉帳時使用）',
+    example: '550e8400-e29b-41d4-a716-446655440001',
+    required: false,
   })
   @IsOptional()
-  @IsNumber({ maxDecimalPlaces: 6 })
-  exchangeRate?: number;
-
-  @ApiPropertyOptional({
-    description: '匯率來源（如 yahoo, google, twcb, manual）',
-    example: 'manual',
-  })
-  @IsOptional()
-  @IsString()
-  exchangeRateSource?: string;
+  @IsUUID()
+  relatedWalletId?: string;
 }
