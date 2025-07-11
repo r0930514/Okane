@@ -9,7 +9,7 @@ const authRoutes = ['/login', '/register'];
 
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    const token = request.cookies.get('token')?.value;
+    const token = request.cookies.get('auth-token')?.value;
 
     // 檢查是否為受保護的路由
     const isProtectedRoute = protectedRoutes.some(route => 

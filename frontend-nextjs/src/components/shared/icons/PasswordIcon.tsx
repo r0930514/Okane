@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react';
 
-interface PasswordIconProps extends ComponentProps<'svg'> {}
+type PasswordIconProps = ComponentProps<'svg'>;
 
 export default function PasswordIcon({ className = "h-4 w-4 text-gray-400", ...props }: PasswordIconProps) {
     return (

@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react';
 
-interface PasskeyIconProps extends ComponentProps<'svg'> {}
+type PasskeyIconProps = ComponentProps<'svg'>;
 
 export default function PasskeyIcon({ className = "h-5 w-5", ...props }: PasskeyIconProps) {
     return (

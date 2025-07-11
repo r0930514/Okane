@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react';
 
-interface EmailIconProps extends ComponentProps<'svg'> {}
+type EmailIconProps = ComponentProps<'svg'>;
 
 export default function EmailIcon({ className = "h-4 w-4 opacity-70", ...props }: EmailIconProps) {
     return (
