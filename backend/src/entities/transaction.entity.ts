@@ -1,24 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Wallet } from './wallet.entity';
 
 export enum TransactionType {
   Income = 'income',
   Expense = 'expense',
-}
-
-export enum TransactionSource {
-  Manual = 'manual',
-  Sync = 'sync',
-  Import = 'import',
+  Transfer = 'transfer',
 }
 
 @Entity()
 export class Transaction {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ nullable: true })
-  transactionId: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date: Date;
@@ -36,46 +35,11 @@ export class Transaction {
   })
   type: TransactionType;
 
-  @Column({ nullable: true })
-  category: string;
-
-  @Column({
-    type: 'enum',
-    enum: TransactionSource,
-    default: TransactionSource.Manual,
-  })
-  source: TransactionSource;
-
-  @Column({ nullable: true })
-  externalTransactionId: string;
-
-  @Column({ default: false })
-  isReconciled: boolean;
-
-  @Column('decimal', { precision: 15, scale: 2, nullable: true })
-  balanceAfter: number;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
-  })
+  @UpdateDateColumn()
   updatedAt: Date;
-
-  @Column({ default: 'TWD' })
-  currency: string;
-
-  @Column('decimal', { precision: 18, scale: 6, nullable: true })
-  exchangeRate: number;
-
-  @Column({ default: 'manual' })
-  exchangeRateSource: string;
-
-  @Column('decimal', { precision: 18, scale: 2, nullable: true })
-  amountInWalletCurrency: number;
 
   @ManyToOne(() => Wallet, (wallet) => wallet.transactionHistory)
   wallet: Wallet;
