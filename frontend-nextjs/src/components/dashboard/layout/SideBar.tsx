@@ -1,15 +1,12 @@
 'use client';
 
-import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import SideBarItem from "./SideBarItem";
 import { NAVIGATION_GROUPS, NAVIGATION_ITEMS, DEFAULT_ACTIVE_ITEM, NavigationItem, NavigationGroup } from "../../constants/navigation";
-import { useAuth } from "@/lib/hooks/useAuth";
 
 export default function SideBar() {
     const router = useRouter();
     const pathname = usePathname();
-    const { logout } = useAuth();
 
     // 根據當前路徑判斷哪個項目應該被高亮
     const getActiveItem = (): string => {

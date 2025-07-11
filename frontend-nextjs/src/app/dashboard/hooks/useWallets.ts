@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import WalletService from '@/lib/services/WalletService';
-import type { Wallet } from '@/lib/types';
+import type { Wallet, CreateWalletRequest, UpdateWalletRequest, ApiResponse } from '@/lib/types';
 
 export interface UseWalletsReturn {
     wallets: Wallet[];
     loading: boolean;
     error: string | null;
     refetch: () => Promise<void>;
-    createWallet: (walletData: any) => Promise<any>;
-    updateWallet: (id: string, updateData: any) => Promise<any>;
-    deleteWallet: (id: string) => Promise<any>;
+    createWallet: (walletData: CreateWalletRequest) => Promise<ApiResponse<Wallet>>;
+    updateWallet: (id: string, updateData: UpdateWalletRequest) => Promise<ApiResponse<Wallet>>;
+    deleteWallet: (id: string) => Promise<ApiResponse<null>>;
 }
 
 export const useWallets = (): UseWalletsReturn => {
@@ -47,14 +47,14 @@ export const useWallets = (): UseWalletsReturn => {
             } else {
                 setError(result.error || '無法載入錢包資料');
             }
-        } catch (err) {
+        } catch {
             setError('無法載入錢包資料');
         } finally {
             setLoading(false);
         }
     };
 
-    const createWallet = async (walletData: any) => {
+    const createWallet = async (walletData: CreateWalletRequest): Promise<ApiResponse<Wallet>> => {
         const result = await WalletService.createWallet(walletData);
         if (result.success) {
             await fetchWallets(); // 重新載入錢包列表
@@ -62,7 +62,7 @@ export const useWallets = (): UseWalletsReturn => {
         return result;
     };
 
-    const updateWallet = async (id: string, updateData: any) => {
+    const updateWallet = async (id: string, updateData: UpdateWalletRequest): Promise<ApiResponse<Wallet>> => {
         const result = await WalletService.updateWallet(id, updateData);
         if (result.success) {
             await fetchWallets(); // 重新載入錢包列表
@@ -70,7 +70,7 @@ export const useWallets = (): UseWalletsReturn => {
         return result;
     };
 
-    const deleteWallet = async (id: string) => {
+    const deleteWallet = async (id: string): Promise<ApiResponse<null>> => {
         const result = await WalletService.deleteWallet(id);
         if (result.success) {
             await fetchWallets(); // 重新載入錢包列表

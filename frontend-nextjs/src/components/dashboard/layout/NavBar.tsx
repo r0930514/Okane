@@ -3,7 +3,6 @@
 import { ListIcon, UserCircleIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 interface NavBarProps {
     username?: string;
@@ -12,7 +11,6 @@ interface NavBarProps {
 export default function NavBar({ username = "User" }: NavBarProps) {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { logout } = useAuth();
-    const router = useRouter();
 
     const handleRefresh = async () => {
         setIsRefreshing(true);

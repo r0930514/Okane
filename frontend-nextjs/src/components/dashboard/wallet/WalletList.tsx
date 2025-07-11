@@ -1,19 +1,16 @@
 'use client';
 
 import { CaretRight, Plus } from "@phosphor-icons/react";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import WalletListCard from "./WalletListCard";
 import { useWallets } from "@/app/dashboard/hooks/useWallets";
 import type { Wallet } from "@/lib/types";
 
 export default function WalletList() {
-    const { wallets, loading, error, refetch } = useWallets();
-
-    // Modal 狀態管理（暫時移除，等 WalletDetailModal 實作完成）
-    const [selectedWallet, setSelectedWallet] = useState<Wallet | null>(null);
+    const { wallets, loading, error } = useWallets();
     
     // 主貨幣狀態（簡化版，不使用 UserService）
-    const [primaryCurrency, setPrimaryCurrency] = useState('TWD');
+    const [primaryCurrency] = useState('TWD');
 
     // 分類類型對應的中文名稱
     const categoryNames: Record<string, string> = {
@@ -49,7 +46,6 @@ export default function WalletList() {
     const availableCategories = Object.keys(groupedWallets);
 
     const handleWalletClick = (wallet: Wallet) => {
-        setSelectedWallet(wallet);
         // 暫時移除 modal 功能，等實作完成後再加入
         console.log('錢包點擊:', wallet);
     };

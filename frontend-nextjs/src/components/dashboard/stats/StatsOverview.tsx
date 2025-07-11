@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { TrendUp, TrendDown, Wallet, Receipt, CurrencyDollar } from '@phosphor-icons/react';
 import { useWalletStats } from '@/app/dashboard/hooks/useWalletStats';
 import type { Wallet as WalletType } from '@/lib/types';

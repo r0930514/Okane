@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import WalletService from '@/lib/services/WalletService';
 import type { Wallet } from '@/lib/types';
 
 export interface WalletStats {
@@ -9,7 +8,7 @@ export interface WalletStats {
     totalAssets: number;
     totalLiabilities: number;
     transactionCount: number;
-    categoryStats: any[];
+    categoryStats: unknown[];
 }
 
 export interface UseWalletStatsReturn {

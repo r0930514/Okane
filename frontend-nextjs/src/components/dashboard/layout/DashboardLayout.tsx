@@ -3,7 +3,6 @@
 import { ReactNode, useState } from 'react';
 import NavBar from './NavBar';
 import SideBar from './SideBar';
-import { useAuth } from '@/lib/hooks/useAuth';
 
 interface DashboardLayoutProps {
     children: ReactNode;
