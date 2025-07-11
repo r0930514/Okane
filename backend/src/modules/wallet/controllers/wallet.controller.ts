@@ -23,7 +23,7 @@ import { UpdateWalletDto } from '../dto/update-wallet.dto';
 import { Wallet } from '../../../entities/wallet.entity';
 
 @ApiTags('錢包管理')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('wallets')
 export class WalletController {

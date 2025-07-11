@@ -26,7 +26,7 @@ import { CreateTransferDto } from '../dto/create-transfer.dto';
 import { Transaction } from '../../../entities/transaction.entity';
 
 @ApiTags('交易管理')
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('transactions')
 export class TransactionController {

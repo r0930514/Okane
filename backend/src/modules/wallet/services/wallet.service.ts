@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Wallet } from '../../../entities/wallet.entity';
@@ -66,12 +70,14 @@ export class WalletService {
 
   async remove(id: string, userId: string): Promise<void> {
     const wallet = await this.findOne(id, userId);
-    
+
     // Check if wallet has transactions
     if (wallet.transactionHistory && wallet.transactionHistory.length > 0) {
-      throw new BadRequestException('Cannot delete wallet with existing transactions');
+      throw new BadRequestException(
+        'Cannot delete wallet with existing transactions',
+      );
     }
-    
+
     await this.walletRepository.remove(wallet);
   }
 

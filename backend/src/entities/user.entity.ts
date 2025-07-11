@@ -32,7 +32,7 @@ export class User {
       salt: 'random_salt_value',
     },
   })
-  @Column('jsonb')
+  @Column('jsonb', { select: false })
   password: {
     hash: string;
     salt: string;

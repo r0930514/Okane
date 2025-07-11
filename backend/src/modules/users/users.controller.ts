@@ -22,7 +22,7 @@ import { UpdateUserPreferencesDto } from './dto/update-user-preferences.dto';
 @ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
