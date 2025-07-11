@@ -100,5 +100,5 @@ Okane is a multi-currency asset management system with a **NestJS backend** and 
 - **Ports**: Frontend on 82, Backend on 3000, Database on 5432
 - **Environment Variables**: Database credentials, JWT secrets via Docker environment
 
-## Localization Guidelines
-- **Localization Preference**: 請使用繁體中文回答 - Indicates a preference for Traditional Chinese responses
+## 回覆語言規定
+- 請使用繁體中文回答 - 請必須使用繁體中文進行回覆
