@@ -56,31 +56,15 @@ class WalletService {
         }
     }
 
-    /**
-     * 取得使用者所有錢包及餘額
-     * @returns {Promise<Object>}
-     */
-    static async getAllWalletsWithBalance() {
-        try {
-            const res = await ApiService.axiosInstance.get('/wallets/with-balance');
-            return { success: true, data: res.data };
-        } catch (error) {
-            return this.handleError(error);
-        }
-    }
 
     /**
      * 取得特定錢包詳細資訊
-     * @param {number} id - 錢包 ID
-     * @param {number} page - 頁數
-     * @param {number} limit - 每頁筆數
+     * @param {string} id - 錢包 ID
      * @returns {Promise<Object>}
      */
-    static async getWallet(id, page = 1, limit = 20) {
+    static async getWallet(id) {
         try {
-            const res = await ApiService.axiosInstance.get(`/wallets/${id}`, {
-                params: { page, limit }
-            });
+            const res = await ApiService.axiosInstance.get(`/wallets/${id}`);
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
@@ -89,7 +73,7 @@ class WalletService {
 
     /**
      * 更新錢包資訊
-     * @param {number} id - 錢包 ID
+     * @param {string} id - 錢包 ID
      * @param {Object} updateData - 更新資料
      * @returns {Promise<Object>}
      */
@@ -104,7 +88,7 @@ class WalletService {
 
     /**
      * 刪除錢包
-     * @param {number} id - 錢包 ID
+     * @param {string} id - 錢包 ID
      * @returns {Promise<Object>}
      */
     static async deleteWallet(id) {
@@ -118,7 +102,7 @@ class WalletService {
 
     /**
      * 取得錢包餘額
-     * @param {number} id - 錢包 ID
+     * @param {string} id - 錢包 ID
      * @returns {Promise<Object>}
      */
     static async getWalletBalance(id) {

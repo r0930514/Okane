@@ -31,14 +31,13 @@ class TransactionService {
 
     /**
      * 新增交易記錄
-     * @param {number} walletId - 錢包 ID
      * @param {Object} transactionData - 交易資料
      * @returns {Promise<Object>}
      */
-    static async createTransaction(walletId, transactionData) {
+    static async createTransaction(transactionData) {
         try {
             const res = await ApiService.axiosInstance.post(
-                `/wallets/${walletId}/transactions`, 
+                '/transactions', 
                 transactionData
             );
             return { success: true, data: res.data };
@@ -48,39 +47,15 @@ class TransactionService {
     }
 
     /**
-     * 取得錢包的交易記錄
-     * @param {number} walletId - 錢包 ID
-     * @param {number} page - 頁數
-     * @param {number} limit - 每頁筆數
+     * 取得所有交易記錄
+     * @param {string} walletId - 錢包 ID (可選)
      * @returns {Promise<Object>}
      */
-    static async getTransactionsByWallet(walletId, page = 1, limit = 20) {
+    static async getAllTransactions(walletId = null) {
         try {
+            const params = walletId ? { walletId } : {};
             const res = await ApiService.axiosInstance.get(
-                `/wallets/${walletId}/transactions`,
-                { params: { page, limit } }
-            );
-            return { success: true, data: res.data };
-        } catch (error) {
-            return this.handleError(error);
-        }
-    }
-
-    /**
-     * 取得錢包的分類統計
-     * @param {number} walletId - 錢包 ID
-     * @param {string} startDate - 開始日期
-     * @param {string} endDate - 結束日期
-     * @returns {Promise<Object>}
-     */
-    static async getTransactionsByCategory(walletId, startDate, endDate) {
-        try {
-            const params = {};
-            if (startDate) params.startDate = startDate;
-            if (endDate) params.endDate = endDate;
-
-            const res = await ApiService.axiosInstance.get(
-                `/wallets/${walletId}/transactions/categories`,
+                '/transactions',
                 { params }
             );
             return { success: true, data: res.data };
@@ -90,8 +65,24 @@ class TransactionService {
     }
 
     /**
+     * 根據分類取得交易
+     * @param {string} category - 交易分類
+     * @returns {Promise<Object>}
+     */
+    static async getTransactionsByCategory(category) {
+        try {
+            const res = await ApiService.axiosInstance.get(
+                `/transactions/category/${category}`
+            );
+            return { success: true, data: res.data };
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
+    /**
      * 取得特定交易記錄
-     * @param {number} id - 交易記錄 ID
+     * @param {string} id - 交易記錄 ID
      * @returns {Promise<Object>}
      */
     static async getTransaction(id) {
@@ -105,7 +96,7 @@ class TransactionService {
 
     /**
      * 更新交易記錄
-     * @param {number} id - 交易記錄 ID
+     * @param {string} id - 交易記錄 ID
      * @param {Object} updateData - 更新資料
      * @returns {Promise<Object>}
      */
@@ -123,12 +114,29 @@ class TransactionService {
 
     /**
      * 刪除交易記錄
-     * @param {number} id - 交易記錄 ID
+     * @param {string} id - 交易記錄 ID
      * @returns {Promise<Object>}
      */
     static async deleteTransaction(id) {
         try {
             const res = await ApiService.axiosInstance.delete(`/transactions/${id}`);
+            return { success: true, data: res.data };
+        } catch (error) {
+            return this.handleError(error);
+        }
+    }
+
+    /**
+     * 建立轉帳交易
+     * @param {Object} transferData - 轉帳資料
+     * @returns {Promise<Object>}
+     */
+    static async createTransfer(transferData) {
+        try {
+            const res = await ApiService.axiosInstance.post(
+                '/transactions/transfer', 
+                transferData
+            );
             return { success: true, data: res.data };
         } catch (error) {
             return this.handleError(error);
