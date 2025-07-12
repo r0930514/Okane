@@ -10,7 +10,10 @@
       "Bash(git commit:*)",
       "Bash(rm:*)",
       "Bash(pnpm run:*)",
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(ls:*)",
+      "Bash(npx tsc:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }
