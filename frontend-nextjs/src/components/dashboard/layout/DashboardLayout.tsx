@@ -12,25 +12,24 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const [username] = useState('User'); // 暫時硬編碼，等 UserService 實作完成後再整合
 
     return (
-        <div className="drawer mx-auto lg:drawer-open h-screen">
-            {/* Content */}
+        <div className="drawer lg:drawer-open">
             <input id="drawer" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col h-full">
+            
+            {/* Main content */}
+            <div className="drawer-content flex flex-col min-h-screen">
                 {/* Navbar - 固定在頂端 */}
                 <div className="sticky top-0 z-50">
                     <NavBar username={username} />
                 </div>
                 
                 {/* Main content - 可捲動區域 */}
-                <main className="flex-1 overflow-y-auto bg-gray-50">
-                    <div className="p-4">
-                        {children}
-                    </div>
+                <main className="flex-1 bg-gray-50 p-4">
+                    {children}
                 </main>
             </div>
 
             {/* Sidebar */}
-            <div className="drawer-side z-[60]">
+            <div className="drawer-side">
                 <label htmlFor="drawer" aria-label="close sidebar" className="drawer-overlay"></label>
                 <SideBar />
             </div>

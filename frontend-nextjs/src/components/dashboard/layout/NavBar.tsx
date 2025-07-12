@@ -1,6 +1,6 @@
 'use client';
 
-import { ListIcon, UserCircleIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react";
+import { ListIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useState } from "react";
 

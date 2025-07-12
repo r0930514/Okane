@@ -23,7 +23,7 @@ export default function SideBar() {
     const activeItem = getActiveItem();
 
     return (
-        <aside className="flex flex-col h-full w-60 bg-white border-r border-gray-200" role="navigation" aria-label="主要導航">
+        <aside className="flex flex-col h-screen w-60 bg-white border-r border-gray-200" role="navigation" aria-label="主要導航">
             {/* Logo/Brand Section */}
             <div className="flex items-center justify-center px-6 py-4 border-b border-gray-100">
                 <div className="flex text-xl font-bold text-gray-800 tracking-tight">
