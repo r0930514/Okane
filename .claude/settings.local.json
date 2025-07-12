@@ -9,7 +9,8 @@
       "Bash(mv:*)",
       "Bash(git commit:*)",
       "Bash(rm:*)",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "Bash(docker compose:*)"
     ],
     "deny": []
   }

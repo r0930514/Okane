@@ -2,6 +2,24 @@ name: okane-development
 version: '3.8'
 
 services:
+  frontend-nextjs:
+    build:
+      context: ../frontend-nextjs
+      dockerfile: Dockerfile
+      target: development
+    user: node
+    ports:
+      - "3001:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    depends_on:
+      - backend
+    volumes:
+      - ../frontend-nextjs:/app
+      - frontend_nextjs_node_modules:/app/node_modules
+    command: npm run dev
+    restart: unless-stopped
+
   frontend:
     build:
       context: ../frontend
@@ -19,6 +37,8 @@ services:
       - frontend_node_modules:/app/node_modules
     command: npm run dev -- --host
     restart: unless-stopped
+    profiles:
+      - legacy
 
   backend:
     build:
@@ -76,7 +96,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - frontend
+      - frontend-nextjs
       - backend
       - pgadmin
     volumes:
@@ -86,5 +106,6 @@ services:
 volumes:
   pgadmin_data:
   postgres_data:
+  frontend_nextjs_node_modules:
   frontend_node_modules:
   backend_node_modules:
