@@ -26,24 +26,8 @@ export const useWallets = (): UseWalletsReturn => {
         try {
             const result = await WalletService.getAllWallets();
             if (result.success && result.data) {
-                // 取得每個錢包的餘額
-                const walletsWithBalance = await Promise.all(
-                    result.data.map(async (wallet) => {
-                        try {
-                            const balanceResult = await WalletService.getWalletBalance(wallet.id);
-                            return {
-                                ...wallet,
-                                balance: balanceResult.success && balanceResult.data ? balanceResult.data.balance : 0
-                            };
-                        } catch {
-                            return {
-                                ...wallet,
-                                balance: 0
-                            };
-                        }
-                    })
-                );
-                setWallets(walletsWithBalance);
+                // 錢包資料現在已包含餘額，不需要額外查詢
+                setWallets(result.data);
             } else {
                 setError(result.error || '無法載入錢包資料');
             }

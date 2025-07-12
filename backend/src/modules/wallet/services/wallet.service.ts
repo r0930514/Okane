@@ -9,6 +9,7 @@ import { Wallet } from '../../../entities/wallet.entity';
 import { User } from '../../../entities/user.entity';
 import { CreateWalletDto } from '../dto/create-wallet.dto';
 import { UpdateWalletDto } from '../dto/update-wallet.dto';
+import { WalletWithBalanceDto } from '../dto/wallet-with-balance.dto';
 
 @Injectable()
 export class WalletService {
@@ -36,15 +37,23 @@ export class WalletService {
     return this.walletRepository.save(wallet);
   }
 
-  async findAll(userId: string): Promise<Wallet[]> {
-    return this.walletRepository.find({
+  async findAll(userId: string): Promise<WalletWithBalanceDto[]> {
+    const wallets = await this.walletRepository.find({
       where: { user: { id: userId } },
       relations: ['transactionHistory'],
       order: { createdAt: 'DESC' },
     });
+
+    // 為每個錢包計算餘額
+    const walletsWithBalance = wallets.map((wallet) => {
+      const balance = this.calculateBalance(wallet);
+      return Object.assign(new WalletWithBalanceDto(), wallet, { balance });
+    });
+
+    return walletsWithBalance;
   }
 
-  async findOne(id: string, userId: string): Promise<Wallet> {
+  async findOne(id: string, userId: string): Promise<WalletWithBalanceDto> {
     const wallet = await this.walletRepository.findOne({
       where: { id, user: { id: userId } },
       relations: ['transactionHistory', 'user'],
@@ -54,7 +63,9 @@ export class WalletService {
       throw new NotFoundException('Wallet not found');
     }
 
-    return wallet;
+    // 計算並附加餘額
+    const balance = this.calculateBalance(wallet);
+    return Object.assign(new WalletWithBalanceDto(), wallet, { balance });
   }
 
   async update(
@@ -82,8 +93,19 @@ export class WalletService {
   }
 
   async getBalance(id: string, userId: string): Promise<number> {
-    const wallet = await this.findOne(id, userId);
+    const wallet = await this.walletRepository.findOne({
+      where: { id, user: { id: userId } },
+      relations: ['transactionHistory'],
+    });
 
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    return this.calculateBalance(wallet);
+  }
+
+  private calculateBalance(wallet: Wallet): number {
     if (!wallet.transactionHistory || wallet.transactionHistory.length === 0) {
       return 0;
     }

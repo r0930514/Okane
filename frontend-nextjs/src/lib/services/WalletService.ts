@@ -101,25 +101,6 @@ class WalletService {
         return response;
     }
 
-    /**
-     * 批量取得多個錢包的餘額
-     * @param walletIds - 錢包 ID 陣列
-     * @returns Promise<ApiResponse<WalletBalance[]>>
-     */
-    static async getMultipleWalletBalances(walletIds: string[]): Promise<WalletBalance[]> {
-        // 並行取得多個錢包餘額
-        const promises = walletIds.map(id => this.getWalletBalance(id));
-        const responses = await Promise.allSettled(promises);
-
-        const balances: WalletBalance[] = [];
-        responses.forEach((response) => {
-            if (response.status === 'fulfilled' && response.value.success && response.value.data) {
-                balances.push(response.value.data);
-            }
-        });
-
-        return balances;
-    }
 
     /**
      * 取得錢包統計資訊
@@ -140,19 +121,14 @@ class WalletService {
         const wallets = walletsResponse.data;
         const activeWallets = wallets.filter(w => w.isActive);
         
-        // 取得所有錢包餘額
-        const balances = await this.getMultipleWalletBalances(
-            activeWallets.map(w => w.id)
-        );
-
-        // 計算統計資料
+        // 直接使用錢包資料中的餘額（不需要額外查詢）
         let totalBalance = 0;
         const balancesByCurrency: Record<string, number> = {};
 
-        balances.forEach(balance => {
-            totalBalance += balance.balance;
-            const currency = balance.currency || 'TWD';
-            balancesByCurrency[currency] = (balancesByCurrency[currency] || 0) + balance.balance;
+        activeWallets.forEach(wallet => {
+            totalBalance += wallet.balance;
+            const currency = wallet.currency || 'TWD';
+            balancesByCurrency[currency] = (balancesByCurrency[currency] || 0) + wallet.balance;
         });
 
         return {

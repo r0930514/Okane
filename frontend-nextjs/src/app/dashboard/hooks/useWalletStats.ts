@@ -48,7 +48,7 @@ export const useWalletStats = (wallets: Wallet[]): UseWalletStatsReturn => {
                 let totalLiabilities = 0;
 
                 wallets.forEach(wallet => {
-                    const balance = wallet.balance || 0;
+                    const balance = wallet.balance;
                     totalBalance += balance;
                     
                     if (balance > 0) {

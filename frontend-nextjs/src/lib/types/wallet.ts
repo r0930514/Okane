@@ -21,7 +21,7 @@ export interface Wallet {
   config?: WalletConfig;
   userId: string;
   isActive: boolean;
-  balance?: number;
+  balance: number;
   createdAt: string;
   updatedAt: string;
 }
