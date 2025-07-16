@@ -111,29 +111,9 @@ export class WalletService {
     }
 
     return wallet.transactionHistory.reduce((balance, transaction) => {
-      switch (transaction.type) {
-        case 'income':
-        case 'buy':
-        case 'dividend':
-        case 'interest':
-        case 'receivable_create':
-        case 'receivable_collect':
-          return balance + Number(transaction.amount);
-        case 'expense':
-        case 'sell':
-        case 'receivable_write_off':
-        case 'payable_create':
-        case 'payable_payment':
-          return balance - Number(transaction.amount);
-        case 'transfer':
-          if (transaction.metadata?.transferDirection === 'in') {
-            return balance + Number(transaction.amount);
-          } else {
-            return balance - Number(transaction.amount);
-          }
-        default:
-          return balance;
-      }
+      // 直接使用交易金額進行計算
+      // 正數表示增加餘額，負數表示減少餘額
+      return balance + Number(transaction.amount);
     }, 0);
   }
 }

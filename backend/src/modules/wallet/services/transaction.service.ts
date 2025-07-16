@@ -5,10 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  Transaction,
-  TransactionType,
-} from '../../../entities/transaction.entity';
+import { Transaction } from '../../../entities/transaction.entity';
 import { Wallet } from '../../../entities/wallet.entity';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
@@ -72,26 +69,26 @@ export class TransactionService {
     const outTransaction = this.transactionRepository.create({
       amount: -Math.abs(amount),
       description,
-      type: TransactionType.Transfer,
       wallet: fromWallet,
-      relatedWallet: toWallet,
-      transferGroupId,
       metadata: {
         ...metadata,
+        type: 'transfer',
         transferDirection: 'out',
+        transferGroupId,
+        relatedWalletId: toWalletId,
       },
     });
 
     const inTransaction = this.transactionRepository.create({
       amount: Math.abs(amount),
       description,
-      type: TransactionType.Transfer,
       wallet: toWallet,
-      relatedWallet: fromWallet,
-      transferGroupId,
       metadata: {
         ...metadata,
+        type: 'transfer',
         transferDirection: 'in',
+        transferGroupId,
+        relatedWalletId: fromWalletId,
       },
     });
 
@@ -100,8 +97,15 @@ export class TransactionService {
     const savedInTransaction =
       await this.transactionRepository.save(inTransaction);
 
-    savedOutTransaction.pairedTransactionId = savedInTransaction.id;
-    savedInTransaction.pairedTransactionId = savedOutTransaction.id;
+    // 更新 metadata 以包含配對的交易 ID
+    savedOutTransaction.metadata = {
+      ...savedOutTransaction.metadata,
+      pairedTransactionId: savedInTransaction.id,
+    };
+    savedInTransaction.metadata = {
+      ...savedInTransaction.metadata,
+      pairedTransactionId: savedOutTransaction.id,
+    };
 
     await this.transactionRepository.save(savedOutTransaction);
     await this.transactionRepository.save(savedInTransaction);
@@ -123,7 +127,7 @@ export class TransactionService {
 
     return this.transactionRepository.find({
       where: whereClause,
-      relations: ['wallet', 'relatedWallet'],
+      relations: ['wallet'],
       order: { date: 'DESC', createdAt: 'DESC' },
     });
   }
@@ -131,7 +135,7 @@ export class TransactionService {
   async findOne(id: string, userId: string): Promise<Transaction> {
     const transaction = await this.transactionRepository.findOne({
       where: { id, wallet: { user: { id: userId } } },
-      relations: ['wallet', 'relatedWallet'],
+      relations: ['wallet'],
     });
 
     if (!transaction) {
@@ -149,7 +153,7 @@ export class TransactionService {
     const transaction = await this.findOne(id, userId);
 
     if (
-      transaction.type === TransactionType.Transfer &&
+      transaction.metadata?.type === 'transfer' &&
       updateTransactionDto.amount
     ) {
       throw new BadRequestException(
@@ -165,11 +169,11 @@ export class TransactionService {
     const transaction = await this.findOne(id, userId);
 
     if (
-      transaction.type === TransactionType.Transfer &&
-      transaction.pairedTransactionId
+      transaction.metadata?.type === 'transfer' &&
+      transaction.metadata?.pairedTransactionId
     ) {
       const pairedTransaction = await this.transactionRepository.findOne({
-        where: { id: transaction.pairedTransactionId },
+        where: { id: transaction.metadata.pairedTransactionId },
       });
 
       if (pairedTransaction) {
@@ -189,14 +193,14 @@ export class TransactionService {
     userId: string,
     category: string,
   ): Promise<Transaction[]> {
-    return this.transactionRepository.find({
-      where: {
-        category,
-        wallet: { user: { id: userId } },
-      },
-      relations: ['wallet'],
-      order: { date: 'DESC' },
-    });
+    return this.transactionRepository
+      .createQueryBuilder('transaction')
+      .leftJoinAndSelect('transaction.wallet', 'wallet')
+      .leftJoinAndSelect('wallet.user', 'user')
+      .where('user.id = :userId', { userId })
+      .andWhere("transaction.metadata->>'category' = :category", { category })
+      .orderBy('transaction.date', 'DESC')
+      .getMany();
   }
 
   async getTransactionsByDateRange(
@@ -205,22 +209,21 @@ export class TransactionService {
     endDate: Date,
     walletId?: string,
   ): Promise<Transaction[]> {
-    const whereClause: any = {
-      wallet: { user: { id: userId } },
-      date: {
-        $gte: startDate,
-        $lte: endDate,
-      },
-    };
+    let query = this.transactionRepository
+      .createQueryBuilder('transaction')
+      .leftJoinAndSelect('transaction.wallet', 'wallet')
+      .leftJoinAndSelect('wallet.user', 'user')
+      .where('user.id = :userId', { userId })
+      .andWhere('transaction.date BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      })
+      .orderBy('transaction.date', 'DESC');
 
     if (walletId) {
-      whereClause.wallet.id = walletId;
+      query = query.andWhere('wallet.id = :walletId', { walletId });
     }
 
-    return this.transactionRepository.find({
-      where: whereClause,
-      relations: ['wallet', 'relatedWallet'],
-      order: { date: 'DESC' },
-    });
+    return query.getMany();
   }
 }

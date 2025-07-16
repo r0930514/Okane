@@ -37,27 +37,13 @@ export class CreateTransferDto {
   description: string;
 
   @ApiProperty({
-    description: '轉帳相關的額外資料',
-    example: {
-      originalAmount: 1000,
-      originalCurrency: 'USD',
-      convertedAmount: 32000,
-      convertedCurrency: 'TWD',
-      exchangeRate: 32,
-      transferFee: 15,
-    },
+    description: '轉帳擴展資料（JSON 格式）',
+    example: {},
     required: false,
   })
   @IsOptional()
   @IsObject()
   metadata?: {
-    originalAmount?: number;
-    originalCurrency?: string;
-    convertedAmount?: number;
-    convertedCurrency?: string;
-    exchangeRate?: number;
-    transferFee?: number;
-    transferMethod?: string;
     [key: string]: any;
   };
 }
