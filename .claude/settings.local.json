@@ -13,7 +13,11 @@
       "Bash(docker compose:*)",
       "Bash(ls:*)",
       "Bash(npx tsc:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(docker-compose:*)",
+      "Bash(grep:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm test:*)"
     ],
     "deny": []
   }
