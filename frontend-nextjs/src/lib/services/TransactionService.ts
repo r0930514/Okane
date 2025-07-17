@@ -3,6 +3,7 @@ import {
     ApiResponse,
     Transaction,
     TransactionType,
+    TransactionTypes,
     CreateTransactionRequest,
     UpdateTransactionRequest,
     CreateTransferRequest,
@@ -154,19 +155,21 @@ class TransactionService {
         };
 
         transactions.forEach(transaction => {
+            const transactionType = transaction.metadata?.type || '';
+            
             // 計算收入和支出
-            if (transaction.type === TransactionType.Income) {
+            if (transactionType === TransactionTypes.Income) {
                 stats.totalIncome += transaction.amount;
-            } else if (transaction.type === TransactionType.Expense) {
+            } else if (transactionType === TransactionTypes.Expense) {
                 stats.totalExpense += transaction.amount;
             }
 
             // 按類型統計
-            stats.transactionsByType[transaction.type] = 
-                (stats.transactionsByType[transaction.type] || 0) + 1;
+            stats.transactionsByType[transactionType as TransactionType] = 
+                (stats.transactionsByType[transactionType as TransactionType] || 0) + 1;
 
             // 按分類統計
-            const category = transaction.category || '未分類';
+            const category = transaction.metadata?.category || '未分類';
             stats.transactionsByCategory[category] = 
                 (stats.transactionsByCategory[category] || 0) + transaction.amount;
         });
@@ -205,30 +208,31 @@ class TransactionService {
         amount: number;
         formattedAmount: string;
         description: string;
-        type: TransactionType;
+        type: string;
         typeDisplay: string;
         category: string;
         isIncome: boolean;
         isExpense: boolean;
         isTransfer: boolean;
     } {
-        const isIncome = transaction.type === TransactionType.Income;
-        const isExpense = transaction.type === TransactionType.Expense;
-        const isTransfer = transaction.type === TransactionType.Transfer;
+        const transactionType = transaction.metadata?.type || '';
+        const isIncome = transactionType === TransactionTypes.Income;
+        const isExpense = transactionType === TransactionTypes.Expense;
+        const isTransfer = transactionType === TransactionTypes.Transfer;
 
-        const typeDisplayMap: Record<TransactionType, string> = {
-            [TransactionType.Income]: '收入',
-            [TransactionType.Expense]: '支出',
-            [TransactionType.Transfer]: '轉帳',
-            [TransactionType.Buy]: '買入',
-            [TransactionType.Sell]: '賣出',
-            [TransactionType.Dividend]: '股息',
-            [TransactionType.Interest]: '利息',
-            [TransactionType.ReceivableCreate]: '應收帳款',
-            [TransactionType.ReceivableCollect]: '收款',
-            [TransactionType.ReceivableWriteOff]: '呆帳沖銷',
-            [TransactionType.PayableCreate]: '應付帳款',
-            [TransactionType.PayablePayment]: '付款'
+        const typeDisplayMap: Record<string, string> = {
+            [TransactionTypes.Income]: '收入',
+            [TransactionTypes.Expense]: '支出',
+            [TransactionTypes.Transfer]: '轉帳',
+            [TransactionTypes.Buy]: '買入',
+            [TransactionTypes.Sell]: '賣出',
+            [TransactionTypes.Dividend]: '股息',
+            [TransactionTypes.Interest]: '利息',
+            [TransactionTypes.ReceivableCreate]: '應收帳款',
+            [TransactionTypes.ReceivableCollect]: '收款',
+            [TransactionTypes.ReceivableWriteOff]: '呆帳沖銷',
+            [TransactionTypes.PayableCreate]: '應付帳款',
+            [TransactionTypes.PayablePayment]: '付款'
         };
 
         return {
@@ -241,9 +245,9 @@ class TransactionService {
                 currency: 'TWD'
             }).format(transaction.amount),
             description: transaction.description,
-            type: transaction.type,
-            typeDisplay: typeDisplayMap[transaction.type] || transaction.type,
-            category: transaction.category || '未分類',
+            type: transactionType,
+            typeDisplay: typeDisplayMap[transactionType] || transactionType,
+            category: transaction.metadata?.category || '未分類',
             isIncome,
             isExpense,
             isTransfer

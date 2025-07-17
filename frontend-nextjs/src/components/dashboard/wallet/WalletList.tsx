@@ -29,8 +29,8 @@ export default function WalletList() {
         const groups: Record<string, Wallet[]> = {};
 
         wallets.forEach((wallet) => {
-            // 使用錢包類型或預設為 manual，需要將 WalletType enum 轉換為 string
-            const walletType = wallet.type?.toString() || "manual";
+            // 使用錢包 metadata 中的類型或預設為 manual
+            const walletType = wallet.metadata?.type || "manual";
 
             if (!groups[walletType]) {
                 groups[walletType] = [];
@@ -100,7 +100,7 @@ export default function WalletList() {
                         key={wallet.id}
                         name={wallet.name}
                         balance={wallet.balance || 0}
-                        color={wallet.color || "#10b981"}
+                        color={wallet.metadata?.color || "#10b981"}
                         onClick={() => handleWalletClick(wallet)}
                         currency={wallet.currency || 'TWD'}
                         primaryCurrency={primaryCurrency}

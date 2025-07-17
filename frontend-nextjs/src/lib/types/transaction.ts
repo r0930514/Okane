@@ -1,50 +1,48 @@
 // 交易相關類型定義
 
-export enum TransactionType {
-  Income = 'income',
-  Expense = 'expense',
-  Transfer = 'transfer',
-  Buy = 'buy',
-  Sell = 'sell',
-  Dividend = 'dividend',
-  Interest = 'interest',
-  ReceivableCreate = 'receivable_create',
-  ReceivableCollect = 'receivable_collect',
-  ReceivableWriteOff = 'receivable_write_off',
-  PayableCreate = 'payable_create',
-  PayablePayment = 'payable_payment',
-}
-
 export interface Transaction {
   id: string;
   date: string;
   amount: number;
   description: string;
-  type: TransactionType;
-  category?: string;
-  relatedAsset?: string;
-  metadata?: TransactionMetadata;
+  metadata: TransactionMetadata;
   walletId: string;
-  relatedWalletId?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface TransactionMetadata {
+  // 原本的欄位現在都在 metadata 中
+  type?: string;
+  category?: string;
+  relatedAsset?: string;
+  relatedWalletId?: string;
+  
+  // 轉帳相關
+  transferDirection?: 'in' | 'out';
+  transferGroupId?: string;
+  pairedTransactionId?: string;
+  
+  // 股票相關
   stockSymbol?: string;
   shares?: number;
   pricePerShare?: number;
-  exchangeRate?: number;
+  
+  // 加密貨幣相關
   cryptoPair?: string;
+  
+  // 通用
   fees?: number;
   brokerOrderId?: string;
-  transferDirection?: 'in' | 'out';
+  exchangeRate?: number;
   originalAmount?: number;
   originalCurrency?: string;
   convertedAmount?: number;
   convertedCurrency?: string;
   transferFee?: number;
   transferMethod?: string;
+  
+  // 應收應付相關
   customerName?: string;
   customerContact?: string;
   invoiceNumber?: string;
@@ -55,6 +53,8 @@ export interface TransactionMetadata {
   collectedAmount?: number;
   remainingAmount?: number;
   overdaysDays?: number;
+  
+  // 其他擴展欄位
   [key: string]: any;
 }
 
@@ -63,22 +63,33 @@ export interface CreateTransactionRequest {
   date?: Date | string;
   amount: number;
   description: string;
-  type: TransactionType;
-  category?: string;
-  relatedAsset?: string;
   metadata?: TransactionMetadata;
-  relatedWalletId?: string;
 }
 
 export interface UpdateTransactionRequest {
   date?: Date | string;
   amount?: number;
   description?: string;
-  type?: TransactionType;
-  category?: string;
-  relatedAsset?: string;
   metadata?: TransactionMetadata;
 }
+
+// 為了向後相容，保留常用的交易類型常數
+export const TransactionTypes = {
+  Income: 'income',
+  Expense: 'expense',
+  Transfer: 'transfer',
+  Buy: 'buy',
+  Sell: 'sell',
+  Dividend: 'dividend',
+  Interest: 'interest',
+  ReceivableCreate: 'receivable_create',
+  ReceivableCollect: 'receivable_collect',
+  ReceivableWriteOff: 'receivable_write_off',
+  PayableCreate: 'payable_create',
+  PayablePayment: 'payable_payment',
+} as const;
+
+export type TransactionType = typeof TransactionTypes[keyof typeof TransactionTypes];
 
 export interface CreateTransferRequest {
   fromWalletId: string;
@@ -90,7 +101,7 @@ export interface CreateTransferRequest {
 
 export interface TransactionQuery {
   walletId?: string;
-  type?: TransactionType;
+  type?: string;
   category?: string;
   startDate?: string;
   endDate?: string;
