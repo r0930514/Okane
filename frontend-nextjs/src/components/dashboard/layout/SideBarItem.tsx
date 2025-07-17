@@ -14,11 +14,11 @@ export default function SideBarItem({ icon, text, isFocused = false, onClick }: 
         <li>
             <a 
                 className={`
-                    flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
+                    flex items-center gap-3 px-3 py-2 rounded-md text-[16px] font-medium
                     transition-colors duration-200 cursor-pointer
                     ${isFocused 
-                        ? 'bg-blue-50 text-blue-600' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        ? 'bg-gray-200 text-neutral' 
+                        : 'text-[#374151] hover:text-gray-900 hover:bg-gray-50'
                     }
                 `}
                 onClick={(e) => {
@@ -34,7 +34,7 @@ export default function SideBarItem({ icon, text, isFocused = false, onClick }: 
                     }
                 }}
             >
-                <div className={`w-6 h-6 flex-shrink-0 flex items-center justify-center ${isFocused ? 'text-blue-600' : 'text-gray-400'}`}>
+                <div className={`w-6 h-6 flex-shrink-0 flex items-center justify-center text-gray-800`}>
                     {icon}
                 </div>
                 <span className="truncate">

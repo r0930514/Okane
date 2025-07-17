@@ -1,16 +1,21 @@
 'use client';
 
-import { ListIcon, SignOutIcon, ArrowsClockwiseIcon, PlusIcon } from "@phosphor-icons/react";
-import { useAuth } from "@/lib/hooks/useAuth";
+import { ListIcon, ArrowsClockwiseIcon, PlusIcon, SidebarSimpleIcon } from "@phosphor-icons/react";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { NAVIGATION_ITEMS, DEFAULT_ACTIVE_ITEM } from "@/app/dashboard/constants/navigation";
 
-interface NavBarProps {
-    username?: string;
-}
+interface NavBarProps {}
 
-export default function NavBar({ username = "User" }: NavBarProps) {
+export default function NavBar({ }: NavBarProps) {
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const { logout } = useAuth();
+    const pathname = usePathname();
+
+    // 根據當前路徑獲取頁面名稱
+    const getCurrentPageTitle = (): string => {
+        const matchedItem = NAVIGATION_ITEMS.find(item => item.path === pathname);
+        return matchedItem ? matchedItem.text : DEFAULT_ACTIVE_ITEM;
+    };
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
@@ -24,24 +29,23 @@ export default function NavBar({ username = "User" }: NavBarProps) {
         // 這裡之後可以打開新增資產的模態框
     };
 
-    const handleLogout = async () => {
-        if (confirm("確定要登出嗎？")) {
-            await logout();
-        }
-    };
 
     return (
         <nav className="bg-white border-b border-gray-200 px-4 py-3">
             <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                    <label htmlFor="drawer" className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md lg:hidden transition-colors duration-200">
-                        <ListIcon size={20} />
+                    <label htmlFor="drawer" className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors duration-200">
+                        <SidebarSimpleIcon size={20} />
                     </label>
-                    <div className="flex items-center ml-2 lg:hidden">
-                        <div className="w-6 h-6 rounded flex items-center justify-center">
-                            <span className="text-blue-600 font-bold">O</span>
+                     <div className="flex text-xl font-bold text-gray-800 tracking-tight px-2 lg:hidden">
+                        <span className="text-blue-600">O</span>
+                        <span>kane</span>
+                    </div>
+                    <div className="flex items-center">
+                        <div data-direction="Vertical" data-spacing="Regular" className="h-6 p-1 inline-flex justify-center items-start gap-2">
+                                    <div className="w-px self-stretch bg-neutral-300" />
                         </div>
-                        <span className="font-semibold text-gray-800">kane</span>
+                        <h1 className="p-2 text-lg font-semibold text-gray-800">{getCurrentPageTitle()}</h1>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -68,40 +72,6 @@ export default function NavBar({ username = "User" }: NavBarProps) {
                         <PlusIcon size={16} className="inline mr-1" />
                         新增
                     </button>
-
-                    {/* 用戶下拉菜單 */}
-                    <div className="dropdown dropdown-end ml-2">
-                        <div tabIndex={0} role="button" className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md transition-colors duration-200">
-                            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                                <span className="text-sm font-medium text-gray-600">
-                                    {username.charAt(0).toUpperCase()}
-                                </span>
-                            </div>
-                            <span className="hidden lg:block text-sm font-medium text-gray-700">{username}</span>
-                        </div>
-                        <ul tabIndex={0} className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-lg w-48 border border-gray-200">
-                            <li className="mb-2">
-                                <div className="flex items-center gap-3 p-2 rounded-md bg-gray-50">
-                                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                                        <span className="text-sm font-medium text-gray-600">
-                                            {username.charAt(0).toUpperCase()}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-sm font-medium text-gray-800">{username}</span>
-                                        <span className="text-xs text-gray-500">user@example.com</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <div className="border-t border-gray-100 my-1"></div>
-                            <li>
-                                <button onClick={handleLogout} className="flex items-center gap-2 p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors duration-200 w-full text-left">
-                                    <SignOutIcon size={16} />
-                                    <span className="text-sm">登出</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </nav>
