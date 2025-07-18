@@ -15,7 +15,17 @@ export interface UserPreferences {
   language?: string;
   dateFormat?: string;
   numberFormat?: string;
-  [key: string]: any;
+  notifications?: {
+    email?: boolean;
+    push?: boolean;
+    reminders?: boolean;
+  };
+  dashboard?: {
+    defaultView?: 'overview' | 'wallets' | 'transactions';
+    showBalance?: boolean;
+    currency?: string;
+  };
+  [key: string]: unknown;
 }
 
 export interface LoginCredentials {

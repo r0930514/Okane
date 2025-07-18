@@ -72,10 +72,10 @@ class UserService {
         currency?: ApiResponse;
         preferences?: ApiResponse;
     }> {
-        const results: any = {};
+        const results: Record<string, unknown> = {};
 
         // 並行執行更新請求
-        const promises: Promise<any>[] = [];
+        const promises: Promise<unknown>[] = [];
 
         if (primaryCurrency) {
             promises.push(
@@ -96,7 +96,8 @@ class UserService {
 
         responses.forEach(response => {
             if (response.status === 'fulfilled') {
-                results[response.value.type] = response.value.result;
+                const value = response.value as { type: string; result: unknown };
+                results[value.type] = value.result;
             }
         });
 

@@ -9,7 +9,7 @@ class ApiService {
     /**
      * 通用 fetch 封裝，支援 SSR 和客戶端
      */
-    static async request<T = any>(
+    static async request<T = unknown>(
         endpoint: string,
         options: RequestInit & RequestOptions = {}
     ): Promise<ApiResponse<T>> {
@@ -87,7 +87,7 @@ class ApiService {
     /**
      * GET 請求
      */
-    static async get<T = any>(
+    static async get<T = unknown>(
         endpoint: string, 
         options: RequestOptions = {}
     ): Promise<ApiResponse<T>> {
@@ -97,9 +97,9 @@ class ApiService {
     /**
      * POST 請求
      */
-    static async post<T = any>(
+    static async post<T = unknown>(
         endpoint: string,
-        data?: any,
+        data?: unknown,
         options: RequestOptions = {}
     ): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, {
@@ -112,9 +112,9 @@ class ApiService {
     /**
      * PATCH 請求
      */
-    static async patch<T = any>(
+    static async patch<T = unknown>(
         endpoint: string,
-        data?: any,
+        data?: unknown,
         options: RequestOptions = {}
     ): Promise<ApiResponse<T>> {
         return this.request<T>(endpoint, {
@@ -127,7 +127,7 @@ class ApiService {
     /**
      * DELETE 請求
      */
-    static async delete<T = any>(
+    static async delete<T = unknown>(
         endpoint: string,
         options: RequestOptions = {}
     ): Promise<ApiResponse<T>> {

@@ -40,7 +40,10 @@ class TransactionService {
         fromTransaction: Transaction;
         toTransaction: Transaction;
     }>> {
-        const response = await ApiService.post('/transactions/transfer', transferData, {
+        const response = await ApiService.post<{
+            fromTransaction: Transaction;
+            toTransaction: Transaction;
+        }>('/transactions/transfer', transferData, {
             cache: 'no-store'
         });
 

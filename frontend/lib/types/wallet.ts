@@ -19,7 +19,7 @@ export interface WalletMetadata {
   provider?: string;
   config?: WalletConfig;
   // 其他擴展欄位
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface WalletConfig {
@@ -34,7 +34,7 @@ export interface WalletConfig {
   badDebtThresholdDays?: number;
   autoReminder?: boolean;
   reminderDays?: number[];
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface CreateWalletRequest {

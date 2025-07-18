@@ -55,7 +55,7 @@ export interface TransactionMetadata {
   overdaysDays?: number;
   
   // 其他擴展欄位
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface CreateTransactionRequest {

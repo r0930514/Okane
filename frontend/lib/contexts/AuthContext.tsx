@@ -17,10 +17,10 @@ interface AuthContextType {
   error: string | null;
   
   // Auth actions
-  login: (credentials: LoginCredentials) => Promise<ApiResponse<any>>;
+  login: (credentials: LoginCredentials) => Promise<ApiResponse<{ access_token: string }>>;
   register: (data: RegisterData) => Promise<ApiResponse<User>>;
   logout: () => Promise<void>;
-  verifyEmailAndNavigate: (email: string) => Promise<ApiResponse<any>>;
+  verifyEmailAndNavigate: (email: string) => Promise<ApiResponse<{ exists: boolean }>>;
   
   // Utility functions
   clearError: () => void;
@@ -79,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     initializeAuth();
   }, []);
 
-  const login = async (credentials: LoginCredentials): Promise<ApiResponse<any>> => {
+  const login = async (credentials: LoginCredentials): Promise<ApiResponse<{ access_token: string }>> => {
     try {
       setIsLoading(true);
       clearError();
@@ -147,7 +147,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const verifyEmailAndNavigate = async (email: string): Promise<ApiResponse<any>> => {
+  const verifyEmailAndNavigate = async (email: string): Promise<ApiResponse<{ exists: boolean }>> => {
     try {
       setIsLoading(true);
       clearError();

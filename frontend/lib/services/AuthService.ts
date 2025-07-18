@@ -98,6 +98,13 @@ class AuthService {
             return false;
         }
     }
+
+    /**
+     * 清除認證 token
+     */
+    static clearAuthToken(): void {
+        ApiService.clearAuthToken();
+    }
 }
 
 export default AuthService;
