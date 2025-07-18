@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth as useAuthContext } from '@/lib/contexts/AuthContext';
+import { useAuth as useAuthContext } from '@/contexts/AuthContext';
 
 /**
  * 認證相關的自定義 Hook - 現在使用 AuthContext

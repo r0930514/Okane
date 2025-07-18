@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle } from 'lucide-react';
-import { useAuth } from '@/lib/hooks/useAuth';
-import { useAuthForm } from '@/lib/hooks/useAuthForm';
+import { useAuth } from '@/hooks/useAuth';
+import { useAuthForm } from '@/hooks/useAuthForm';
 
 interface PasswordFormProps {
   email: string;
