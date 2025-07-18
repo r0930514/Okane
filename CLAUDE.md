@@ -17,8 +17,7 @@
 ### Docker
 以下是容器的名稱，請根據需要選擇使用：
 - `backend` - NestJS 後端服務
-- `frontend-nextjs` - Next.js 前端服務
-- `frontend` - React 前端服務 (已棄用)
+- `frontend` - Next.js 前端服務 (shadcn/ui)
 - `postgres` - PostgreSQL 資料庫服務
 - `nginx` - Nginx 反向代理服務
 
@@ -39,19 +38,13 @@
 - `pnpm run lint` - 執行 ESLint
 - `pnpm run test` - 執行單元測試
 
-### 前端 (React + Vite) (棄用)
+### 前端 (Next.js + shadcn/ui) 
 - `cd frontend && pnpm install` - 安裝相依套件
-- `pnpm run dev` - 運行開發伺服器
-- `pnpm run build` - 建置正式版本
-- `pnpm run preview` - 預覽正式版本建置
-- `pnpm run lint` - 執行 ESLint
-
-### 前端 (Next.js) 
-- `cd frontend-nextjs && pnpm install` - 安裝相依套件
 - `pnpm run dev` - 運行開發伺服器
 - `pnpm run build` - 建置正式版本
 - `pnpm run start` - 啟動正式版本伺服器
 - `pnpm run lint` - 執行 ESLint
+- `pnpm dlx shadcn@latest add [component-name]` - 安裝 shadcn/ui 組件（**重要：必須使用 CLI 安裝，不可自行生成組件**）
 
 ### 資料庫遷移（請於 backend 容器中執行）
 - `npm run migration:generate` - 從實體變更產生遷移檔案
@@ -63,7 +56,7 @@
 ## 架構概覽
 
 ### 核心系統結構
-Okane 是一個多幣種資產管理系統，包含 **NestJS 後端** 和 **Next.js 前端**。系統處理：
+Okane 是一個多幣種資產管理系統，包含 **NestJS 後端** 和 **Next.js + shadcn/ui 前端**。系統處理：
 - 多幣種錢包管理（現金、銀行、股票、加密貨幣、信用卡、應收應付帳款）
 - 即時匯率轉換
 - 交易追蹤與成本基礎計算
@@ -85,13 +78,14 @@ Okane 是一個多幣種資產管理系統，包含 **NestJS 後端** 和 **Next
 - **實體**：User、Wallet、Transaction
 - **API 文件**：Swagger 可在 `/docs` 端點查看
 
-### 前端架構 (Next.js)
+### 前端架構 (Next.js + shadcn/ui)
 - **App Router 結構**：使用 Next.js 15+ app 目錄結構
 - **主要功能區域**：
   - `(auth)` - 身份驗證頁面配合路由群組（登入、註冊、密碼重設）
   - `dashboard` - 主要應用程式儀表板與錢包概覽
   - 首頁作為根路由
 - **組件架構**：
+  - `components/ui/` - shadcn/ui 組件庫（**重要：使用 `pnpm dlx shadcn@latest add` 安裝，不可自行生成**）
   - `components/auth/` - 身份驗證相關組件
   - `components/dashboard/layout/` - 儀表板佈局組件
   - `components/dashboard/stats/` - 統計概覽組件
@@ -106,8 +100,8 @@ Okane 是一個多幣種資產管理系統，包含 **NestJS 後端** 和 **Next
   - `UserService` - 使用者服務
 - **路由**：Next.js App Router 配合中介軟體保護
 - **狀態管理**：React hooks 與 context
-- **UI 框架**：TailwindCSS + DaisyUI 組件庫
-- **圖示系統**：Phosphor Icons
+- **UI 框架**：TailwindCSS + shadcn/ui 組件庫
+- **圖示系統**：Lucide React Icons
 
 ### 資料庫架構
 #### User 實體
@@ -149,6 +143,7 @@ Okane 是一個多幣種資產管理系統，包含 **NestJS 後端** 和 **Next
 - **資料庫**：PostgreSQL 在 Docker 容器中運行
 - **API 文件**：開發環境中提供 Swagger UI
 - **代理服務**：Nginx 反向代理
+- **UI 組件庫**：shadcn/ui 提供一致的設計系統
 
 ### 測試策略
 - **後端**：Jest 進行單元測試、端對端測試配置

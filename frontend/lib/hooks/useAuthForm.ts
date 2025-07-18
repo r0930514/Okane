@@ -18,7 +18,7 @@ export const useAuthForm = () => {
 
     // 密碼強度驗證（註冊用：至少6個字符）
     const validatePassword = (password: string): boolean => {
-        return password && password.length >= 6;
+        return Boolean(password && password.length >= 6);
     };
 
     // 使用者名稱驗證
