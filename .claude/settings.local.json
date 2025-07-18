@@ -17,7 +17,8 @@
       "Bash(docker-compose:*)",
       "Bash(grep:*)",
       "Bash(pnpm install:*)",
-      "Bash(pnpm test:*)"
+      "Bash(pnpm test:*)",
+      "Bash(pnpm dlx:*)"
     ],
     "deny": []
   }
