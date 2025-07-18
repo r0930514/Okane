@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import NavBar from './NavBar';
 import SideBar from './SideBar';
 
@@ -9,6 +9,12 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsSidebarCollapsed(!isSidebarCollapsed);
+    };
+
     return (
         <div className="drawer lg:drawer-open h-screen overflow-hidden">
             <input id="drawer" type="checkbox" className="drawer-toggle" />
@@ -17,7 +23,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <div className="drawer-content flex flex-col h-full">
                 {/* Navbar - 固定在頂端 */}
                 <div className="flex-shrink-0 sticky top-0 z-50">
-                    <NavBar />
+                    <NavBar 
+                        onToggleSidebar={toggleSidebar} 
+                        isSidebarCollapsed={isSidebarCollapsed}
+                    />
                 </div>
                 
                 {/* Main content - 可捲動區域 */}
@@ -29,7 +38,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Sidebar */}
             <div className="drawer-side">
                 <label htmlFor="drawer" aria-label="close sidebar" className="drawer-overlay"></label>
-                <SideBar />
+                <SideBar isCollapsed={isSidebarCollapsed} />
             </div>
         </div>
     );

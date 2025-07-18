@@ -6,7 +6,11 @@ import { NAVIGATION_ITEMS, DEFAULT_ACTIVE_ITEM, NavigationItem } from "@/app/das
 import { SignOutIcon } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/hooks/useAuth";
 
-export default function SideBar() {
+interface SideBarProps {
+    isCollapsed?: boolean;
+}
+
+export default function SideBar({ isCollapsed = false }: SideBarProps) {
     const router = useRouter();
     const pathname = usePathname();
     const { logout } = useAuth();
@@ -32,18 +36,18 @@ export default function SideBar() {
     const activeItem = getActiveItem();
 
     return (
-        <aside className="flex flex-col h-screen w-60 bg-[#FAFAFA] border-r border-gray-200" role="navigation" aria-label="主要導航">
+        <aside className={`flex flex-col h-screen ${isCollapsed ? 'lg:w-16 w-60' : 'w-60'} bg-[#FAFAFA] border-r border-gray-200 transition-all duration-300 overflow-visible`} role="navigation" aria-label="主要導航">
             {/* Logo/Brand Section */}
             <div className="flex items-center justify-center px-6 py-4 border-b border-gray-100">
                 <div className="flex text-xl font-bold text-gray-800 tracking-tight">
                     <span className="text-blue-600">O</span>
-                    <span>kane</span>
+                    <span className={`${isCollapsed ? 'lg:hidden' : ''}`}>kane</span>
                 </div>
             </div>
             
             {/* Navigation Menu - Scrollable Area */}
             <div className="flex-1 overflow-y-auto py-4">
-                <div className="px-3">
+                <div className="px-2">
                     <ul className="space-y-2">
                         {NAVIGATION_ITEMS.map((item: NavigationItem) => (
                             <SideBarItem
@@ -52,6 +56,7 @@ export default function SideBar() {
                                 text={item.text}
                                 isFocused={activeItem === item.text}
                                 onClick={() => handleItemClick(item.text, item.id, item.path)}
+                                isCollapsed={isCollapsed}
                             />
                         ))}
                     </ul>
@@ -59,13 +64,13 @@ export default function SideBar() {
             </div>
 
             {/* User Info Section - Fixed at Bottom */}
-            <div className="p-4 border-t border-gray-100 flex-shrink-0">
+            <div className="p-4 border-t border-gray-100 flex-shrink-0 overflow-visible">
                 <div className="dropdown dropdown-top dropdown-end">
-                    <div tabIndex={0} role="button" className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-md transition-colors duration-200 w-full">
+                    <div tabIndex={0} role="button" className={`flex items-center gap-3 hover:bg-gray-100 rounded-md transition-colors duration-200 w-full ${isCollapsed ? 'lg:justify-center' : ''}`}>
                         <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                             <span className="text-sm font-medium text-gray-600">U</span>
                         </div>
-                        <div className="flex flex-col min-w-0 flex-1">
+                        <div className={`flex flex-col min-w-0 flex-1 ${isCollapsed ? 'lg:hidden' : ''}`}>
                             <span className="text-sm font-medium text-gray-700 truncate">
                                 User
                             </span>
@@ -74,7 +79,7 @@ export default function SideBar() {
                             </span>
                         </div>
                     </div>
-                    <ul tabIndex={0} className="dropdown-content z-10 menu p-2 shadow-lg bg-white rounded-lg w-48 border border-gray-200 mb-2">
+                    <ul tabIndex={0} className="dropdown-content menu p-2 shadow-lg bg-white rounded-lg w-48 border border-gray-200 mb-2 right-0">
                         <li className="mb-2">
                             <div className="flex items-center gap-3 p-2 rounded-md bg-gray-50">
                                 <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
