@@ -113,7 +113,7 @@ export function WalletHeader({ wallet, onEdit }: WalletHeaderProps) {
 
   return (
     <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-      <CardContent className="p-6">
+      <CardContent className="px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* 左側 - 錢包資訊 */}
           <div className="flex items-center space-x-4">

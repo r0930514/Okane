@@ -51,12 +51,12 @@ export default function WalletDetailPage() {
         {/* 右側 - 快速統計 */}
         <div className="space-y-4">
           <Card>
-            <CardHeader className="pb-2">
+            <CardHeader className="">
               <CardTitle className="text-sm font-medium text-gray-600">
                 錢包統計
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <DollarSign className="h-4 w-4 text-green-600" />
