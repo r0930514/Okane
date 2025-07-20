@@ -1,9 +1,11 @@
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { LucideIcon, Wallet, Banknote, CreditCard, TrendingUp, Bitcoin, Building2, FileText, HandCoins } from "lucide-react"
-import { Wallet as WalletType, WalletType as WalletTypeEnum } from "@/lib/types/wallet"
+import { WalletType as WalletTypeEnum } from "@/lib/types/wallet"
+import { useRouter } from "next/navigation"
 
 interface WalletCardProps {
+  id?: string
   name: string
   balance: string | number
   currency?: string
@@ -11,6 +13,7 @@ interface WalletCardProps {
   icon?: LucideIcon
   color?: string
   className?: string
+  onClick?: () => void
 }
 
 // 根據錢包類型選擇預設圖示
@@ -37,15 +40,26 @@ const getDefaultIcon = (walletType?: WalletTypeEnum): LucideIcon => {
 }
 
 export function WalletCard({
+  id,
   name,
   balance,
   currency = "TWD",
   walletType,
   icon,
   color = "bg-teal-900",
-  className
+  className,
+  onClick
 }: WalletCardProps) {
+  const router = useRouter()
   const IconComponent = icon || getDefaultIcon(walletType)
+  
+  const handleClick = () => {
+    if (onClick) {
+      onClick()
+    } else if (id) {
+      router.push(`/dashboard/wallets/${id}`)
+    }
+  }
   
   // 顏色對應表，確保 Tailwind 能正確編譯
   const colorMap: Record<string, string> = {
@@ -78,10 +92,14 @@ export function WalletCard({
   }
 
   return (
-    <Card className={cn(
-      "min-w-44 px-6 py-3 bg-white rounded-2xl shadow-[0px_2px_4px_0px_rgba(0,0,0,0.06)] outline-1 outline-offset-[-1px] outline-gray-200",
-      className
-    )}>
+    <Card 
+      className={cn(
+        "min-w-44 px-6 py-3 bg-white rounded-2xl shadow-[0px_2px_4px_0px_rgba(0,0,0,0.06)] outline-1 outline-offset-[-1px] outline-gray-200",
+        id ? "cursor-pointer hover:shadow-lg transition-shadow duration-200" : "",
+        className
+      )}
+      onClick={handleClick}
+    >
       <div className="inline-flex justify-start items-center gap-4">
         {/* 圖示區域 */}
         <div className={cn(
