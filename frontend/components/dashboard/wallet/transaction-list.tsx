@@ -65,7 +65,7 @@ function TransactionCard({ transaction, currency }: { transaction: Transaction, 
   const formattedTransaction = TransactionService.formatTransactionForDisplay(transaction)
   
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+    <div className="flex items-center justify-between p-4  hover:bg-gray-50 transition-colors">
       <div className="flex items-center space-x-4">
         {/* 交易圖示 */}
         <div className="flex-shrink-0">
