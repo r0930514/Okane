@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Wallet } from './wallet.entity';
+import { Account } from './account.entity';
 
 @Entity()
 export class Transaction {
@@ -50,11 +50,11 @@ export class Transaction {
   };
 
   @ApiProperty({
-    description: '所屬錢包',
-    type: () => Wallet,
+    description: '所屬帳戶',
+    type: () => Account,
   })
-  @ManyToOne(() => Wallet, (wallet) => wallet.transactionHistory)
-  wallet: Wallet;
+  @ManyToOne(() => Account)
+  account: Account;
 
   @ApiProperty({
     description: '記錄建立時間',

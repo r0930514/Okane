@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Wallet } from './wallet.entity';
+import { Account } from './account.entity';
 
 @Entity()
 export class User {
@@ -76,9 +76,9 @@ export class User {
   };
 
   @ApiProperty({
-    description: '使用者擁有的錢包列表',
-    type: () => [Wallet],
+    description: '使用者擁有的帳戶',
+    type: () => [Account],
   })
-  @OneToMany(() => Wallet, (wallet) => wallet.user)
-  wallets: Wallet[];
+  @OneToMany(() => Account, (account) => account.user)
+  accounts: Account[];
 }

@@ -10,11 +10,11 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTransactionDto {
   @ApiProperty({
-    description: '錢包識別碼',
+    description: '帳戶識別碼',
     example: '550e8400-e29b-41d4-a716-446655440000',
   })
   @IsUUID()
-  walletId: string;
+  accountId: string;
 
   @ApiProperty({
     description: '交易發生日期時間',

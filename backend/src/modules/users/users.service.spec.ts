@@ -59,8 +59,10 @@ describe('UsersService', () => {
 
     it('should create user successfully', async () => {
       const encryptedPassword = { salt: 'new-salt', hash: 'new-hash' };
-      jest.spyOn(CommonUtility, 'encryptBySalt').mockReturnValue(encryptedPassword);
-      
+      jest
+        .spyOn(CommonUtility, 'encryptBySalt')
+        .mockReturnValue(encryptedPassword);
+
       const newUser = {
         ...mockUser,
         username: userCreateDto.username,
@@ -73,7 +75,9 @@ describe('UsersService', () => {
 
       const result = await service.create(userCreateDto);
 
-      expect(CommonUtility.encryptBySalt).toHaveBeenCalledWith(userCreateDto.password);
+      expect(CommonUtility.encryptBySalt).toHaveBeenCalledWith(
+        userCreateDto.password,
+      );
       expect(userRepository.create).toHaveBeenCalledWith({
         username: userCreateDto.username,
         email: userCreateDto.email,
@@ -88,11 +92,13 @@ describe('UsersService', () => {
         salt: 'salt',
         hash: 'hash',
       });
-      
+
       userRepository.create.mockReturnValue(mockUser);
       userRepository.save.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.create(userCreateDto)).rejects.toThrow('Database error');
+      await expect(service.create(userCreateDto)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -165,8 +171,9 @@ describe('UsersService', () => {
     it('should throw error when user not found', async () => {
       jest.spyOn(service, 'findById').mockResolvedValue(null);
 
-      await expect(service.updatePrimaryCurrency('user-1', 'USD'))
-        .rejects.toThrow('用戶不存在');
+      await expect(
+        service.updatePrimaryCurrency('user-1', 'USD'),
+      ).rejects.toThrow('用戶不存在');
     });
   });
 
@@ -177,11 +184,14 @@ describe('UsersService', () => {
         ...mockUser,
         preferences: { ...mockUser.preferences, ...newPreferences },
       };
-      
+
       jest.spyOn(service, 'findById').mockResolvedValue(mockUser);
       userRepository.save.mockResolvedValue(updatedUser);
 
-      const result = await service.updateUserPreferences('user-1', newPreferences);
+      const result = await service.updateUserPreferences(
+        'user-1',
+        newPreferences,
+      );
 
       expect(service.findById).toHaveBeenCalledWith('user-1');
       expect(userRepository.save).toHaveBeenCalledWith({
@@ -202,14 +212,17 @@ describe('UsersService', () => {
         fontSize: 'medium',
         language: 'zh-TW',
       };
-      
+
       jest.spyOn(service, 'findById').mockResolvedValue(userWithPrefs);
       userRepository.save.mockResolvedValue({
         ...userWithPrefs,
         preferences: expectedPreferences,
       });
 
-      const result = await service.updateUserPreferences('user-1', newPreferences);
+      const result = await service.updateUserPreferences(
+        'user-1',
+        newPreferences,
+      );
 
       expect(userRepository.save).toHaveBeenCalledWith({
         ...userWithPrefs,
@@ -220,8 +233,9 @@ describe('UsersService', () => {
     it('should throw error when user not found', async () => {
       jest.spyOn(service, 'findById').mockResolvedValue(null);
 
-      await expect(service.updateUserPreferences('user-1', { theme: 'dark' }))
-        .rejects.toThrow('用戶不存在');
+      await expect(
+        service.updateUserPreferences('user-1', { theme: 'dark' }),
+      ).rejects.toThrow('用戶不存在');
     });
 
     it('should handle null existing preferences', async () => {
@@ -230,14 +244,19 @@ describe('UsersService', () => {
         preferences: null,
       };
       const newPreferences = { theme: 'dark' };
-      
-      jest.spyOn(service, 'findById').mockResolvedValue(userWithNullPrefs as any);
+
+      jest
+        .spyOn(service, 'findById')
+        .mockResolvedValue(userWithNullPrefs as any);
       userRepository.save.mockResolvedValue({
         ...userWithNullPrefs,
         preferences: newPreferences,
       });
 
-      const result = await service.updateUserPreferences('user-1', newPreferences);
+      const result = await service.updateUserPreferences(
+        'user-1',
+        newPreferences,
+      );
 
       expect(userRepository.save).toHaveBeenCalledWith({
         ...userWithNullPrefs,

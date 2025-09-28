@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from '../../../entities/transaction.entity';
-import { Wallet } from '../../../entities/wallet.entity';
+import { Account } from '../../../entities/account.entity';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,52 +16,52 @@ export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private transactionRepository: Repository<Transaction>,
-    @InjectRepository(Wallet)
-    private walletRepository: Repository<Wallet>,
+    @InjectRepository(Account)
+    private accountRepository: Repository<Account>,
   ) {}
 
   async create(
     createTransactionDto: CreateTransactionDto,
     userId: string,
   ): Promise<Transaction> {
-    const wallet = await this.walletRepository.findOne({
-      where: { id: createTransactionDto.walletId, user: { id: userId } },
+    const account = await this.accountRepository.findOne({
+      where: { id: createTransactionDto.accountId, user: { id: userId } },
     });
 
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
+    if (!account) {
+      throw new NotFoundException('帳戶不存在');
     }
 
     const transaction = this.transactionRepository.create({
       ...createTransactionDto,
-      wallet,
+      account,
     });
 
     return this.transactionRepository.save(transaction);
   }
 
   async createTransfer(
-    fromWalletId: string,
-    toWalletId: string,
+    fromAccountId: string,
+    toAccountId: string,
     amount: number,
     description: string,
     userId: string,
     metadata?: any,
   ): Promise<{ outTransaction: Transaction; inTransaction: Transaction }> {
-    const fromWallet = await this.walletRepository.findOne({
-      where: { id: fromWalletId, user: { id: userId } },
+    const fromAccount = await this.accountRepository.findOne({
+      where: { id: fromAccountId, user: { id: userId } },
     });
 
-    const toWallet = await this.walletRepository.findOne({
-      where: { id: toWalletId, user: { id: userId } },
+    const toAccount = await this.accountRepository.findOne({
+      where: { id: toAccountId, user: { id: userId } },
     });
 
-    if (!fromWallet || !toWallet) {
-      throw new NotFoundException('One or both wallets not found');
+    if (!fromAccount || !toAccount) {
+      throw new NotFoundException('轉出或轉入帳戶不存在');
     }
 
-    if (fromWalletId === toWalletId) {
-      throw new BadRequestException('Cannot transfer to the same wallet');
+    if (fromAccountId === toAccountId) {
+      throw new BadRequestException('不能向同一個帳戶轉帳');
     }
 
     const transferGroupId = uuidv4();
@@ -69,26 +69,26 @@ export class TransactionService {
     const outTransaction = this.transactionRepository.create({
       amount: -Math.abs(amount),
       description,
-      wallet: fromWallet,
+      account: fromAccount,
       metadata: {
         ...metadata,
         type: 'transfer',
         transferDirection: 'out',
         transferGroupId,
-        relatedWalletId: toWalletId,
+        relatedAccountId: toAccountId,
       },
     });
 
     const inTransaction = this.transactionRepository.create({
       amount: Math.abs(amount),
       description,
-      wallet: toWallet,
+      account: toAccount,
       metadata: {
         ...metadata,
         type: 'transfer',
         transferDirection: 'in',
         transferGroupId,
-        relatedWalletId: fromWalletId,
+        relatedAccountId: fromAccountId,
       },
     });
 
@@ -97,7 +97,6 @@ export class TransactionService {
     const savedInTransaction =
       await this.transactionRepository.save(inTransaction);
 
-    // 更新 metadata 以包含配對的交易 ID
     savedOutTransaction.metadata = {
       ...savedOutTransaction.metadata,
       pairedTransactionId: savedInTransaction.id,
@@ -116,30 +115,30 @@ export class TransactionService {
     };
   }
 
-  async findAll(userId: string, walletId?: string): Promise<Transaction[]> {
+  async findAll(userId: string, accountId?: string): Promise<Transaction[]> {
     const whereClause: any = {
-      wallet: { user: { id: userId } },
+      account: { user: { id: userId } },
     };
 
-    if (walletId) {
-      whereClause.wallet.id = walletId;
+    if (accountId) {
+      whereClause.account.id = accountId;
     }
 
     return this.transactionRepository.find({
       where: whereClause,
-      relations: ['wallet'],
+      relations: ['account'],
       order: { date: 'DESC', createdAt: 'DESC' },
     });
   }
 
   async findOne(id: string, userId: string): Promise<Transaction> {
     const transaction = await this.transactionRepository.findOne({
-      where: { id, wallet: { user: { id: userId } } },
-      relations: ['wallet'],
+      where: { id, account: { user: { id: userId } } },
+      relations: ['account'],
     });
 
     if (!transaction) {
-      throw new NotFoundException('Transaction not found');
+      throw new NotFoundException('交易不存在');
     }
 
     return transaction;
@@ -156,9 +155,7 @@ export class TransactionService {
       transaction.metadata?.type === 'transfer' &&
       updateTransactionDto.amount
     ) {
-      throw new BadRequestException(
-        'Cannot update transfer transaction amount directly',
-      );
+      throw new BadRequestException('無法直接修改轉帳交易的金額');
     }
 
     Object.assign(transaction, updateTransactionDto);
@@ -195,8 +192,8 @@ export class TransactionService {
   ): Promise<Transaction[]> {
     return this.transactionRepository
       .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.wallet', 'wallet')
-      .leftJoinAndSelect('wallet.user', 'user')
+      .leftJoinAndSelect('transaction.account', 'account')
+      .leftJoinAndSelect('account.user', 'user')
       .where('user.id = :userId', { userId })
       .andWhere("transaction.metadata->>'category' = :category", { category })
       .orderBy('transaction.date', 'DESC')
@@ -207,12 +204,12 @@ export class TransactionService {
     userId: string,
     startDate: Date,
     endDate: Date,
-    walletId?: string,
+    accountId?: string,
   ): Promise<Transaction[]> {
     let query = this.transactionRepository
       .createQueryBuilder('transaction')
-      .leftJoinAndSelect('transaction.wallet', 'wallet')
-      .leftJoinAndSelect('wallet.user', 'user')
+      .leftJoinAndSelect('transaction.account', 'account')
+      .leftJoinAndSelect('account.user', 'user')
       .where('user.id = :userId', { userId })
       .andWhere('transaction.date BETWEEN :startDate AND :endDate', {
         startDate,
@@ -220,8 +217,8 @@ export class TransactionService {
       })
       .orderBy('transaction.date', 'DESC');
 
-    if (walletId) {
-      query = query.andWhere('wallet.id = :walletId', { walletId });
+    if (accountId) {
+      query = query.andWhere('account.id = :accountId', { accountId });
     }
 
     return query.getMany();
