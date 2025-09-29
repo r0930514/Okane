@@ -1,10 +1,8 @@
 "use client"
 
 import { useParams } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Wallet as WalletIcon, DollarSign, Calendar } from "lucide-react"
 import { useWalletTransactions } from "@/hooks"
-import { WalletTransactionsList, WalletBalanceChart, WalletHeader } from "@/components/dashboard/wallet"
+import { WalletTransactionsList, WalletHeader } from "@/components/dashboard/wallet"
 import { useWallet } from "@/contexts/WalletContext"
 
 export default function WalletDetailPage() {
@@ -38,97 +36,8 @@ export default function WalletDetailPage() {
       {/* 錢包標題區域 */}
       <WalletHeader wallet={wallet} />
 
-      {/* 主要內容區域 */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 左側 - 錢包餘額圖表 */}
-        <div className="lg:col-span-2">
-          <WalletBalanceChart
-            wallet={wallet}
-            transactions={transactions}
-          />
-        </div>
-
-        {/* 右側 - 快速統計 */}
-        <div className="space-y-4">
-          <Card>
-            <CardHeader className="">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                錢包統計
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-gray-600">當前餘額</span>
-                </div>
-                <span className="font-semibold text-lg">
-                  {new Intl.NumberFormat('zh-TW', {
-                    style: 'currency',
-                    currency: wallet.currency || 'TWD'
-                  }).format(wallet.balance)}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm text-gray-600">交易筆數</span>
-                </div>
-                <span className="font-semibold">
-                  {stats.transactionCount} 筆
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <WalletIcon className="h-4 w-4 text-purple-600" />
-                  <span className="text-sm text-gray-600">錢包類型</span>
-                </div>
-                <span className="font-semibold capitalize">
-                  {wallet.type || '未知'}
-                </span>
-              </div>
-
-              {/* 新增收支統計 */}
-              <div className="pt-2 border-t">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">總收入</span>
-                  <span className="font-semibold text-green-600">
-                    {new Intl.NumberFormat('zh-TW', {
-                      style: 'currency',
-                      currency: wallet.currency || 'TWD'
-                    }).format(stats.totalIncome)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">總支出</span>
-                  <span className="font-semibold text-red-600">
-                    {new Intl.NumberFormat('zh-TW', {
-                      style: 'currency',
-                      currency: wallet.currency || 'TWD'
-                    }).format(stats.totalExpense)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">淨額</span>
-                  <span className={`font-semibold ${
-                    stats.netAmount >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                    {new Intl.NumberFormat('zh-TW', {
-                      style: 'currency',
-                      currency: wallet.currency || 'TWD'
-                    }).format(stats.netAmount)}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
       {/* 交易記錄區域 */}
-      <div className="mt-4">
+      <div>
         <WalletTransactionsList 
           transactions={transactions}
           wallet={wallet}

@@ -105,13 +105,13 @@ export function WalletCard({
           <div className="inline-flex flex-col justify-start items-start">
             <div className="self-stretch inline-flex justify-start items-center">
               <div className={cn(
-                "opacity-80 justify-start text-base font-medium leading-normal",
+                "opacity-80 justify-start text-base font-black leading-normal",
                 getTextColorClass(color)
               )}>
                 {name}
               </div>
             </div>
-            <div className="justify-start text-gray-800 text-2xl font-medium leading-normal">
+            <div className="justify-start text-neutral-600 text-2xl font-semibold leading-normal">
               {formatBalance(balance)}
             </div>
           </div>

@@ -174,62 +174,6 @@ export function WalletTransactionsList({
 
   return (
     <div className="space-y-6">
-      {/* 統計卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="">
-            <div className="flex items-center space-x-2">
-              <ArrowUpRight className="w-4 h-4 text-green-600" />
-              <div>
-                <p className="text-sm text-gray-600">總收入</p>
-                <p className="text-lg font-semibold text-green-600">
-                  {new Intl.NumberFormat('zh-TW', {
-                    style: 'currency',
-                    currency: wallet.currency || 'TWD'
-                  }).format(stats.totalIncome)}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="">
-            <div className="flex items-center space-x-2">
-              <ArrowDownLeft className="w-4 h-4 text-red-600" />
-              <div>
-                <p className="text-sm text-gray-600">總支出</p>
-                <p className="text-lg font-semibold text-red-600">
-                  {new Intl.NumberFormat('zh-TW', {
-                    style: 'currency',
-                    currency: wallet.currency || 'TWD'
-                  }).format(stats.totalExpense)}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="">
-            <div className="flex items-center space-x-2">
-              <DollarSign className="w-4 h-4 text-blue-600" />
-              <div>
-                <p className="text-sm text-gray-600">淨額</p>
-                <p className={`text-lg font-semibold ${
-                  stats.netAmount >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  {new Intl.NumberFormat('zh-TW', {
-                    style: 'currency',
-                    currency: wallet.currency || 'TWD'
-                  }).format(stats.netAmount)}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       {/* 交易記錄主要區域 */}
       <Card>
         <CardHeader>

@@ -15,7 +15,9 @@ import {
   FileText, 
   HandCoins,
   Settings,
-  Edit
+  Edit,
+  Coins,
+  CoinsIcon
 } from "lucide-react"
 import type { Wallet, WalletType } from "@/lib/types"
 
@@ -38,40 +40,8 @@ const getDefaultIcon = (walletType?: WalletType): LucideIcon => {
   }
 }
 
-// 帳戶類型顯示名稱
-const getWalletTypeDisplay = (walletType?: WalletType): string => {
-  switch (walletType) {
-    case 'cash':
-      return '現金'
-    case 'bank':
-      return '銀行帳戶'
-    case 'crypto':
-      return '加密貨幣'
-    default:
-      return '未知類型'
-  }
-}
-
-// 根據帳戶類型獲取狀態顏色
-const getStatusColor = (walletType?: WalletType, isActive?: boolean) => {
-  if (!isActive) return 'bg-gray-100 text-gray-600'
-
-  switch (walletType) {
-    case 'cash':
-      return 'bg-green-100 text-green-700'
-    case 'bank':
-      return 'bg-blue-100 text-blue-700'
-    case 'crypto':
-      return 'bg-yellow-100 text-yellow-700'
-    default:
-      return 'bg-gray-100 text-gray-700'
-  }
-}
-
 export function WalletHeader({ wallet, onEdit }: WalletHeaderProps) {
   const IconComponent = getDefaultIcon(wallet.type as WalletType)
-  const walletTypeDisplay = getWalletTypeDisplay(wallet.type as WalletType)
-  const statusColor = getStatusColor(wallet.type as WalletType, wallet.status === 'active')
   
   // 格式化餘額顯示
   const formatBalance = (amount: number, currency: string = 'TWD') => {
@@ -84,50 +54,49 @@ export function WalletHeader({ wallet, onEdit }: WalletHeaderProps) {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+    <Card className="py-3 border">
       <CardContent className="px-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           {/* 左側 - 錢包資訊 */}
           <div className="flex items-center space-x-4">
             {/* 錢包圖示 */}
             <div className={cn(
-              "w-16 h-16 rounded-xl inline-flex flex-col justify-center items-center",
-"bg-blue-600"
+              "w-10 h-10 rounded-lg inline-flex flex-col justify-center items-center",
+              "bg-teal-900"
             )}>
-              <IconComponent className="w-8 h-8 text-white" />
+              <IconComponent className="w-7 h-7 text-white" />
             </div>
             
             {/* 錢包名稱和詳情 */}
-            <div className="space-y-1">
+            <div className="">
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-xl text-gray-900">
                   {wallet.name}
                 </h1>
-                <Badge className={cn("text-xs", statusColor)}>
-                  {wallet.status === 'active' ? '啟用' : '停用'}
-                </Badge>
-              </div>
-              
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <span>{walletTypeDisplay}</span>
-                <span>•</span>
-                <span>{wallet.currency || 'TWD'}</span>
+                {wallet.status === 'disabled' && (
+                  <Badge className="text-xs bg-red-100 text-red-700">
+                    停用
+                  </Badge>
+                )}
               </div>
               
               {/* 餘額顯示 */}
-              <div className="mt-2">
-                <div className="text-3xl font-bold text-gray-900">
+              <div className="flex items-center space-x-3 mt-1">
+                <div className="text-3xl font-semibold text-gray-900">
                   {formatBalance(wallet.balance, wallet.currency)}
                 </div>
-                <div className="text-sm text-gray-500">
-                  最後更新：{wallet.updatedAt ? new Date(wallet.updatedAt).toLocaleString('zh-TW') : '未知'}
-                </div>
+                <Badge className="text-md bg-white border border-gray-200 text-black">
+                  <div className="inline-flex items-center gap-1">
+                    <CoinsIcon className="w-4 h-4" />
+                    {wallet.currency || '未知'}
+                  </div>
+                </Badge>
               </div>
             </div>
           </div>
           
           {/* 右側 - 操作按鈕 */}
-          <div className="flex items-center space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+          <div className="flex items-center space-x-2">
             <Button 
               variant="outline" 
               size="sm"
@@ -146,24 +115,7 @@ export function WalletHeader({ wallet, onEdit }: WalletHeaderProps) {
               設定
             </Button>
           </div>
-        </div>
-        
-        {/* 帳戶配置資訊 */}
-        {wallet.type === 'bank' && 'accountNumber' in wallet.accountableData && (
-          <div className="mt-4 pt-4 border-t border-blue-200">
-            <div className="text-sm text-gray-600">
-              <strong>配置資訊：</strong>
-              <span className="ml-2">
-                帳號：****{wallet.accountableData.accountNumber.slice(-4)}
-              </span>
-              {wallet.accountableData.bankName && (
-                <span className="ml-2">
-                  銀行：{wallet.accountableData.bankName}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
+        </div>  
       </CardContent>
     </Card>
   )
