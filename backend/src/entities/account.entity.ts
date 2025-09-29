@@ -8,15 +8,17 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum AccountClassification {
-  ASSET = 'asset',
-  LIABILITY = 'liability',
+  ASSET = 'asset', // 資產
+  LIABILITY = 'liability', // 負債
 }
 
+// 帳戶狀態
+
 export enum AccountStatus {
-  ACTIVE = 'active',
-  DRAFT = 'draft',
-  DISABLED = 'disabled',
-  PENDING_DELETION = 'pending_deletion',
+  ACTIVE = 'active', // 啟用
+  DRAFT = 'draft', // 草稿
+  DISABLED = 'disabled', // 禁用
+  PENDING_DELETION = 'pending_deletion', // 等待刪除
 }
 
 export enum AccountType {
@@ -26,9 +28,9 @@ export enum AccountType {
 }
 
 export enum BalanceType {
-  CASH = 'cash',
-  NON_CASH = 'non_cash',
-  INVESTMENT = 'investment',
+  CASH = 'cash', // 現金
+  NON_CASH = 'non_cash', // 非現金
+  INVESTMENT = 'investment', // 投資
 }
 
 // 型別定義各類型的 accountableData

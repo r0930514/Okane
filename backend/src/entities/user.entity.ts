@@ -27,10 +27,6 @@ export class User {
 
   @ApiProperty({
     description: '使用者密碼雜湊值和鹽值',
-    example: {
-      hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-      salt: 'random_salt_value',
-    },
   })
   @Column('jsonb', { select: false })
   password: {
