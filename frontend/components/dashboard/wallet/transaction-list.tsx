@@ -139,7 +139,7 @@ export function WalletTransactionsList({
       const matchesSearch = transaction.description
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-        (transaction.metadata?.category || '')
+        (typeof transaction.metadata?.category === 'string' ? transaction.metadata.category : '')
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
       

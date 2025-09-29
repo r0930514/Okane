@@ -42,12 +42,12 @@ export default function WalletDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* 左側 - 錢包餘額圖表 */}
         <div className="lg:col-span-2">
-          <WalletBalanceChart 
-            wallet={wallet} 
+          <WalletBalanceChart
+            wallet={wallet}
             transactions={transactions}
           />
         </div>
-        
+
         {/* 右側 - 快速統計 */}
         <div className="space-y-4">
           <Card>
@@ -69,7 +69,7 @@ export default function WalletDetailPage() {
                   }).format(wallet.balance)}
                 </span>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4 text-blue-600" />
@@ -79,14 +79,14 @@ export default function WalletDetailPage() {
                   {stats.transactionCount} 筆
                 </span>
               </div>
-              
+
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <WalletIcon className="h-4 w-4 text-purple-600" />
                   <span className="text-sm text-gray-600">錢包類型</span>
                 </div>
                 <span className="font-semibold capitalize">
-                  {wallet.metadata?.type || '未知'}
+                  {wallet.type || '未知'}
                 </span>
               </div>
 

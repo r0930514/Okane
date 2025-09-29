@@ -23,6 +23,13 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
+
+  // 提供 JSON 格式的 OpenAPI 文件
+  app.getHttpAdapter().get('/docs-json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(document);
+  });
+
   await app.listen(3000);
 }
 bootstrap();

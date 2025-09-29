@@ -16,24 +16,15 @@ interface WalletCardProps {
   onClick?: () => void
 }
 
-// 根據錢包類型選擇預設圖示
+// 根據帳戶類型選擇預設圖示
 const getDefaultIcon = (walletType?: WalletTypeEnum): LucideIcon => {
   switch (walletType) {
     case 'cash':
       return Banknote
     case 'bank':
       return Building2
-    case 'card':
-      return CreditCard
-    case 'stock':
-    case 'foreign_stock':
-      return TrendingUp
     case 'crypto':
       return Bitcoin
-    case 'receivable':
-      return FileText
-    case 'payable':
-      return HandCoins
     default:
       return Wallet
   }

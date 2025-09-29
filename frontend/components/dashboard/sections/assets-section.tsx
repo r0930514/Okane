@@ -51,31 +51,31 @@ export function AssetsSection() {
   }
 
   const getMainCurrencyBalance = () => {
-    if (!stats) return 0
+    if (!stats || !stats.balancesByCurrency) return 0
     const currencies = Object.keys(stats.balancesByCurrency)
     if (currencies.length === 0) return 0
-    
+
     // 優先顯示 TWD，其次是最大餘額的幣種
     if (stats.balancesByCurrency.TWD) {
       return stats.balancesByCurrency.TWD
     }
-    
-    const maxCurrency = currencies.reduce((a, b) => 
+
+    const maxCurrency = currencies.reduce((a, b) =>
       stats.balancesByCurrency[a] > stats.balancesByCurrency[b] ? a : b
     )
-    return stats.balancesByCurrency[maxCurrency]
+    return stats.balancesByCurrency[maxCurrency] || 0
   }
 
   const getMainCurrency = () => {
-    if (!stats) return 'TWD'
+    if (!stats || !stats.balancesByCurrency) return 'TWD'
     const currencies = Object.keys(stats.balancesByCurrency)
     if (currencies.length === 0) return 'TWD'
-    
+
     if (stats.balancesByCurrency.TWD) {
       return 'TWD'
     }
-    
-    return currencies.reduce((a, b) => 
+
+    return currencies.reduce((a, b) =>
       stats.balancesByCurrency[a] > stats.balancesByCurrency[b] ? a : b
     )
   }
@@ -116,7 +116,7 @@ export function AssetsSection() {
 
     const mainBalance = getMainCurrencyBalance()
     const mainCurrency = getMainCurrency()
-    const currencyCount = Object.keys(stats.balancesByCurrency).length
+    const currencyCount = stats.balancesByCurrency ? Object.keys(stats.balancesByCurrency).length : 0
 
     return (
       <StatCard

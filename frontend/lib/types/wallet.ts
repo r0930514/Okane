@@ -1,72 +1,149 @@
-// 錢包相關類型定義
+// 帳戶相關類型定義（原錢包系統重構為帳戶系統）
 
-export interface Wallet {
+// === 核心帳戶類型 ===
+export interface Account {
   id: string;
   name: string;
-  currency?: string;
-  metadata: WalletMetadata;
-  userId: string;
-  isActive: boolean;
   balance: number;
-  createdAt: string;
-  updatedAt: string;
+  availableBalance: number;
+  currency: string;
+  classification: 'asset' | 'liability';
+  status: 'active' | 'draft' | 'disabled' | 'pending_deletion';
+  type: 'bank' | 'cash' | 'crypto';
+  accountableData: BankAccountData | CashAccountData | CryptoAccountData;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
-export interface WalletMetadata {
-  // 原本的欄位現在都在 metadata 中
-  color?: string;
-  type?: string;
-  provider?: string;
-  config?: WalletConfig;
-  // 其他擴展欄位
-  [key: string]: unknown;
-}
-
-export interface WalletConfig {
-  accountNumber?: string;
+// === 帳戶類型特定資料 ===
+export interface BankAccountData {
+  bankName: string;
+  accountNumber: string;
   branchCode?: string;
-  apiKey?: string;
-  secretKey?: string;
-  brokerCode?: string;
-  exchangeCode?: string;
-  defaultCreditTerms?: string;
-  overdueThresholdDays?: number;
-  badDebtThresholdDays?: number;
-  autoReminder?: boolean;
-  reminderDays?: number[];
-  [key: string]: unknown;
+  swiftCode?: string;
+  bankAddress?: string;
 }
 
-export interface CreateWalletRequest {
+export interface CashAccountData {
+  location?: string;
+  notes?: string;
+}
+
+export interface CryptoAccountData {
+  walletAddress: string;
+  network: string;
+  protocol?: string;
+  publicKey?: string;
+  walletType?: string;
+}
+
+// === 建立帳戶請求 ===
+export interface CreateAccountRequest {
   name: string;
-  currency?: string;
-  metadata?: WalletMetadata;
+  balance: number;
+  availableBalance: number;
+  currency: string;
+  classification: 'asset' | 'liability';
+  type: 'bank' | 'cash' | 'crypto';
+  accountableData: BankAccountData | CashAccountData | CryptoAccountData;
 }
 
-export interface UpdateWalletRequest {
+export interface CreateBankAccountRequest {
+  name: string;
+  balance: number;
+  currency: string;
+  bankData: BankAccountData;
+}
+
+export interface CreateCashAccountRequest {
+  name: string;
+  balance: number;
+  currency: string;
+  cashData?: CashAccountData;
+}
+
+export interface CreateCryptoAccountRequest {
+  name: string;
+  balance: number;
+  currency: string;
+  cryptoData: CryptoAccountData;
+}
+
+// === 更新帳戶請求 ===
+export interface UpdateAccountRequest {
   name?: string;
+  balance?: number;
+  availableBalance?: number;
   currency?: string;
-  metadata?: WalletMetadata;
-  isActive?: boolean;
+  classification?: 'asset' | 'liability';
+  status?: 'active' | 'draft' | 'disabled' | 'pending_deletion';
+  accountableData?: BankAccountData | CashAccountData | CryptoAccountData;
 }
 
-// 為了向後相容，保留常用的錢包類型常數
-export const WalletTypes = {
-  Cash: 'cash',
+export interface UpdateBankAccountRequest {
+  name?: string;
+  balance?: number;
+  availableBalance?: number;
+  currency?: string;
+  status?: 'active' | 'draft' | 'disabled' | 'pending_deletion';
+  bankData?: Partial<BankAccountData>;
+}
+
+export interface UpdateCashAccountRequest {
+  name?: string;
+  balance?: number;
+  availableBalance?: number;
+  currency?: string;
+  status?: 'active' | 'draft' | 'disabled' | 'pending_deletion';
+  cashData?: Partial<CashAccountData>;
+}
+
+export interface UpdateCryptoAccountRequest {
+  name?: string;
+  balance?: number;
+  availableBalance?: number;
+  currency?: string;
+  status?: 'active' | 'draft' | 'disabled' | 'pending_deletion';
+  cryptoData?: Partial<CryptoAccountData>;
+}
+
+// === 帳戶類型常數 ===
+export const AccountTypes = {
   Bank: 'bank',
-  Stock: 'stock',
+  Cash: 'cash',
   Crypto: 'crypto',
-  ForeignStock: 'foreign_stock',
-  Card: 'card',
-  Receivable: 'receivable',
-  Payable: 'payable',
 } as const;
 
-export type WalletType = typeof WalletTypes[keyof typeof WalletTypes];
+export type AccountType = typeof AccountTypes[keyof typeof AccountTypes];
+
+export const AccountStatus = {
+  Active: 'active',
+  Draft: 'draft',
+  Disabled: 'disabled',
+  PendingDeletion: 'pending_deletion',
+} as const;
+
+export type AccountStatusType = typeof AccountStatus[keyof typeof AccountStatus];
+
+export const AccountClassification = {
+  Asset: 'asset',
+  Liability: 'liability',
+} as const;
+
+export type AccountClassificationType = typeof AccountClassification[keyof typeof AccountClassification];
+
+// === 向後相容性別名 ===
+// 保留原有 Wallet 相關類型以支援現有程式碼
+export type Wallet = Account;
+export type CreateWalletRequest = CreateAccountRequest;
+export type UpdateWalletRequest = UpdateAccountRequest;
+export type WalletType = AccountType;
+export const WalletTypes = AccountTypes;
 
 export interface WalletBalance {
-  walletId: string;
+  accountId: string; // 更新為 accountId
   balance: number;
   currency: string;
   lastUpdated: string;
 }
+

@@ -59,14 +59,14 @@ export function useWalletsList(
   // 根據 activeOnly 過濾錢包
   const wallets = useMemo(() => {
     if (activeOnly) {
-      return allWallets.filter(wallet => wallet.isActive)
+      return allWallets.filter(wallet => wallet.status === 'active')
     }
     return allWallets
   }, [allWallets, activeOnly])
 
   // 計算統計資料
   const stats: WalletsStats = useMemo(() => {
-    const activeWallets = allWallets.filter(w => w.isActive)
+    const activeWallets = allWallets.filter(w => w.status === 'active')
     
     let totalBalance = 0
     const balancesByCurrency: Record<string, number> = {}
@@ -79,7 +79,7 @@ export function useWalletsList(
       balancesByCurrency[currency] = (balancesByCurrency[currency] || 0) + wallet.balance
 
       // 統計錢包類型
-      const type = wallet.metadata?.type || 'unknown'
+      const type = wallet.type || 'unknown'
       walletsByType[type] = (walletsByType[type] || 0) + 1
     })
 

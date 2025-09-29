@@ -172,8 +172,10 @@ class TransactionService {
                 (stats.transactionsByType[transactionType as TransactionType] || 0) + 1;
 
             // 按分類統計
-            const category = transaction.metadata?.category || '未分類';
-            stats.transactionsByCategory[category] = 
+            const category = typeof transaction.metadata?.category === 'string'
+                ? transaction.metadata.category
+                : '未分類';
+            stats.transactionsByCategory[category] =
                 (stats.transactionsByCategory[category] || 0) + transaction.amount;
         });
 
@@ -248,9 +250,11 @@ class TransactionService {
                 currency: 'TWD'
             }).format(transaction.amount),
             description: transaction.description,
-            type: transactionType,
-            typeDisplay: typeDisplayMap[transactionType] || transactionType,
-            category: transaction.metadata?.category || '未分類',
+            type: transactionType as string,
+            typeDisplay: typeDisplayMap[transactionType as TransactionType] || (transactionType as string),
+            category: typeof transaction.metadata?.category === 'string'
+                ? transaction.metadata.category
+                : '未分類',
             isIncome,
             isExpense,
             isTransfer

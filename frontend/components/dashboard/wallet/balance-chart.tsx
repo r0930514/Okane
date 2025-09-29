@@ -221,7 +221,7 @@ export function WalletBalanceChart({ wallet, transactions }: WalletBalanceChartP
             </div>
           </div>
         )}
-        
+
         {/* 統計摘要 */}
         {balanceHistory.length > 1 && (
           <div className="mt-4 pt-4 border-t">
