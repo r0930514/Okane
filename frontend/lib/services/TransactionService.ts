@@ -1,12 +1,11 @@
 import ApiService from './ApiService';
-import { 
+import {
     ApiResponse,
     Transaction,
     TransactionType,
     TransactionTypes,
     CreateTransactionRequest,
     UpdateTransactionRequest,
-    CreateTransferRequest,
     TransactionQuery
 } from '@/lib/types';
 
@@ -26,32 +25,6 @@ class TransactionService {
             // revalidateTag('transactions');
             // revalidateTag(`wallet-transactions-${transactionData.walletId}`);
             // revalidateTag(`wallet-balance-${transactionData.walletId}`);
-        }
-
-        return response;
-    }
-
-    /**
-     * 建立轉帳交易
-     * @param transferData - 轉帳資料
-     * @returns Promise<ApiResponse<{ fromTransaction: Transaction, toTransaction: Transaction }>>
-     */
-    static async createTransfer(transferData: CreateTransferRequest): Promise<ApiResponse<{
-        fromTransaction: Transaction;
-        toTransaction: Transaction;
-    }>> {
-        const response = await ApiService.post<{
-            fromTransaction: Transaction;
-            toTransaction: Transaction;
-        }>('/transactions/transfer', transferData, {
-            cache: 'no-store'
-        });
-
-        // 成功建立後，重新驗證相關快取
-        if (response.success && typeof window !== 'undefined') {
-            // revalidateTag('transactions');
-            // revalidateTag(`wallet-balance-${transferData.fromWalletId}`);
-            // revalidateTag(`wallet-balance-${transferData.toWalletId}`);
         }
 
         return response;
@@ -218,17 +191,14 @@ class TransactionService {
         category: string;
         isIncome: boolean;
         isExpense: boolean;
-        isTransfer: boolean;
     } {
         const transactionType = transaction.metadata?.type || '';
         const isIncome = transactionType === TransactionTypes.Income;
         const isExpense = transactionType === TransactionTypes.Expense;
-        const isTransfer = transactionType === TransactionTypes.Transfer;
 
         const typeDisplayMap: Record<string, string> = {
             [TransactionTypes.Income]: '收入',
             [TransactionTypes.Expense]: '支出',
-            [TransactionTypes.Transfer]: '轉帳',
             [TransactionTypes.Buy]: '買入',
             [TransactionTypes.Sell]: '賣出',
             [TransactionTypes.Dividend]: '股息',
@@ -256,8 +226,7 @@ class TransactionService {
                 ? transaction.metadata.category
                 : '未分類',
             isIncome,
-            isExpense,
-            isTransfer
+            isExpense
         };
     }
 }

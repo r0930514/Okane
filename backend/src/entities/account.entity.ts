@@ -70,10 +70,6 @@ export abstract class Account {
   @ApiProperty({ description: 'Balance of the account' })
   balance: number;
 
-  @Column('decimal', { precision: 15, scale: 2, default: 0 })
-  @ApiProperty({ description: 'Available balance of the account' })
-  availableBalance: number;
-
   @Column({ length: 3 })
   @ApiProperty({ description: 'Currency code of the account (e.g., USD, EUR)' })
   currency: string;

@@ -10,7 +10,12 @@ import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from '../auth/auth.module';
 import { WalletModule } from '../wallet/wallet.module';
 import { User } from '../../entities/user.entity';
-import { Account } from '../../entities/account.entity';
+import {
+  Account,
+  BankAccount,
+  CashAccount,
+  CryptoAccount,
+} from '../../entities/account.entity';
 import { Transaction } from '../../entities/transaction.entity';
 
 @Module({
@@ -24,7 +29,7 @@ import { Transaction } from '../../entities/transaction.entity';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         ...configService.get('database'),
-        entities: [User, Account, Transaction],
+        entities: [User, Account, BankAccount, CashAccount, CryptoAccount, Transaction],
       }),
     }),
     UsersModule,

@@ -1,7 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,8 +8,6 @@ import { Transaction } from '../../../entities/transaction.entity';
 import { Account } from '../../../entities/account.entity';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
-import { v4 as uuidv4 } from 'uuid';
-
 @Injectable()
 export class TransactionService {
   constructor(
@@ -38,81 +35,6 @@ export class TransactionService {
     });
 
     return this.transactionRepository.save(transaction);
-  }
-
-  async createTransfer(
-    fromAccountId: string,
-    toAccountId: string,
-    amount: number,
-    description: string,
-    userId: string,
-    metadata?: any,
-  ): Promise<{ outTransaction: Transaction; inTransaction: Transaction }> {
-    const fromAccount = await this.accountRepository.findOne({
-      where: { id: fromAccountId, user: { id: userId } },
-    });
-
-    const toAccount = await this.accountRepository.findOne({
-      where: { id: toAccountId, user: { id: userId } },
-    });
-
-    if (!fromAccount || !toAccount) {
-      throw new NotFoundException('轉出或轉入帳戶不存在');
-    }
-
-    if (fromAccountId === toAccountId) {
-      throw new BadRequestException('不能向同一個帳戶轉帳');
-    }
-
-    const transferGroupId = uuidv4();
-
-    const outTransaction = this.transactionRepository.create({
-      amount: -Math.abs(amount),
-      description,
-      account: fromAccount,
-      metadata: {
-        ...metadata,
-        type: 'transfer',
-        transferDirection: 'out',
-        transferGroupId,
-        relatedAccountId: toAccountId,
-      },
-    });
-
-    const inTransaction = this.transactionRepository.create({
-      amount: Math.abs(amount),
-      description,
-      account: toAccount,
-      metadata: {
-        ...metadata,
-        type: 'transfer',
-        transferDirection: 'in',
-        transferGroupId,
-        relatedAccountId: fromAccountId,
-      },
-    });
-
-    const savedOutTransaction =
-      await this.transactionRepository.save(outTransaction);
-    const savedInTransaction =
-      await this.transactionRepository.save(inTransaction);
-
-    savedOutTransaction.metadata = {
-      ...savedOutTransaction.metadata,
-      pairedTransactionId: savedInTransaction.id,
-    };
-    savedInTransaction.metadata = {
-      ...savedInTransaction.metadata,
-      pairedTransactionId: savedOutTransaction.id,
-    };
-
-    await this.transactionRepository.save(savedOutTransaction);
-    await this.transactionRepository.save(savedInTransaction);
-
-    return {
-      outTransaction: savedOutTransaction,
-      inTransaction: savedInTransaction,
-    };
   }
 
   async findAll(userId: string, accountId?: string): Promise<Transaction[]> {
@@ -151,39 +73,13 @@ export class TransactionService {
   ): Promise<Transaction> {
     const transaction = await this.findOne(id, userId);
 
-    if (
-      transaction.metadata?.type === 'transfer' &&
-      updateTransactionDto.amount
-    ) {
-      throw new BadRequestException('無法直接修改轉帳交易的金額');
-    }
-
     Object.assign(transaction, updateTransactionDto);
     return this.transactionRepository.save(transaction);
   }
 
   async remove(id: string, userId: string): Promise<void> {
     const transaction = await this.findOne(id, userId);
-
-    if (
-      transaction.metadata?.type === 'transfer' &&
-      transaction.metadata?.pairedTransactionId
-    ) {
-      const pairedTransaction = await this.transactionRepository.findOne({
-        where: { id: transaction.metadata.pairedTransactionId },
-      });
-
-      if (pairedTransaction) {
-        await this.transactionRepository.remove([
-          transaction,
-          pairedTransaction,
-        ]);
-      } else {
-        await this.transactionRepository.remove(transaction);
-      }
-    } else {
-      await this.transactionRepository.remove(transaction);
-    }
+    await this.transactionRepository.remove(transaction);
   }
 
   async getTransactionsByCategory(

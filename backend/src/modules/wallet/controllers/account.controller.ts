@@ -263,12 +263,12 @@ export class AccountController {
   })
   async updateBalance(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() balanceData: { balance: number; availableBalance?: number },
+    @Body() balanceData: { balance: number; adjustmentReason?: string },
   ): Promise<Account> {
     return await this.accountService.updateBalance(
       id,
       balanceData.balance,
-      balanceData.availableBalance,
+      balanceData.adjustmentReason,
     );
   }
 

@@ -27,16 +27,6 @@ export class UpdateAccountDto {
   balance?: number;
 
   @ApiProperty({
-    description: '可用餘額',
-    example: 14500.0,
-    required: false,
-  })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  availableBalance?: number;
-
-  @ApiProperty({
     description: '幣別代碼',
     example: 'TWD',
     required: false,

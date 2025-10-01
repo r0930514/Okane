@@ -1,6 +1,8 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateAccountBalanceTriggers1759137631401 implements MigrationInterface {
+export class CreateAccountBalanceTriggers1759137631401
+  implements MigrationInterface
+{
   public async up(queryRunner: QueryRunner): Promise<void> {
     // 創建重新計算帳戶餘額的函數
     await queryRunner.query(`
@@ -25,9 +27,7 @@ export class CreateAccountBalanceTriggers1759137631401 implements MigrationInter
 
         -- 更新帳戶的餘額欄位
         UPDATE account
-        SET
-          balance = total_balance,
-          "availableBalance" = total_balance
+        SET balance = total_balance
         WHERE id = account_id_to_update;
 
         -- 回傳適當的記錄
@@ -67,11 +67,19 @@ export class CreateAccountBalanceTriggers1759137631401 implements MigrationInter
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // 移除觸發器
-    await queryRunner.query(`DROP TRIGGER IF EXISTS transaction_delete_trigger ON transaction;`);
-    await queryRunner.query(`DROP TRIGGER IF EXISTS transaction_update_trigger ON transaction;`);
-    await queryRunner.query(`DROP TRIGGER IF EXISTS transaction_insert_trigger ON transaction;`);
+    await queryRunner.query(
+      `DROP TRIGGER IF EXISTS transaction_delete_trigger ON transaction;`,
+    );
+    await queryRunner.query(
+      `DROP TRIGGER IF EXISTS transaction_update_trigger ON transaction;`,
+    );
+    await queryRunner.query(
+      `DROP TRIGGER IF EXISTS transaction_insert_trigger ON transaction;`,
+    );
 
     // 移除函數
-    await queryRunner.query(`DROP FUNCTION IF EXISTS recalculate_account_balance();`);
+    await queryRunner.query(
+      `DROP FUNCTION IF EXISTS recalculate_account_balance();`,
+    );
   }
 }

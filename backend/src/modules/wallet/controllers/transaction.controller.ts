@@ -22,7 +22,6 @@ import { JwtAuthGuard } from '../../auth/stratgies/jwt-auth.guard';
 import { TransactionService } from '../services/transaction.service';
 import { CreateTransactionDto } from '../dto/create-transaction.dto';
 import { UpdateTransactionDto } from '../dto/update-transaction.dto';
-import { CreateTransferDto } from '../dto/create-transfer.dto';
 import { Transaction } from '../../../entities/transaction.entity';
 
 @ApiTags('交易管理')
@@ -42,26 +41,6 @@ export class TransactionController {
     @Request() req: any,
   ) {
     return this.transactionService.create(createTransactionDto, req.user.id);
-  }
-
-  @Post('transfer')
-  @ApiOperation({ summary: '建立轉帳交易' })
-  @ApiResponse({ status: 201, description: '轉帳建立成功' })
-  @ApiResponse({ status: 401, description: '未授權' })
-  @ApiResponse({ status: 404, description: '錢包不存在' })
-  @ApiResponse({ status: 400, description: '不能轉帳到同一個錢包' })
-  createTransfer(
-    @Body() createTransferDto: CreateTransferDto,
-    @Request() req: any,
-  ) {
-    return this.transactionService.createTransfer(
-      createTransferDto.fromWalletId,
-      createTransferDto.toWalletId,
-      createTransferDto.amount,
-      createTransferDto.description,
-      req.user.id,
-      createTransferDto.metadata,
-    );
   }
 
   @Get()

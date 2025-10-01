@@ -11,6 +11,8 @@ export interface Account {
   status: 'active' | 'draft' | 'disabled' | 'pending_deletion';
   type: 'bank' | 'cash' | 'crypto';
   accountableData: BankAccountData | CashAccountData | CryptoAccountData;
+  icon?: string;
+  color?: string;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -17,12 +17,7 @@ export interface TransactionMetadata {
   category?: string;
   relatedAsset?: string;
   relatedWalletId?: string;
-  
-  // 轉帳相關
-  transferDirection?: 'in' | 'out';
-  transferGroupId?: string;
-  pairedTransactionId?: string;
-  
+
   // 股票相關
   stockSymbol?: string;
   shares?: number;
@@ -77,7 +72,6 @@ export interface UpdateTransactionRequest {
 export const TransactionTypes = {
   Income: 'income',
   Expense: 'expense',
-  Transfer: 'transfer',
   Buy: 'buy',
   Sell: 'sell',
   Dividend: 'dividend',
@@ -90,14 +84,6 @@ export const TransactionTypes = {
 } as const;
 
 export type TransactionType = typeof TransactionTypes[keyof typeof TransactionTypes];
-
-export interface CreateTransferRequest {
-  fromWalletId: string;
-  toWalletId: string;
-  amount: number;
-  description?: string;
-  metadata?: TransactionMetadata;
-}
 
 export interface TransactionQuery {
   walletId?: string;

@@ -78,7 +78,7 @@ export function WalletsSection() {
               balance={wallet.balance}
               currency={wallet.currency || 'TWD'}
               walletType={wallet.type as WalletType}
-              color={'bg-teal-900'}
+              color={wallet.color || '#374151'}
             />
           ))}
           

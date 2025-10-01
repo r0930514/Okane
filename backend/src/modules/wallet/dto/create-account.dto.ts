@@ -11,12 +11,14 @@ export class CreateBankAccountDto {
   name: string;
 
   @ApiProperty({
-    description: '初始餘額',
+    description: '初始餘額（選填，若填寫則會建立期初餘額交易記錄）',
     example: 10000.0,
+    required: false,
   })
+  @IsOptional()
   @IsNumber()
   @Min(0)
-  balance: number;
+  initialBalance?: number;
 
   @ApiProperty({
     description: '幣別代碼',
@@ -50,12 +52,14 @@ export class CreateCashAccountDto {
   name: string;
 
   @ApiProperty({
-    description: '初始餘額',
+    description: '初始餘額（選填，若填寫則會建立期初餘額交易記錄）',
     example: 1000.0,
+    required: false,
   })
+  @IsOptional()
   @IsNumber()
   @Min(0)
-  balance: number;
+  initialBalance?: number;
 
   @ApiProperty({
     description: '幣別代碼',
@@ -93,12 +97,14 @@ export class CreateCryptoAccountDto {
   name: string;
 
   @ApiProperty({
-    description: '初始餘額',
+    description: '初始餘額（選填，若填寫則會建立期初餘額交易記錄）',
     example: 0.5,
+    required: false,
   })
+  @IsOptional()
   @IsNumber()
   @Min(0)
-  balance: number;
+  initialBalance?: number;
 
   @ApiProperty({
     description: '幣別代碼',

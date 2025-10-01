@@ -9,6 +9,14 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Account } from './account.entity';
 
+// 交易類型常數
+export const TRANSACTION_TYPES = {
+  INITIAL_BALANCE: 'initial_balance', // 期初餘額
+  BALANCE_ADJUSTMENT: 'balance_adjustment', // 餘額調整
+  INCOME: 'income', // 收入
+  EXPENSE: 'expense', // 支出
+} as const;
+
 @Entity()
 export class Transaction {
   @ApiProperty({

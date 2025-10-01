@@ -93,10 +93,7 @@ export function WalletCard({
     >
       <div className="inline-flex justify-start items-center gap-4">
         {/* 圖示區域 */}
-        <div className={cn(
-          "w-10 h-10 rounded-lg inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden",
-          color
-        )}>
+        <div className="w-10 h-10 rounded-lg inline-flex flex-col justify-center items-center gap-2.5 overflow-hidden" style={{ backgroundColor: color }}>
           <IconComponent className="w-7 h-7 text-white" />
         </div>
         
