@@ -7,12 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
   Account,
+  BankAccount,
+  CashAccount,
+  CryptoAccount,
   AccountType,
   AccountClassification,
   AccountStatus,
 } from '../../../entities/account.entity';
 import {
-  CreateAccountDto,
   CreateBankAccountDto,
   CreateCashAccountDto,
   CreateCryptoAccountDto,
@@ -29,76 +31,69 @@ export class AccountService {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    @InjectRepository(BankAccount)
+    private readonly bankAccountRepository: Repository<BankAccount>,
+    @InjectRepository(CashAccount)
+    private readonly cashAccountRepository: Repository<CashAccount>,
+    @InjectRepository(CryptoAccount)
+    private readonly cryptoAccountRepository: Repository<CryptoAccount>,
   ) {}
-
-  // 通用建立帳戶方法
-  async createAccount(createAccountDto: CreateAccountDto): Promise<Account> {
-    const account = this.accountRepository.create({
-      name: createAccountDto.name,
-      balance: createAccountDto.balance,
-      availableBalance: createAccountDto.availableBalance,
-      currency: createAccountDto.currency,
-      classification: createAccountDto.classification,
-      type: createAccountDto.type,
-      status: AccountStatus.ACTIVE,
-      accountableData: createAccountDto.accountableData || null,
-    });
-
-    return await this.accountRepository.save(account);
-  }
 
   // 建立銀行帳戶
   async createBankAccount(
     createBankAccountDto: CreateBankAccountDto,
-  ): Promise<Account> {
-    const account = this.accountRepository.create({
+  ): Promise<BankAccount> {
+    const account = this.bankAccountRepository.create({
       name: createBankAccountDto.name,
       balance: createBankAccountDto.balance,
-      availableBalance: createBankAccountDto.balance, // 預設可用餘額等於餘額
+      availableBalance: createBankAccountDto.balance,
       currency: createBankAccountDto.currency,
       classification: AccountClassification.ASSET,
-      type: AccountType.BANK,
       status: AccountStatus.ACTIVE,
-      accountableData: createBankAccountDto.bankData,
+      bankName: createBankAccountDto.bankName,
+      accountNumber: createBankAccountDto.accountNumber,
     });
 
-    return await this.accountRepository.save(account);
+    return await this.bankAccountRepository.save(account);
   }
 
   // 建立現金帳戶
   async createCashAccount(
     createCashAccountDto: CreateCashAccountDto,
-  ): Promise<Account> {
-    const account = this.accountRepository.create({
+  ): Promise<CashAccount> {
+    const account = this.cashAccountRepository.create({
       name: createCashAccountDto.name,
       balance: createCashAccountDto.balance,
       availableBalance: createCashAccountDto.balance,
       currency: createCashAccountDto.currency,
       classification: AccountClassification.ASSET,
-      type: AccountType.CASH,
       status: AccountStatus.ACTIVE,
-      accountableData: createCashAccountDto.cashData || null,
+      location: createCashAccountDto.location,
+      notes: createCashAccountDto.notes,
     });
 
-    return await this.accountRepository.save(account);
+    return await this.cashAccountRepository.save(account);
   }
 
   // 建立加密貨幣帳戶
   async createCryptoAccount(
     createCryptoAccountDto: CreateCryptoAccountDto,
-  ): Promise<Account> {
-    const account = this.accountRepository.create({
+  ): Promise<CryptoAccount> {
+    const account = this.cryptoAccountRepository.create({
       name: createCryptoAccountDto.name,
       balance: createCryptoAccountDto.balance,
       availableBalance: createCryptoAccountDto.balance,
       currency: createCryptoAccountDto.currency,
       classification: AccountClassification.ASSET,
-      type: AccountType.CRYPTO,
       status: AccountStatus.ACTIVE,
-      accountableData: createCryptoAccountDto.cryptoData,
+      walletAddress: createCryptoAccountDto.walletAddress,
+      network: createCryptoAccountDto.network,
+      protocol: createCryptoAccountDto.protocol,
+      publicKey: createCryptoAccountDto.publicKey,
+      walletType: createCryptoAccountDto.walletType,
     });
 
-    return await this.accountRepository.save(account);
+    return await this.cryptoAccountRepository.save(account);
   }
 
   // 取得所有帳戶
@@ -109,30 +104,28 @@ export class AccountService {
     });
   }
 
-  // 根據類型取得帳戶
-  async findByType(type: AccountType): Promise<Account[]> {
-    return await this.accountRepository.find({
-      where: {
-        type,
-        status: AccountStatus.ACTIVE,
-      },
+  // 取得所有銀行帳戶
+  async findBankAccounts(): Promise<BankAccount[]> {
+    return await this.bankAccountRepository.find({
+      where: { status: AccountStatus.ACTIVE },
       order: { name: 'ASC' },
     });
   }
 
-  // 取得所有銀行帳戶
-  async findBankAccounts(): Promise<Account[]> {
-    return await this.findByType(AccountType.BANK);
-  }
-
   // 取得所有現金帳戶
-  async findCashAccounts(): Promise<Account[]> {
-    return await this.findByType(AccountType.CASH);
+  async findCashAccounts(): Promise<CashAccount[]> {
+    return await this.cashAccountRepository.find({
+      where: { status: AccountStatus.ACTIVE },
+      order: { name: 'ASC' },
+    });
   }
 
   // 取得所有加密貨幣帳戶
-  async findCryptoAccounts(): Promise<Account[]> {
-    return await this.findByType(AccountType.CRYPTO);
+  async findCryptoAccounts(): Promise<CryptoAccount[]> {
+    return await this.cryptoAccountRepository.find({
+      where: { status: AccountStatus.ACTIVE },
+      order: { name: 'ASC' },
+    });
   }
 
   // 根據 ID 取得帳戶
@@ -148,41 +141,13 @@ export class AccountService {
     return account;
   }
 
-  // 更新帳戶
+  // 更新帳戶（通用）
   async update(
     id: string,
     updateAccountDto: UpdateAccountDto,
   ): Promise<Account> {
     const account = await this.findOne(id);
-
-    // 更新基本資料
-    if (updateAccountDto.name !== undefined) {
-      account.name = updateAccountDto.name;
-    }
-    if (updateAccountDto.balance !== undefined) {
-      account.balance = updateAccountDto.balance;
-    }
-    if (updateAccountDto.availableBalance !== undefined) {
-      account.availableBalance = updateAccountDto.availableBalance;
-    }
-    if (updateAccountDto.currency !== undefined) {
-      account.currency = updateAccountDto.currency;
-    }
-    if (updateAccountDto.classification !== undefined) {
-      account.classification = updateAccountDto.classification;
-    }
-    if (updateAccountDto.status !== undefined) {
-      account.status = updateAccountDto.status;
-    }
-
-    // 更新特定類型資料
-    if (updateAccountDto.accountableData !== undefined) {
-      account.accountableData = {
-        ...account.accountableData,
-        ...updateAccountDto.accountableData,
-      };
-    }
-
+    Object.assign(account, updateAccountDto);
     return await this.accountRepository.save(account);
   }
 
@@ -190,51 +155,51 @@ export class AccountService {
   async updateBankAccount(
     id: string,
     updateBankAccountDto: UpdateBankAccountDto,
-  ): Promise<Account> {
-    const account = await this.findOne(id);
+  ): Promise<BankAccount> {
+    const account = await this.bankAccountRepository.findOne({
+      where: { id, status: AccountStatus.ACTIVE },
+    });
 
-    if (account.type !== AccountType.BANK) {
-      throw new BadRequestException('此帳戶不是銀行帳戶類型');
+    if (!account) {
+      throw new NotFoundException(`找不到 ID 為 ${id} 的銀行帳戶`);
     }
 
-    return await this.update(id, {
-      ...updateBankAccountDto,
-      accountableData: updateBankAccountDto.bankData,
-    });
+    Object.assign(account, updateBankAccountDto);
+    return await this.bankAccountRepository.save(account);
   }
 
   // 更新現金帳戶
   async updateCashAccount(
     id: string,
     updateCashAccountDto: UpdateCashAccountDto,
-  ): Promise<Account> {
-    const account = await this.findOne(id);
+  ): Promise<CashAccount> {
+    const account = await this.cashAccountRepository.findOne({
+      where: { id, status: AccountStatus.ACTIVE },
+    });
 
-    if (account.type !== AccountType.CASH) {
-      throw new BadRequestException('此帳戶不是現金帳戶類型');
+    if (!account) {
+      throw new NotFoundException(`找不到 ID 為 ${id} 的現金帳戶`);
     }
 
-    return await this.update(id, {
-      ...updateCashAccountDto,
-      accountableData: updateCashAccountDto.cashData,
-    });
+    Object.assign(account, updateCashAccountDto);
+    return await this.cashAccountRepository.save(account);
   }
 
   // 更新加密貨幣帳戶
   async updateCryptoAccount(
     id: string,
     updateCryptoAccountDto: UpdateCryptoAccountDto,
-  ): Promise<Account> {
-    const account = await this.findOne(id);
+  ): Promise<CryptoAccount> {
+    const account = await this.cryptoAccountRepository.findOne({
+      where: { id, status: AccountStatus.ACTIVE },
+    });
 
-    if (account.type !== AccountType.CRYPTO) {
-      throw new BadRequestException('此帳戶不是加密貨幣帳戶類型');
+    if (!account) {
+      throw new NotFoundException(`找不到 ID 為 ${id} 的加密貨幣帳戶`);
     }
 
-    return await this.update(id, {
-      ...updateCryptoAccountDto,
-      accountableData: updateCryptoAccountDto.cryptoData,
-    });
+    Object.assign(account, updateCryptoAccountDto);
+    return await this.cryptoAccountRepository.save(account);
   }
 
   // 軟刪除帳戶
@@ -284,10 +249,13 @@ export class AccountService {
 
     const stats = {
       totalAccounts: accounts.length,
-      bankAccounts: accounts.filter((a) => a.type === AccountType.BANK).length,
-      cashAccounts: accounts.filter((a) => a.type === AccountType.CASH).length,
-      cryptoAccounts: accounts.filter((a) => a.type === AccountType.CRYPTO)
+      bankAccounts: accounts.filter((a) => a.accountType === AccountType.BANK)
         .length,
+      cashAccounts: accounts.filter((a) => a.accountType === AccountType.CASH)
+        .length,
+      cryptoAccounts: accounts.filter(
+        (a) => a.accountType === AccountType.CRYPTO,
+      ).length,
       totalBalance: {} as { [currency: string]: number },
     };
 

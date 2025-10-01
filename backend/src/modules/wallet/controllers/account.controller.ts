@@ -6,7 +6,6 @@ import {
   Delete,
   Body,
   Param,
-  Query,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
@@ -16,13 +15,11 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
-  ApiQuery,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AccountService } from '../services/account.service';
-import { Account, AccountType } from '../../../entities/account.entity';
+import { Account } from '../../../entities/account.entity';
 import {
-  CreateAccountDto,
   CreateBankAccountDto,
   CreateCashAccountDto,
   CreateCryptoAccountDto,
@@ -37,22 +34,8 @@ import {
 @ApiTags('帳戶管理')
 @Controller('accounts')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard) // 取消註釋以啟用認證
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
-
-  // 建立帳戶 - 通用方法
-  @Post()
-  @ApiOperation({ summary: '建立新帳戶' })
-  @ApiResponse({
-    status: 201,
-    description: '帳戶建立成功',
-    type: Account,
-  })
-  @ApiResponse({ status: 400, description: '請求資料無效' })
-  async create(@Body() createAccountDto: CreateAccountDto): Promise<Account> {
-    return await this.accountService.createAccount(createAccountDto);
-  }
 
   // 建立銀行帳戶
   @Post('bank')
@@ -101,21 +84,12 @@ export class AccountController {
   // 取得所有帳戶
   @Get()
   @ApiOperation({ summary: '取得所有帳戶' })
-  @ApiQuery({
-    name: 'type',
-    enum: AccountType,
-    required: false,
-    description: '依帳戶類型篩選',
-  })
   @ApiResponse({
     status: 200,
     description: '成功取得帳戶清單',
     type: [Account],
   })
-  async findAll(@Query('type') type?: AccountType): Promise<Account[]> {
-    if (type) {
-      return await this.accountService.findByType(type);
-    }
+  async findAll(): Promise<Account[]> {
     return await this.accountService.findAll();
   }
 
